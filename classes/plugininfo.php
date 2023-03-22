@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-/**
- * Tiny BFH Font colour plugin for Moodle.
- *
- * @package     tiny_bfhfontcolor
- * @copyright   2023 Luca Bösch <luca.boesch@bfh.ch>
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tiny_multilang2;
 
 use context;
@@ -32,11 +24,12 @@ use editor_tiny\plugin_with_buttons;
 use editor_tiny\plugin_with_configuration;
 
 /**
- * BFH Font colour plugin.
+ * Plugin for Moodle 'Multilingual content' drop down menu in TinyMCE 6.
  *
  * @package     tiny_multilang2
+ * @author      Iñaki Arenaza <iarenaza@mondragon.edu>
+ * @author      Stephan Robotta <stephan.robotta@bfh.ch>
  * @copyright   2015 onwards Iñaki Arenaza & Mondragon Unibertsitatea
- * @copyright   2023 Stephan Robotta <stephan.robotta@bfh.ch>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_buttons, plugin_with_configuration {

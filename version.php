@@ -18,7 +18,9 @@
  * Plugin version and other meta-data are defined here.
  *
  * @package     tiny_multilang2
- * @copyright   2023 Stephan Robotta <stephan.robotta@bfh.ch>
+ * @author      Iñaki Arenaza <iarenaza@mondragon.edu>
+ * @author      Stephan Robotta <stephan.robotta@bfh.ch>
+ * @copyright 2015 onwards Iñaki Arenaza & Mondragon Unibertsitatea
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

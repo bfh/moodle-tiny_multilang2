@@ -17,7 +17,9 @@
  * Plugin entry point of tiny_multilang2 for Moodle.
  *
  * @module      tiny_multilang2
- * @copyright   2023 Stephan Robotta <stephan.robotta@bfh.ch>
+ * @author      Iñaki Arenaza <iarenaza@mondragon.edu>
+ * @author      Stephan Robotta <stephan.robotta@bfh.ch>
+ * @copyright   2015 onwards Iñaki Arenaza & Mondragon Unibertsitatea
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

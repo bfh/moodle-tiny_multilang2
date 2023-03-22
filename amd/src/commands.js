@@ -17,17 +17,19 @@
  * Commands helper for the Moodle tiny_multilang2 plugin.
  *
  * @module      tiny_multilang2
- * @copyright   2023 Stephan Robotta <stephan.robotta@bfh.ch>
+ * @author      Iñaki Arenaza <iarenaza@mondragon.edu>
+ * @author      Stephan Robotta <stephan.robotta@bfh.ch>
+ * @copyright   2015 onwards Iñaki Arenaza & Mondragon Unibertsitatea
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 import {getLanguageList} from './options';
 import {component} from './common';
 import {get_strings as getStrings} from 'core/str';
-import {applyLanguage} from './ui';
+import {applyLanguage, onInit, onBeforeGetContent, onPreProcess} from './ui';
 
 /**
- * Get the setup function for the button.
+ * Get the setup function for the button and the menu entry.
  *
  * This is performed in an async function which ultimately returns the registration function as the
  * Tiny.AddOnManager.Add() function does not support async functions.
@@ -51,12 +53,14 @@ export const getSetup = async() => {
     editor.ui.registry.addSplitButton(component, {
       icon: 'language',
       tooltip: tooltip,
-      fetch: () => languageList.map((lang) => ({
+      fetch: function(callback) {
+        const items = languageList.map((lang) => ({
             type: 'choiceitem',
-            icon: 'language',
             value: lang.iso,
             text: lang.label,
-      })),
+        }));
+        callback(items);
+      },
       onAction: () => {
         applyLanguage(editor, null);
       },
@@ -75,6 +79,16 @@ export const getSetup = async() => {
               applyLanguage(editor, lang.iso);
             },
         }))
+    });
+
+    editor.on('init', () => {
+      onInit(editor);
+    });
+    editor.on('BeforeGetContent', (format) => {
+      onBeforeGetContent(editor, format);
+    });
+    editor.on('PreProcess', (node) => {
+      onPreProcess(editor, node);
     });
   };
 };

@@ -17,7 +17,9 @@
  * Options helper for multilang2 plugin.
  *
  * @module      tiny_multilang2
- * @copyright   2023 Stephan Robotta <stephan.robotta@bfh.ch>
+ * @author      Iñaki Arenaza <iarenaza@mondragon.edu>
+ * @author      Stephan Robotta <stephan.robotta@bfh.ch>
+ * @copyright   2015 onwards Iñaki Arenaza & Mondragon Unibertsitatea
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -31,7 +33,7 @@ const highlightcss = getPluginOptionName(pluginName, 'css');
 /**
  * Register the options for the Tiny Equation plugin.
  *
- * @param {TinyMCE} editor
+ * @param {tinymce.Editor} editor
  */
 export const register = (editor) => {
 
@@ -55,7 +57,7 @@ export const register = (editor) => {
 /**
  * Get the list of languages that are used for the translation button/menu item.
  *
- * @param {TinyMCE} editor
+ * @param {tinymce.Editor} editor
  * @returns {Array}
  */
 export const getLanguageList = (editor) => editor.options.get(languages);
@@ -63,7 +65,7 @@ export const getLanguageList = (editor) => editor.options.get(languages);
 /**
  * Get the defined option whether to highlight the language dependent content blocks.
  *
- * @param {TinyMCE} editor
+ * @param {tinymce.Editor} editor
  * @returns {boolean}
  */
 export const isContentToHighlight = (editor) => editor.options.get(highlight);
@@ -71,7 +73,7 @@ export const isContentToHighlight = (editor) => editor.options.get(highlight);
 /**
  * Get the highlight css in case the language dependent block are supposed to be emphasized.
  *
- * @param {TinyMCE} editor
+ * @param {tinymce.Editor} editor
  * @returns {string}
  */
 export const getHighlightCss = (editor) => editor.options.get(highlightcss);

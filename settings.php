@@ -18,6 +18,8 @@
  * Multi-language integration settings.
  *
  * @package   tinymce_multilang2
+ * @author    Iñaki Arenaza <iarenaza@mondragon.edu>
+ * @author    Stephan Robotta <stephan.robotta@bfh.ch>
  * @copyright 2015 onwards Iñaki Arenaza & Mondragon Unibertsitatea
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
