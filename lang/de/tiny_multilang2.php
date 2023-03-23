@@ -22,13 +22,13 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['highlightcss'] = 'CSS für Trenner';
+$string['highlightcss'] = 'CSS für Sprachtag';
 $string['highlightcss_desc'] = "CSS für die Marker um dem sprachabhängigen Inhalt anzuzeigen.
 
 Wenn Sie die Spache anzeigen möchten, die in einem sprachabhängigen Block verwendet wird, kann folgendes CSS benutzt werden (dieses Beispiel ist für Deutsch, Fraben sind eventuell nicht optimal gewählt):
 
 <pre>
-.multilang-begin:lang(eu):before {
+.multilang-begin:lang(de):before {
     content: \"de\";
     position: relative;
     top: -0.5em;

@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['highlightcss'] = 'CSS for delimiters';
+$string['highlightcss'] = 'CSS for language tag';
 $string['highlightcss_desc'] = "CSS used to highlight the multi-language content delimiters.
 
 If you want to display the language for the multilang blocks, you can use something like the following (this example is for the Basque language, colors are probably not the best ones):
