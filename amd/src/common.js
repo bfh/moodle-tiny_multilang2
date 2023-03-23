@@ -24,6 +24,4 @@
 export default {
   pluginName: 'tiny_multilang2/plugin',
   component: 'tiny_multilang2',
-  buttonName: 'tiny_multilang2',
-  icon: 'tiny_multilang2',
 };
