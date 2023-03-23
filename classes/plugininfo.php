@@ -108,7 +108,7 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
         }
 
         asort($langs);
-        foreach($langs as $iso => $label) {
+        foreach ($langs as $iso => $label) {
             $config['languages'][] = [
                 'iso' => $iso,
                 'label' => $label,
@@ -121,7 +121,7 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
             $css = trim(get_config('core', 'highlight_css'));
             if (empty($css)) {
                 require(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'default-css.php');
-                $css = $multilang2_default_css;
+                $css = $multilang2defaultcss;
             }
             $config['css'] = $css;
         }

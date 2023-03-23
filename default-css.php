@@ -22,7 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$multilang2_default_css = <<< EOF
+defined('MOODLE_INTERNAL') || die;
+
+$multilang2defaultcss = <<< EOF
 
 .multilang-begin, .multilang-end {
     outline: 1px dotted;
@@ -31,6 +33,5 @@ $multilang2_default_css = <<< EOF
     background-color: #ffffaa;
 }
 
-EOF
-;
+EOF;
 
