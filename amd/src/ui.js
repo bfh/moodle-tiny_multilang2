@@ -26,37 +26,36 @@
 import {getHighlightCss, isContentToHighlight} from "./options";
 
 
-let _already_highlighted = 0;
-const _span_fixed_attrs = 'class="multilang-begin mceNonEditable" data-mce-contenteditable="false"';
-const _span_multilang_begin = '<span ' + _span_fixed_attrs + ' lang="%lang" xml:lang="%lang">{mlang %lang}</span>';
-const _span_multilang_end = '<span ' + _span_fixed_attrs.replace('begin', 'end') + '>{mlang}</span>';
-
+// This class inside a <span> identified the {mlang} tag that is encapsulated in a span.
+const _span_class = 'class="multilang-begin mceNonEditable"';
+// This is the <span> element with the data attribute.
+const _span_fixed_attrs = '<span ' + _span_class + ' data-mce-contenteditable="false"';
+// The begin span needs the language attributes inside the span and the mlang attribute.
+const _span_multilang_begin = _span_fixed_attrs + ' lang="%lang" xml:lang="%lang">{mlang %lang}</span>';
+// The end span doesn't need information about the used language.
+const _span_multilang_end = _span_fixed_attrs.replace('begin', 'end') + '>{mlang}</span>';
+// Helper to trim a string.
 const trim = v => v.toString().replace(/^\s+/, '').replace(/\s+$/, '');
 
 /**
  * Convert {mlang xx} and {mlang} strings to spans, so we can style them visually.
  * Remove superflous whitespace while at it.
  * @param {tinymce.Editor} ed
- * @param {string} content
  */
-const _add_visual_styling = function(ed, content) {
-    if (_already_highlighted){
+const _add_visual_styling = function(ed) {
+    let content = ed.getContent();
+
+    // Do not use a variable whether text is already highlighted, do a check for the existing class
+    // because this is safe for many tiny element windows at one page.
+    if (content.indexOf(_span_class) !== -1) {
         return content;
     }
 
-    if (!content) {
-        content = ed.getContent();
-    }
-
-    // Work around for Chrome behaviour: apparently we can't do the .replace() on the
-    // _span_multilang_begin property, so we use a temporary variable instead.
-    let begin_str = _span_multilang_begin;
     content = content.replace(new RegExp('{\\s*mlang\\s+([^}]+?)\\s*}', 'ig'), function(match, p1) {
-        return begin_str.replace(new RegExp('%lang', 'g'), p1);
+        return _span_multilang_begin.replace(new RegExp('%lang', 'g'), p1);
     });
     content = content.replace(new RegExp('{\\s*mlang\\s*}', 'ig'), _span_multilang_end);
 
-    _already_highlighted = 1;
     return content;
 };
 
@@ -66,9 +65,6 @@ const _add_visual_styling = function(ed, content) {
  * @param {tinymce.Editor} ed
  */
 const _remove_visual_styling = function(ed) {
-    if (!_already_highlighted) {
-      return;
-    }
     ['begin', 'end'].forEach(function (t) {
       let nodes = ed.dom.select('span.multilang-' + t);
       for (let n = 0, l = nodes.length; n < l; n++) {
@@ -76,7 +72,6 @@ const _remove_visual_styling = function(ed) {
         ed.dom.setOuterHTML(span, span.innerHTML.toLowerCase());
       }
     });
-    _already_highlighted = 0;
 };
 
 /**
@@ -86,7 +81,7 @@ const _remove_visual_styling = function(ed) {
 const onInit = function(ed) {
     if (isContentToHighlight(ed)) {
         ed.dom.addStyle(getHighlightCss(ed));
-        ed.setContent(_add_visual_styling(ed, ed.getContent()));
+        ed.setContent(_add_visual_styling(ed));
     }
 };
 
@@ -123,10 +118,6 @@ const onPreProcess = function(ed, node) {
   if (typeof node.save !== 'undefined' && node.save === true) {
     if (isContentToHighlight(ed)) {
       _remove_visual_styling(ed);
-      // Even if we have called _remove_visual_styling(), we are actually working
-      // on a copy of the content here. The original content of the editor is still
-      // highlighted, so keep the right state for _already_highlighted.
-      _already_highlighted = 1;
     }
   }
 };
