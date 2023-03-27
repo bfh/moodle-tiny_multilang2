@@ -107,11 +107,17 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
             $langs = get_string_manager()->get_list_of_translations();
         }
 
-        asort($langs);
-        foreach ($langs as $iso => $label) {
+        if (count($langs) > 1) {
+            asort($langs);
+            foreach ($langs as $iso => $label) {
+                $config['languages'][] = [
+                    'iso' => $iso,
+                    'label' => $label,
+                ];
+            }
             $config['languages'][] = [
-                'iso' => $iso,
-                'label' => $label,
+                'iso' => 'other',
+                'label' => get_string('multilang2:other', 'tiny_multilang2') . ' (other)',
             ];
         }
 

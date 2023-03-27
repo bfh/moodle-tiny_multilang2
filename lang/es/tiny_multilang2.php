@@ -51,4 +51,5 @@ $string['showalllangs_desc'] = 'Si se habilita, el menú desplegable de selecci�
 $string['multilang2:desc'] = 'Ayuda a añadir contenido multi-idioma (necesita tener habilitado el filtro de Contenido Multi-Idioma (v2))';
 $string['multilang2:language'] = 'Idioma';
 $string['multilang2:viewlanguagemenu'] = 'Ver el menú desplegable de idiomas en el editor TinyMCE';
+$string['multilang2:other'] = 'otro';
 

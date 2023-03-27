@@ -51,3 +51,4 @@ $string['showalllangs_desc'] = 'If enabled, the language drop down menu will con
 $string['multilang2:desc'] = 'Helps adding multilingual content (you need the Multi-Language Content (v2) filter enabled)';
 $string['multilang2:language'] = 'Language';
 $string['multilang2:viewlanguagemenu'] = 'View language dropdown menu in TinyMCE editor';
+$string['multilang2:other'] = 'Fallback';

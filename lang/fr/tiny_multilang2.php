@@ -51,4 +51,5 @@ $string['showalllangs_desc'] = 'Si activé, le menu déroulant des langues conti
 $string['multilang2:desc'] = 'Aide à ajouter du contenu multilingue (le filtre Contenu multilingue (v2) doit être activé)';
 $string['multilang2:language'] = 'Langue';
 $string['multilang2:viewlanguagemenu'] = 'Voir le menu déroulant des langues à l\'éditeur TinyMCE';
+$string['multilang2:other'] = 'autre';
 

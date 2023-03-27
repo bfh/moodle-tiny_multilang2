@@ -51,3 +51,4 @@ $string['showalllangs_desc'] = 'Wenn aktiviert, werden im Editor alle Sprachen a
 $string['multilang2:desc'] = 'Unterstützung zum Hinzufügen von sprachabhänigem Inhalt (der Multi-Language Content (v2) filter muß aktiviert sein)';
 $string['multilang2:language'] = 'Sprache';
 $string['multilang2:viewlanguagemenu'] = 'Anzeigen der Sprachen als Liste im TinyMCE editor';
+$string['multilang2:other'] = 'andere';
