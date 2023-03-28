@@ -23,7 +23,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {getHighlightCss, isContentToHighlight} from "./options";
+import {getHighlightCss, isContentToHighlight} from './options';
 
 
 // This class inside a <span> identified the {mlang} tag that is encapsulated in a span.
@@ -152,7 +152,7 @@ const onPreProcess = function(ed, node) {
 };
 
 /**
- * Check for key press <del> when something is deleted. If that happens inside of a highlight span
+ * Check for key press <del> when something is deleted. If that happens inside a highlight span
  * tag, then remove this tag and the corresponding that that open/closes this lang tag.
  * @param {tinymec.Editor} ed
  * @param {Object} event
