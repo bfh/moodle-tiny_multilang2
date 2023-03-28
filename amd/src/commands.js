@@ -42,53 +42,53 @@ export const getSetup = async() => {
         tooltip,
     ] = await getStrings(['multilang2:language', 'multilang2:desc'].map((key) => ({key, component})));
 
-  return (editor) => {
+    return (editor) => {
 
-    const languageList = getLanguageList(editor);
-    // If there is just one language, we don't need the plugin.
-    if (languageList.length < 2) {
-      return;
-    }
+        const languageList = getLanguageList(editor);
+        // If there is just one language, we don't need the plugin.
+        if (languageList.length < 2) {
+            return;
+        }
 
-    editor.ui.registry.addSplitButton(component, {
-      icon: 'language',
-      tooltip: tooltip,
-      fetch: function(callback) {
-        const items = languageList.map((lang) => ({
-            type: 'choiceitem',
-            value: lang.iso,
-            text: lang.label,
-        }));
-        callback(items);
-      },
-      onAction: () => {
-        applyLanguage(editor, null);
-      },
-      onItemAction: (_splitButtonApi, value) => {
-        applyLanguage(editor, value);
-      }
-    });
-
-    editor.ui.registry.addNestedMenuItem(component, {
-        icon: 'language',
-        text: buttonText,
-        getSubmenuItems: () => languageList.map((lang) => ({
-            type: 'menuitem',
-            text: lang.label,
-            onAction: () => {
-              applyLanguage(editor, lang.iso);
+        editor.ui.registry.addSplitButton(component, {
+            icon: 'language',
+            tooltip: tooltip,
+            fetch: function(callback) {
+                const items = languageList.map((lang) => ({
+                    type: 'choiceitem',
+                    value: lang.iso,
+                    text: lang.label,
+                }));
+                callback(items);
             },
-        }))
-    });
+            onAction: () => {
+                applyLanguage(editor, null);
+            },
+            onItemAction: (_splitButtonApi, value) => {
+                applyLanguage(editor, value);
+            }
+        });
 
-    editor.on('init', () => {
-      onInit(editor);
-    });
-    editor.on('BeforeGetContent', (format) => {
-      onBeforeGetContent(editor, format);
-    });
-    editor.on('PreProcess', (node) => {
-      onPreProcess(editor, node);
-    });
-  };
+        editor.ui.registry.addNestedMenuItem(component, {
+            icon: 'language',
+            text: buttonText,
+            getSubmenuItems: () => languageList.map((lang) => ({
+                type: 'menuitem',
+                text: lang.label,
+                onAction: () => {
+                    applyLanguage(editor, lang.iso);
+                },
+            }))
+        });
+
+        editor.on('init', () => {
+            onInit(editor);
+        });
+        editor.on('BeforeGetContent', (format) => {
+            onBeforeGetContent(editor, format);
+        });
+        editor.on('PreProcess', (node) => {
+            onPreProcess(editor, node);
+        });
+    };
 };

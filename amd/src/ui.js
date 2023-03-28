@@ -66,11 +66,11 @@ const _add_visual_styling = function(ed) {
  */
 const _remove_visual_styling = function(ed) {
     ['begin', 'end'].forEach(function (t) {
-      let nodes = ed.dom.select('span.multilang-' + t);
-      for (let n = 0, l = nodes.length; n < l; n++) {
-        const span = nodes[n];
-        ed.dom.setOuterHTML(span, span.innerHTML.toLowerCase());
-      }
+        let nodes = ed.dom.select('span.multilang-' + t);
+        for (let n = 0, l = nodes.length; n < l; n++) {
+            const span = nodes[n];
+            ed.dom.setOuterHTML(span, span.innerHTML.toLowerCase());
+        }
     });
 };
 
@@ -92,21 +92,21 @@ const onInit = function(ed) {
  * @param {object} content
  */
 const onBeforeGetContent = function(ed, content) {
-  if (typeof content.source_view !== 'undefined' && content.source_view === true) {
-    // If the user clicks on 'Cancel' or the close button on the html
-    // source code dialog view, make sure we re-add the visual styling.
-    var onClose = function(ed) {
-      ed.off('close', onClose);
-      ed.setContent(_add_visual_styling(ed));
-    };
-    ed.on('CloseWindow', () => {
-      onClose(ed);
-    });
+    if (typeof content.source_view !== 'undefined' && content.source_view === true) {
+        // If the user clicks on 'Cancel' or the close button on the html
+        // source code dialog view, make sure we re-add the visual styling.
+        var onClose = function(ed) {
+            ed.off('close', onClose);
+            ed.setContent(_add_visual_styling(ed));
+        };
+        ed.on('CloseWindow', () => {
+            onClose(ed);
+        });
 
-    if (isContentToHighlight(ed)) {
-        _remove_visual_styling(ed);
+        if (isContentToHighlight(ed)) {
+            _remove_visual_styling(ed);
+        }
     }
-  }
 };
 
 /**
@@ -115,11 +115,11 @@ const onBeforeGetContent = function(ed, content) {
  * @param {Element} node
  */
 const onPreProcess = function(ed, node) {
-  if (typeof node.save !== 'undefined' && node.save === true) {
-    if (isContentToHighlight(ed)) {
-      _remove_visual_styling(ed);
+    if (typeof node.save !== 'undefined' && node.save === true) {
+        if (isContentToHighlight(ed)) {
+            _remove_visual_styling(ed);
+        }
     }
-  }
 };
 
 /**
@@ -129,26 +129,26 @@ const onPreProcess = function(ed, node) {
  * @param {string} iso
  */
 const applyLanguage = function(ed, iso) {
-  if (iso === null) {
-    return;
-  }
-  let text = ed.selection.getContent();
-  let newtext;
-  if (trim(text) !== '') {
-      if (isContentToHighlight(ed)) {
-        newtext = _span_multilang_begin.replace(new RegExp('%lang', 'g'), iso) + text + _span_multilang_end;
-      } else {
-        newtext = '{mlang ' + iso + '}' + text + '{mlang}';
-      }
-      ed.selection.setContent(newtext);
-  } else {
-    if (isContentToHighlight(ed)) {
-      newtext = _span_multilang_begin.replace(new RegExp('%lang', 'g'), iso) + ' ' + _span_multilang_end;
-    } else {
-      newtext = '{mlang ' + iso +'}' + ' ' + '{mlang}';
+    if (iso === null) {
+        return;
     }
-    ed.insertContent(newtext);
-  }
+    let text = ed.selection.getContent();
+    let newtext;
+    if (trim(text) !== '') {
+        if (isContentToHighlight(ed)) {
+            newtext = _span_multilang_begin.replace(new RegExp('%lang', 'g'), iso) + text + _span_multilang_end;
+        } else {
+            newtext = '{mlang ' + iso + '}' + text + '{mlang}';
+        }
+        ed.selection.setContent(newtext);
+    } else {
+        if (isContentToHighlight(ed)) {
+            newtext = _span_multilang_begin.replace(new RegExp('%lang', 'g'), iso) + ' ' + _span_multilang_end;
+        } else {
+            newtext = '{mlang ' + iso +'}' + ' ' + '{mlang}';
+        }
+        ed.insertContent(newtext);
+    }
 };
 
 

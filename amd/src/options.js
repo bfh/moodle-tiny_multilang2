@@ -36,22 +36,20 @@ const highlightcss = getPluginOptionName(pluginName, 'css');
  * @param {tinymce.Editor} editor
  */
 export const register = (editor) => {
+    editor.options.register(languages, {
+        processor: 'Array',
+        "default": [],
+    });
 
-  editor.options.register(languages, {
-    processor: 'Array',
-    "default": [],
-  });
+    editor.options.register(highlight, {
+        processor: 'boolean',
+        "default": false,
+    });
 
-  editor.options.register(highlight, {
-    processor: 'boolean',
-    "default": false,
-  });
-
-  editor.options.register(highlightcss, {
-    processor: 'string',
-    "default": '',
-  });
-
+    editor.options.register(highlightcss, {
+        processor: 'string',
+       "default": '',
+    });
 };
 
 /**
