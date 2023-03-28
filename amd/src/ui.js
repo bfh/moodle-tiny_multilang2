@@ -34,8 +34,9 @@ const _span_fixed_attrs = '<span ' + _span_class + ' data-mce-contenteditable="f
 const _span_multilang_begin = _span_fixed_attrs + ' lang="%lang" xml:lang="%lang">{mlang %lang}</span>';
 // The end span doesn't need information about the used language.
 const _span_multilang_end = _span_fixed_attrs.replace('begin', 'end') + '>{mlang}</span>';
-// Helper to trim a string.
+// Helper functions
 const trim = v => v.toString().replace(/^\s+/, '').replace(/\s+$/, '');
+const isNull = a => a === null || a === undefined;
 
 /**
  * Convert {mlang xx} and {mlang} strings to spans, so we can style them visually.
@@ -72,6 +73,34 @@ const _remove_visual_styling = function(ed) {
             ed.dom.setOuterHTML(span, span.innerHTML.toLowerCase());
         }
     });
+};
+
+/**
+ * At the current selection lookup for the current node. If we are inside a special span that encapsulates
+ * the {lang} tag, then look for the corresponding opening or closing tag, depending on what's set in the
+ * search param.
+ * @param {tinymce.Editor} ed
+ * @param {string} search
+ */
+const _get_highlight_node_from_select = function(ed, search) {
+    let span;
+    ed.dom.getParents(ed.selection.getStart(), elm => {
+        // Are we in a span that highlights the lang tag.
+        if (!isNull(elm.classList)) {
+            // If we are on a opening/closing lang tag, we need to search for the corresponding opening/closing tag.
+            const pair = search === 'begin' ? 'end' : 'begin';
+            if (elm.classList.contains('multilang-' + pair)) {
+                span = elm;
+                do {
+                    span = search === 'begin' ? span.previousSibling : span.nextSibling;
+                } while (!isNull(span) && (isNull(span.classList) || !span.classList.contains('multilang-' + search)));
+            } else if (elm.classList.contains('multilang-' + search)) {
+                // We are already on the correct tag we search for
+                span = elm;
+            }
+        }
+    });
+    return span;
 };
 
 /**
@@ -123,6 +152,26 @@ const onPreProcess = function(ed, node) {
 };
 
 /**
+ * Check for key press <del> when something is deleted. If that happens inside of a highlight span
+ * tag, then remove this tag and the corresponding that that open/closes this lang tag.
+ * @param {tinymec.Editor} ed
+ * @param {Object} event
+ */
+const onDelete = function (ed, event) {
+    if (event.isComposing || event.keyCode !== 46 || !isContentToHighlight(ed)) {
+        return;
+    }
+    // Key <del> was pressed, to delete some content. Check if we are inside a span for the lang.
+    const begin = _get_highlight_node_from_select(ed, 'begin');
+    const end = _get_highlight_node_from_select(ed, 'end');
+    if (!isNull(begin) && !isNull(end)) {
+        event.preventDefault();
+        ed.dom.remove(begin);
+        ed.dom.remove(end);
+    }
+};
+
+/**
  * The action when a language icon or menu entry is clicked. This adds the multilang tags at the current content
  * position or around the selection.
  * @param {tinymce.Editor} ed
@@ -133,22 +182,36 @@ const applyLanguage = function(ed, iso) {
         return;
     }
     let text = ed.selection.getContent();
-    let newtext;
-    if (trim(text) !== '') {
-        if (isContentToHighlight(ed)) {
-            newtext = _span_multilang_begin.replace(new RegExp('%lang', 'g'), iso) + text + _span_multilang_end;
-        } else {
-            newtext = '{mlang ' + iso + '}' + text + '{mlang}';
-        }
-        ed.selection.setContent(newtext);
-    } else {
+    // Selection is empty, just insert the lang opening and closing tag
+    // together with a space where the user may add the content.
+    if (trim(text) === '') {
+        let newtext;
         if (isContentToHighlight(ed)) {
             newtext = _span_multilang_begin.replace(new RegExp('%lang', 'g'), iso) + ' ' + _span_multilang_end;
         } else {
-            newtext = '{mlang ' + iso +'}' + ' ' + '{mlang}';
+            newtext = '{mlang ' + iso + '}' + ' ' + '{mlang}';
         }
         ed.insertContent(newtext);
+        return;
     }
+    // Selection contains something, we need to place the open and closing lang tags around the selection.
+    // However, there are a few exceptions, e.g. when the selection is inside the lang tag itself. In this case
+    // just change the tag without encapsulating the selection.
+    if (!isContentToHighlight(ed)) {
+        ed.selection.setContent('{mlang ' + iso + '}' + text + '{mlang}');
+        return;
+    }
+    // Syntax highlighting is on. Check if we are on a special span that encapsulates the language tags. Search
+    // for the start span tag.
+    const span = _get_highlight_node_from_select(ed, 'begin');
+    // If we have a span, then it's the opening tag, and we just replace this one with the new iso.
+    if (!isNull(span)) {
+        ed.dom.setOuterHTML(span, _span_multilang_begin.replace(new RegExp('%lang', 'g'), iso));
+        return;
+    }
+    // Not inside a lang tag, insert a new opening and closing tag with the selection inside.
+    const newtext = _span_multilang_begin.replace(new RegExp('%lang', 'g'), iso) + text + _span_multilang_end;
+    ed.selection.setContent(newtext);
 };
 
 
@@ -156,5 +219,6 @@ export {
     onInit,
     onBeforeGetContent,
     onPreProcess,
+    onDelete,
     applyLanguage
 };
