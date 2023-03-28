@@ -26,8 +26,6 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require(dirname(__FILE__) . '/default-css.php');
-
 $ADMIN->add('editortiny', new admin_category('tiny_multilang2', new lang_string('pluginname', 'tiny_multilang2')));
 
 $settings = new admin_settingpage('tiny_multilang2_settings', new lang_string('settings', 'tiny_multilang2'));
@@ -43,7 +41,7 @@ if ($ADMIN->fulltree) {
         'tiny_multilang2/highlight_css',
         get_string('highlightcss', 'tiny_multilang2'),
         get_string('highlightcss_desc', 'tiny_multilang2'),
-        $multilang2defaultcss,
+        \tiny_multilang2\plugininfo::get_default_css(),
         PARAM_RAW
     ));
 }

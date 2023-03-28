@@ -126,12 +126,28 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
         if ($config['highlight']) {
             $css = trim(get_config('core', 'highlight_css'));
             if (empty($css)) {
-                require(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'default-css.php');
-                $css = $multilang2defaultcss;
+                $css = self::get_default_css();
             }
             $config['css'] = $css;
         }
 
         return $config;
     }
+
+    /**
+     * Return the default css for highlighting {lang} tags when tiny_multilang2 | highlight is
+     * set to true.
+     * @return string
+     */
+    public static function get_default_css(): string {
+        return '
+            .multilang-begin, .multilang-end {
+                outline: 1px dotted;
+                padding: 0.1em;
+                margin: 0em 0.1em;
+                background-color: #ffffaa;
+            }
+        ';
+    }
+
 }
