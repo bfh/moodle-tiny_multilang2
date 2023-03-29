@@ -30,7 +30,7 @@
 
 require_once __DIR__ . '/../../../../tests/behat/behat_editor_tiny.php';
 
-class behat_editor_tiny_mutlilang extends behat_editor_tiny {
+class behat_editor_tiny_multilang extends behat_editor_tiny {
 
     /**
      * Click on a button for the specified TinyMCE editor.
