@@ -87,11 +87,12 @@ const _get_highlight_node_from_select = function(ed, search) {
     ed.dom.getParents(ed.selection.getStart(), elm => {
         // Are we in a span that highlights the lang tag.
         if (!isNull(elm.classList)) {
-            // If we are on a opening/closing lang tag, we need to search for the corresponding opening/closing tag.
+            // If we are on an opening/closing lang tag, we need to search for the corresponding opening/closing tag.
             const pair = search === 'begin' ? 'end' : 'begin';
             if (elm.classList.contains('multilang-' + pair)) {
                 span = elm;
                 do {
+                    // If we look for begin, go back siblings, otherwise look fnext siblings until end is found.
                     span = search === 'begin' ? span.previousSibling : span.nextSibling;
                 } while (!isNull(span) && (isNull(span.classList) || !span.classList.contains('multilang-' + search)));
             } else if (elm.classList.contains('multilang-' + search)) {
