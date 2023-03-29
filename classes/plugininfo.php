@@ -112,7 +112,7 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
             foreach ($langs as $iso => $label) {
                 $config['languages'][] = [
                     'iso' => $iso,
-                    'label' => $label,
+                    'label' => str_replace(["\xe2\x80\x8e", "\xe2\x80\x8f"], '', $label),
                 ];
             }
             $config['languages'][] = [
