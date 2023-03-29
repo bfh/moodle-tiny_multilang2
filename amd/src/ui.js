@@ -154,8 +154,8 @@ const onPreProcess = function(ed, node) {
 
 /**
  * Check for key press <del> when something is deleted. If that happens inside a highlight span
- * tag, then remove this tag and the corresponding that that open/closes this lang tag.
- * @param {tinymec.Editor} ed
+ * tag, then remove this tag and the corresponding that open/closes this lang tag.
+ * @param {tinymce.Editor} ed
  * @param {Object} event
  */
 const onDelete = function (ed, event) {
@@ -165,6 +165,8 @@ const onDelete = function (ed, event) {
     // Key <del> was pressed, to delete some content. Check if we are inside a span for the lang.
     const begin = _get_highlight_node_from_select(ed, 'begin');
     const end = _get_highlight_node_from_select(ed, 'end');
+    // Only if both, start and end tag are found, then delete the nodes here and prevent the default handling
+    // because the stuff to be deleted is already gone.
     if (!isNull(begin) && !isNull(end)) {
         event.preventDefault();
         ed.dom.remove(begin);
@@ -173,7 +175,7 @@ const onDelete = function (ed, event) {
 };
 
 /**
- * The action when a language icon or menu entry is clicked. This adds the multilang tags at the current content
+ * The action when a language icon or menu entry is clicked. This adds the {mlang} tags at the current content
  * position or around the selection.
  * @param {tinymce.Editor} ed
  * @param {string} iso
