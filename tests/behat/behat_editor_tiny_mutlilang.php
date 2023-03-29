@@ -74,6 +74,9 @@ class behat_editor_tiny_multilang extends behat_editor_tiny {
 
     /**
      * Select the first child of an element type/index for the specified TinyMCE editor.
+     * Note that this works only if the content is plain text without formatting. Otherwise, the first child
+     * selects the part until the next sibling that would be a formatting node such as bold, italics etc. Also,
+     * a linebreak (<br/>) intercepts the selection.
      *
      * @When /^I select the inner "(?P<textlocator_string>(?:[^"]|\\")*)" element in position "(?P<position_int>(?:[^"]|\\")*)" of the "(?P<locator_string>(?:[^"]|\\")*)" TinyMCE editor$/
      * @param string $textlocator The type of element to select (for example `p` or `span`)
