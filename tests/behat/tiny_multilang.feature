@@ -2,7 +2,7 @@
 Feature: Tiny editor multilang plugin
   To put content in Tiny in different languages, I need to use the mlang button to encapsulate the text in language tags.
 
-  Background: Set a text in english
+  Background: I login as admin and add a text to the description with two paragraphs.
     Given the following config values are set as admin:
       | requiremultilang2 | 0 | tiny_multilang2 |
       | highlight | 1 | tiny_multilang2 |
@@ -17,17 +17,16 @@ Feature: Tiny editor multilang plugin
     Then I should see "Some plain text"
     And I should see "Ein anderer Text"
 
-  Scenario:
+  Scenario: I login as admin and add a language tag at the beginning of the description.
     Given I log in as "admin"
     And I open my profile in edit mode
     And I wait until the page is ready
-    #And I select the "p" element in position "2" of the "Description" TinyMCE editor
     And I click on the "Format > Language > English (en)" submenu item for the "Description" TinyMCE editor
     And I press "Update profile"
     Then I should see "{mlang en} {mlang}Some plain text"
     And I should see "Ein anderer Text"
 
-  Scenario:
+  Scenario: I login as admin and select the mlang tag and hit the delete key to remove it.
     Given I log in as "admin"
     And I open my profile in edit mode
     And I wait until the page is ready
@@ -35,9 +34,9 @@ Feature: Tiny editor multilang plugin
     And I press the delete key
     And I press "Update profile"
     Then I should see "Some plain text"
-    And I should not see "{mlang de}"
+    And I should not see "{mlang en}"
 
-  Scenario:
+  Scenario: I login as admin and select the second paragraph and add a language tag around it.
     Given I log in as "admin"
     And I open my profile in edit mode
     And I wait until the page is ready
