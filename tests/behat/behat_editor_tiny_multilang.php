@@ -28,7 +28,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once __DIR__ . '/../../../../tests/behat/behat_editor_tiny.php';
+require_once(__DIR__ . '/../../../../tests/behat/behat_editor_tiny.php');
 
 class behat_editor_tiny_multilang extends behat_editor_tiny {
 
@@ -97,5 +97,4 @@ class behat_editor_tiny_multilang extends behat_editor_tiny {
 
         $this->execute_javascript_for_editor($editorid, $js);
     }
-
 }
