@@ -1,7 +1,7 @@
 TinyMCE multilanguage plugin
 ============================
 
-![Release](https://img.shields.io/badge/release-v0.1.0-blue.svg) ![Supported](https://img.shields.io/badge/supported-4.1%2C%204.2-green.svg)
+![Release](https://img.shields.io/badge/release-v0.2.0-blue.svg) ![Supported](https://img.shields.io/badge/supported-4.1%2C%204.2-green.svg)
 
 This plugin will make the creation of multilingual contents on Moodle much easier with the TinyMCE editor.
 
@@ -14,11 +14,11 @@ select a language. Clicking on a language entry adds a language opening and clos
 cursor position. If there is a selection then the language tags are places around the selection. In case you use the
 highlighting option and see the yellow language tags, you may click one of these tags then select a new language
 from the menu and that will change the language of the existing tag. You may also remove it by
-hitting the backspace or delete key. This will remove the tag and it's counterpart in case the formatting is correct.
+hitting the backspace or delete key. This will remove the tag, and it's counterpart in case the formatting is correct.
 
 ## Current version
 
-The latest release is v0.2.0 (build 2023032900) for Moodle 4.x
+The latest release is v0.2.0 (build 2023032900) for Moodle 4.1 and newer.
 
 ## Requirements
 The plugin [filter_multilang2](https://github.com/iarenaza/moodle-filter_multilang2) must be installed and enabled.
