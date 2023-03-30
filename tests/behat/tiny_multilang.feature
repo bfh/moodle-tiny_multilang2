@@ -25,24 +25,20 @@ Feature: Tiny editor multilang plugin
     And I press "Update profile"
     Then I should see "{mlang en} {mlang}Some plain text"
     And I should see "Ein anderer Text"
+    And I should not see "Ein anderer Text{mlang}"
 
-  Scenario: I login as admin and select the mlang tag and hit the delete key to remove it.
+  Scenario: I login as admin and and and later change the language of the first paragraph.
     Given I log in as "admin"
     And I open my profile in edit mode
     And I wait until the page is ready
-    And I select the "span" element in position "0" of the "Description" TinyMCE editor
-    And I press the delete key
+    And I select the inner "p" element in position "0" of the "Description" TinyMCE editor
+    And I click on the "Format > Language > English (en)" submenu item for the "Description" TinyMCE editor
     And I press "Update profile"
-    Then I should see "Some plain text"
+    Then I should see "{mlang en}Some plain text{mlang}"
+    And I open my profile in edit mode
+    And I wait until the page is ready
+    And I select the "span" element in position "1" of the "Description" TinyMCE editor
+    And I click on the "Format > Language > Fallback (other)" submenu item for the "Description" TinyMCE editor
+    And I press "Update profile"
+    Then I should see "{mlang other}Some plain text{mlang}"
     And I should not see "{mlang en}"
-
-  Scenario: I login as admin and select the second paragraph and add a language tag around it.
-    Given I log in as "admin"
-    And I open my profile in edit mode
-    And I wait until the page is ready
-    And I select the inner "p" element in position "1" of the "Description" TinyMCE editor
-    And I click on the "Format > Language > Deutsch (de)" submenu item for the "Description" TinyMCE editor
-    And I press "Update profile"
-    Then I should see "Some plain text"
-    And I should see "{mlang de}Ein anderer Text{mlang}"
-
