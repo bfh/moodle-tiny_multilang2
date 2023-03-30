@@ -159,7 +159,7 @@ const onPreProcess = function(ed, node) {
  * @param {Object} event
  */
 const onDelete = function (ed, event) {
-    if (event.isComposing || event.keyCode !== 46 || !isContentToHighlight(ed)) {
+    if (event.isComposing || (event.keyCode !== 46 && event.keyCode !== 8) || !isContentToHighlight(ed)) {
         return;
     }
     // Key <del> was pressed, to delete some content. Check if we are inside a span for the lang.
