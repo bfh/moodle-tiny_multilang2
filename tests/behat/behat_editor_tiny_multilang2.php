@@ -15,8 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * TinyMCE custom steps definitions for the multilang plugin. It's
- * basically all what the TinyMCE steps provide, but with this extensions:
+ * TinyMCE custom steps definitions for the multilang plugin.
+ *
+ * It's basically all what the TinyMCE steps provide, but with this extensions:
  * - New step to select the inner text of an element, e.g. the paragraph without
  *   the paragraph tags.
  * - Menu items can have sub items that need to be clicked as well. In this case
@@ -30,12 +31,17 @@
 
 require_once(__DIR__ . '/../../../../tests/behat/behat_editor_tiny.php');
 
-class behat_editor_tiny_multilang extends behat_editor_tiny {
+/**
+ * Extends general TinyMCE test to test the tiny_multilang2 plugin.
+ */
+class behat_editor_tiny_multilang2 extends behat_editor_tiny {
 
     /**
      * Click on a button for the specified TinyMCE editor.
      *
+     * phpcs:disable
      * @When /^I click on the "(?P<menuitem_string>(?:[^"]|\\")*)" submenu item for the "(?P<locator_string>(?:[^"]|\\")*)" TinyMCE editor$/
+     * phpcs:enable
      *
      * @param string $menuitem The label of the menu item
      * @param string $locator The locator for the editor
@@ -78,7 +84,10 @@ class behat_editor_tiny_multilang extends behat_editor_tiny {
      * selects the part until the next sibling that would be a formatting node such as bold, italics etc. Also,
      * a linebreak (<br/>) intercepts the selection.
      *
+     * phpcs:disable
      * @When /^I select the inner "(?P<textlocator_string>(?:[^"]|\\")*)" element in position "(?P<position_int>(?:[^"]|\\")*)" of the "(?P<locator_string>(?:[^"]|\\")*)" TinyMCE editor$/
+     * phpcs:enable
+     *
      * @param string $textlocator The type of element to select (for example `p` or `span`)
      * @param int $position The zero-indexed position
      * @param string $locator The editor to select within

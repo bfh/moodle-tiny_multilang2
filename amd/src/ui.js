@@ -27,13 +27,13 @@ import {getHighlightCss, isContentToHighlight} from './options';
 
 
 // This class inside a <span> identified the {mlang} tag that is encapsulated in a span.
-const _span_class = 'class="multilang-begin mceNonEditable"';
+const spanClass = 'class="multilang-begin mceNonEditable"';
 // This is the <span> element with the data attribute.
-const _span_fixed_attrs = '<span ' + _span_class + ' data-mce-contenteditable="false"';
+const spanFixedAttrs = '<span ' + spanClass + ' data-mce-contenteditable="false"';
 // The begin span needs the language attributes inside the span and the mlang attribute.
-const _span_multilang_begin = _span_fixed_attrs + ' lang="%lang" xml:lang="%lang">{mlang %lang}</span>';
+const spanMultilangBegin = spanFixedAttrs + ' lang="%lang" xml:lang="%lang">{mlang %lang}</span>';
 // The end span doesn't need information about the used language.
-const _span_multilang_end = _span_fixed_attrs.replace('begin', 'end') + '>{mlang}</span>';
+const spanMultilangEnd = spanFixedAttrs.replace('begin', 'end') + '>{mlang}</span>';
 // Helper functions
 const trim = v => v.toString().replace(/^\s+/, '').replace(/\s+$/, '');
 const isNull = a => a === null || a === undefined;
@@ -42,20 +42,21 @@ const isNull = a => a === null || a === undefined;
  * Convert {mlang xx} and {mlang} strings to spans, so we can style them visually.
  * Remove superflous whitespace while at it.
  * @param {tinymce.Editor} ed
+ * @return {string}
  */
-const _add_visual_styling = function(ed) {
+const addVisualStyling = function(ed) {
     let content = ed.getContent();
 
     // Do not use a variable whether text is already highlighted, do a check for the existing class
     // because this is safe for many tiny element windows at one page.
-    if (content.indexOf(_span_class) !== -1) {
+    if (content.indexOf(spanClass) !== -1) {
         return content;
     }
 
     content = content.replace(new RegExp('{\\s*mlang\\s+([^}]+?)\\s*}', 'ig'), function(match, p1) {
-        return _span_multilang_begin.replace(new RegExp('%lang', 'g'), p1);
+        return spanMultilangBegin.replace(new RegExp('%lang', 'g'), p1);
     });
-    content = content.replace(new RegExp('{\\s*mlang\\s*}', 'ig'), _span_multilang_end);
+    content = content.replace(new RegExp('{\\s*mlang\\s*}', 'ig'), spanMultilangEnd);
 
     return content;
 };
@@ -65,8 +66,8 @@ const _add_visual_styling = function(ed) {
  * Also make sure we lowercase the multilang 'tags'
  * @param {tinymce.Editor} ed
  */
-const _remove_visual_styling = function(ed) {
-    ['begin', 'end'].forEach(function (t) {
+const removeVisualStyling = function(ed) {
+    ['begin', 'end'].forEach(function(t) {
         let nodes = ed.dom.select('span.multilang-' + t);
         for (let n = 0, l = nodes.length; n < l; n++) {
             const span = nodes[n];
@@ -81,8 +82,9 @@ const _remove_visual_styling = function(ed) {
  * search param.
  * @param {tinymce.Editor} ed
  * @param {string} search
+ * @return {Node|null} The encapsulating span tag if found.
  */
-const _get_highlight_node_from_select = function(ed, search) {
+const getHighlightNodeFromSelect = function(ed, search) {
     let span;
     ed.dom.getParents(ed.selection.getStart(), elm => {
         // Are we in a span that highlights the lang tag.
@@ -111,7 +113,7 @@ const _get_highlight_node_from_select = function(ed, search) {
 const onInit = function(ed) {
     if (isContentToHighlight(ed)) {
         ed.dom.addStyle(getHighlightCss(ed));
-        ed.setContent(_add_visual_styling(ed));
+        ed.setContent(addVisualStyling(ed));
     }
 };
 
@@ -127,14 +129,14 @@ const onBeforeGetContent = function(ed, content) {
         // source code dialog view, make sure we re-add the visual styling.
         var onClose = function(ed) {
             ed.off('close', onClose);
-            ed.setContent(_add_visual_styling(ed));
+            ed.setContent(addVisualStyling(ed));
         };
         ed.on('CloseWindow', () => {
             onClose(ed);
         });
 
         if (isContentToHighlight(ed)) {
-            _remove_visual_styling(ed);
+            removeVisualStyling(ed);
         }
     }
 };
@@ -147,7 +149,7 @@ const onBeforeGetContent = function(ed, content) {
 const onPreProcess = function(ed, node) {
     if (typeof node.save !== 'undefined' && node.save === true) {
         if (isContentToHighlight(ed)) {
-            _remove_visual_styling(ed);
+            removeVisualStyling(ed);
         }
     }
 };
@@ -158,13 +160,13 @@ const onPreProcess = function(ed, node) {
  * @param {tinymce.Editor} ed
  * @param {Object} event
  */
-const onDelete = function (ed, event) {
+const onDelete = function(ed, event) {
     if (event.isComposing || (event.keyCode !== 46 && event.keyCode !== 8) || !isContentToHighlight(ed)) {
         return;
     }
     // Key <del> was pressed, to delete some content. Check if we are inside a span for the lang.
-    const begin = _get_highlight_node_from_select(ed, 'begin');
-    const end = _get_highlight_node_from_select(ed, 'end');
+    const begin = getHighlightNodeFromSelect(ed, 'begin');
+    const end = getHighlightNodeFromSelect(ed, 'end');
     // Only if both, start and end tag are found, then delete the nodes here and prevent the default handling
     // because the stuff to be deleted is already gone.
     if (!isNull(begin) && !isNull(end)) {
@@ -190,7 +192,7 @@ const applyLanguage = function(ed, iso) {
     if (trim(text) === '') {
         let newtext;
         if (isContentToHighlight(ed)) {
-            newtext = _span_multilang_begin.replace(new RegExp('%lang', 'g'), iso) + ' ' + _span_multilang_end;
+            newtext = spanMultilangBegin.replace(new RegExp('%lang', 'g'), iso) + ' ' + spanMultilangEnd;
         } else {
             newtext = '{mlang ' + iso + '}' + ' ' + '{mlang}';
         }
@@ -206,14 +208,14 @@ const applyLanguage = function(ed, iso) {
     }
     // Syntax highlighting is on. Check if we are on a special span that encapsulates the language tags. Search
     // for the start span tag.
-    const span = _get_highlight_node_from_select(ed, 'begin');
+    const span = getHighlightNodeFromSelect(ed, 'begin');
     // If we have a span, then it's the opening tag, and we just replace this one with the new iso.
     if (!isNull(span)) {
-        ed.dom.setOuterHTML(span, _span_multilang_begin.replace(new RegExp('%lang', 'g'), iso));
+        ed.dom.setOuterHTML(span, spanMultilangBegin.replace(new RegExp('%lang', 'g'), iso));
         return;
     }
     // Not inside a lang tag, insert a new opening and closing tag with the selection inside.
-    const newtext = _span_multilang_begin.replace(new RegExp('%lang', 'g'), iso) + text + _span_multilang_end;
+    const newtext = spanMultilangBegin.replace(new RegExp('%lang', 'g'), iso) + text + spanMultilangEnd;
     ed.selection.setContent(newtext);
 };
 

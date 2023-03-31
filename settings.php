@@ -17,7 +17,7 @@
 /**
  * Multi-language integration settings.
  *
- * @package   tinymce_multilang2
+ * @package   tiny_multilang2
  * @author    Iñaki Arenaza <iarenaza@mondragon.edu>
  * @author    Stephan Robotta <stephan.robotta@bfh.ch>
  * @copyright 2015 onwards Iñaki Arenaza & Mondragon Unibertsitatea

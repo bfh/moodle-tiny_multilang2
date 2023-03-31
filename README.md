@@ -3,13 +3,13 @@ TinyMCE multilanguage plugin
 
 [![Moodle Plugin CI](https://github.com/bfh/moodle-tiny_multilang2/workflows/Moodle%20Plugin%20CI/badge.svg?branch=master)](https://github.com/bfh/moodle-tiny_multilang2/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amaster)
 ![Release](https://img.shields.io/badge/release-v0.2.0-blue.svg)
-![Supported](https://img.shields.io/badge/supported-4.1%2C%204.2-green.svg)
+![Supported](https://img.shields.io/badge/supported-4.1-green.svg)
 
 This plugin will make the creation of multilingual contents on Moodle much easier with the TinyMCE editor.
 
 The plugin is developed to work with [Iñaki Arenaza's multilang2 filter](https://github.com/iarenaza/moodle-filter_multilang2), and this plugin is the adaption 
 on [his plugin for TinyMCE editor](https://github.com/iarenaza/moodle-tinymce_moodlelang2) and will work with TinyMCE 6
-that is included in Moodle 4.x.
+that is included in Moodle ≥ 4.1.
 
 After the installation there is a new Button (with a globe icon) and a menu entry in the Format section where you can
 select a language. Clicking on a language entry adds a language opening and closing tag to your text at the current
@@ -36,5 +36,5 @@ The plugin [filter_multilang2](https://github.com/iarenaza/moodle-filter_multila
 ## Troubleshooting
 
 If the language selection does not appear in the editor:
- - Check that the multilang filter is installed and enabled.
+ - Check that the multilang2 filter is installed and enabled.
  - Check that your site has at least two languages installed.

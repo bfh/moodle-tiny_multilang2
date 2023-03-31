@@ -35,6 +35,8 @@ use editor_tiny\plugin_with_configuration;
 class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_buttons, plugin_with_configuration {
 
     /**
+     * Check if user has sufficient rights to use the plugin.
+     *
      * @param context $context
      * @param array $options
      * @param array $fpoptions
