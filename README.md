@@ -1,7 +1,9 @@
 TinyMCE multilanguage plugin
 ============================
 
-![Release](https://img.shields.io/badge/release-v0.2.0-blue.svg) ![Supported](https://img.shields.io/badge/supported-4.1%2C%204.2-green.svg)
+[![Moodle Plugin CI](https://github.com/bfh/moodle-tiny_multilang2/workflows/Moodle%20Plugin%20CI/badge.svg?branch=master)](https://github.com/bfh/moodle-tiny_multilang2/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amaster)
+![Release](https://img.shields.io/badge/release-v0.2.0-blue.svg)
+![Supported](https://img.shields.io/badge/supported-4.1%2C%204.2-green.svg)
 
 This plugin will make the creation of multilingual contents on Moodle much easier with the TinyMCE editor.
 
