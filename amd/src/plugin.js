@@ -30,7 +30,7 @@ import {getSetup as getCommandSetup} from './commands';
 import * as Configuration from './configuration';
 import {register as registerOptions} from './options';
 
-// Setup the tiny_bfhfontcolor Plugin.
+// Setup the tiny_multilang2 plugin.
 export default new Promise(async(resolve) => {
     // Note: The PluginManager.add function does not support asynchronous configuration.
     // Perform any asynchronous configuration here, and then call the PluginManager.add function.
