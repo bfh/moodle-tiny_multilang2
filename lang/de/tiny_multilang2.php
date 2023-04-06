@@ -46,6 +46,7 @@ $string['requiremultilang2'] = 'Benötigt Multi-Language Content (v2) Filter';
 $string['requiremultilang2_desc'] = 'Wenn aktiviert, wird das Menü und der Button im Editor nur dann angezeigt, wenn der Multi-Language Content (v2) Filter aktiv ist.';
 $string['showalllangs'] = 'Zeige alle Sprachen';
 $string['showalllangs_desc'] = 'Wenn aktiviert, werden im Editor alle Sprachen angezeigt, die von Moodle unterstützt werden. Wenn nicht aktivert, werden nur die installierten und aktiven Sprachen angezeigt.';
+$string['privacy:metadata'] = 'Das Tiny Multi-Language Content (v2) Plugin speichert keine personenbezogenen Daten.';
 
 /* All lang strings used from TinyMCE JavaScript code must be named 'pluginname:stringname', no need to create langs/en_dlg.js */
 $string['multilang2:desc'] = 'Unterstützung zum Hinzufügen von sprachabhänigem Inhalt (der Multi-Language Content (v2) filter muß aktiviert sein)';

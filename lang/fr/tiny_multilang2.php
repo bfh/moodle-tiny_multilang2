@@ -46,6 +46,7 @@ $string['requiremultilang2'] = 'Exige le filtre Contenu multilingue (v2)';
 $string['requiremultilang2_desc'] = 'Si activé, le menu déroulant des langues sera visible uniquement lorsque le filtre Contenu multilingue (v2) est activé.';
 $string['showalllangs'] = 'Afficher toutes les langues';
 $string['showalllangs_desc'] = 'Si activé, le menu déroulant des langues contiendra toutes les langues supporté dans Moodle. Si pas activé, seules les langues installées et activées apparaitront.';
+$string['privacy:metadata'] = 'Tiny Contenu  multilingue (v2) ne stocke aucune donnée personnelle.';
 
 /* All lang strings used from TinyMCE JavaScript code must be named 'pluginname:stringname', no need to create langs/en_dlg.js */
 $string['multilang2:desc'] = 'Aide à ajouter du contenu multilingue (le filtre Contenu multilingue (v2) doit être activé)';
