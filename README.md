@@ -20,7 +20,7 @@ hitting the backspace or delete key. This will remove the tag, and it's counterp
 
 ## Current version
 
-The latest release is v0.2.0 (build 2023032900) for Moodle 4.1 and newer.
+The latest release is v0.2.1 (build 2023040600) for Moodle 4.1 and newer.
 
 ## Requirements
 The plugin [filter_multilang2](https://github.com/iarenaza/moodle-filter_multilang2) must be installed and enabled.
