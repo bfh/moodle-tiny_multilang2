@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['helplinktext'] = 'Multi-Language Content (v2)';
+$string['highlight'] = 'Highlight delimiters';
+$string['highlight_desc'] = 'Visually highlight the multi-language content delimiters (i.e., {mlang XX} and {mlang}) in the WYSIWYG editor';
 $string['highlightcss'] = 'CSS for language tag';
 $string['highlightcss_desc'] = "CSS used to highlight the multi-language content delimiters.
 
@@ -38,15 +41,13 @@ If you want to display the language for the multilang blocks, you can use someth
 }
 </pre>
 ";
-$string['highlight'] = 'Highlight delimiters';
-$string['highlight_desc'] = 'Visually highlight the multi-language content delimiters (i.e., {mlang XX} and {mlang}) in the WYSIWYG editor';
 $string['pluginname'] = 'Multi-Language Content (v2)';
-$string['settings'] = 'Tiny Multi-Language Content (v2) settings';
+$string['privacy:metadata'] = 'The Tiny Multi-Language Content (v2) plugin does not store any personal data.';
 $string['requiremultilang2'] = 'Require Multi-Language Content (v2) filter';
 $string['requiremultilang2_desc'] = 'If enabled, the language drop down menu is visible only when the Multi-Language Content (v2) filter is enabled.';
+$string['settings'] = 'Tiny Multi-Language Content (v2) settings';
 $string['showalllangs'] = 'Show all languages';
 $string['showalllangs_desc'] = 'If enabled, the language drop down menu will contain all the languages Moodle supports. If not, only the installed and enabled languages will be shown.';
-$string['privacy:metadata'] = 'The Tiny Multi-Language Content (v2) plugin does not store any personal data.';
 
 /* All lang strings used from TinyMCE JavaScript code must be named 'pluginname:stringname', no need to create langs/en_dlg.js */
 $string['multilang2:desc'] = 'Helps adding multilingual content (you need the Multi-Language Content (v2) filter enabled)';
