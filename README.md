@@ -22,7 +22,7 @@ hitting the backspace or delete key. This will remove the tag, and it's counterp
 
 ## Current version
 
-The latest release is v0.2.1 (build 2023040600) for Moodle 4.1 and newer.
+The latest release is v0.2.2 (build 2023050200) for Moodle 4.1 and newer.
 
 ## Requirements
 The plugin [filter_multilang2](https://github.com/iarenaza/moodle-filter_multilang2) must be installed and enabled.
@@ -40,3 +40,16 @@ The plugin [filter_multilang2](https://github.com/iarenaza/moodle-filter_multila
 If the language selection does not appear in the editor:
  - Check that the multilang2 filter is installed and enabled.
  - Check that your site has at least two languages installed.
+
+## Version History
+
+### 0.2.2
+
+- Lift software maturity level to STABLE.
+- Adapt CI to test against Moodle 4.2.
+- Fix issue [Probably, $string['helplinktext'] = 'Multi-Language Content (v2)'; is needed in the lang strings](https://github.com/bfh/moodle-tiny_multilang2/issues/1).
+- Add version history to README file.
+
+### 0.2.1
+
+Initial release
