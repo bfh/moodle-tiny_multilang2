@@ -1,11 +1,11 @@
 TinyMCE multilanguage plugin
 ============================
 
-![Release](https://img.shields.io/badge/Release-0.2.1-blue.svg)
+![Release](https://img.shields.io/badge/Release-0.2.3-blue.svg)
 [![Moodle Plugin CI](https://github.com/bfh/moodle-tiny_multilang2/workflows/Moodle%20Plugin%20CI/badge.svg?branch=master)](https://github.com/bfh/moodle-tiny_multilang2/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amaster)
 ![Supported](https://img.shields.io/badge/Moodle-4.1+-orange.svg)
-[![License GPL-3.0](https://img.shields.io/github/license/bfh/moodle-tiny_fontcolor?color=lightgrey)](https://github.com/bfh/moodle-tiny_fontcolor/blob/main/LICENSE)
-[![GitHub contributors](https://img.shields.io/github/contributors/bfh/moodle-tiny_fontcolor)](https://github.com/bfh/moodle-tiny_fontcolor/graphs/contributors)
+[![License GPL-3.0](https://img.shields.io/github/license/bfh/moodle-tiny_multilang2?color=lightgrey)](https://github.com/bfh/moodle-tiny_multilang2/blob/main/LICENSE)
+[![GitHub contributors](https://img.shields.io/github/contributors/bfh/moodle-tiny_multilang2)](https://github.com/bfh/moodle-tiny_multilang2/graphs/contributors)
 
 This plugin will make the creation of multilingual contents on Moodle much easier with the TinyMCE editor.
 
@@ -22,7 +22,7 @@ hitting the backspace or delete key. This will remove the tag, and it's counterp
 
 ## Current version
 
-The latest release is v0.2.2 (build 2023050200) for Moodle 4.1 and newer.
+The latest release is v0.2.3 (build 2023050300) for Moodle 4.1 and newer.
 
 ## Requirements
 The plugin [filter_multilang2](https://github.com/iarenaza/moodle-filter_multilang2) must be installed and enabled.
@@ -42,6 +42,10 @@ If the language selection does not appear in the editor:
  - Check that your site has at least two languages installed.
 
 ## Version History
+
+### 0.2.3
+
+- Fix links in README file and add license file.
 
 ### 0.2.2
 
