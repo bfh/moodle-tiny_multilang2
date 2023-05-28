@@ -81,6 +81,24 @@ export const getSetup = async() => {
             }))
         });
 
+        for (const lang of languageList) {
+            editor.ui.registry.addButton(component + '_' + lang.iso, {
+                text: lang.iso,
+                tooltip: lang.label,
+                onAction: () => {
+                    applyLanguage(editor, lang.iso);
+                }
+            });
+        }
+        editor.ui.registry.addContextToolbar(component, {
+            predicate: function (node) {
+                return node.classList.contains('multilang-begin') || node.classList.contains('multilang-end');
+            },
+            items: languageList.map((lang) => (component + '_' + lang.iso)).join(' '),
+            position: 'node',
+            scope: 'node'
+        });
+
         editor.on('init', () => {
             onInit(editor);
         });
