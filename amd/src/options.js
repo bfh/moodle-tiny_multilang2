@@ -27,6 +27,7 @@ import {getPluginOptionName} from 'editor_tiny/options';
 import {pluginName} from './common';
 
 const languages = getPluginOptionName(pluginName, 'languages');
+const fallbackspan = getPluginOptionName(pluginName, 'fallbackspantag');
 const highlight = getPluginOptionName(pluginName, 'highlight');
 const highlightcss = getPluginOptionName(pluginName, 'css');
 
@@ -39,6 +40,11 @@ export const register = (editor) => {
     editor.options.register(languages, {
         processor: 'Array',
         "default": [],
+    });
+
+    editor.options.register(fallbackspan, {
+        processor: 'boolean',
+        "default": false,
     });
 
     editor.options.register(highlight, {
@@ -59,6 +65,14 @@ export const register = (editor) => {
  * @returns {Array}
  */
 export const getLanguageList = (editor) => editor.options.get(languages);
+
+/**
+ * Get the defined option whether the classic <span class="multilang" lang="XX"> are supported as well.
+ *
+ * @param {tinymce.Editor} editor
+ * @returns {boolean}
+ */
+export const isFallbackSpanTag = (editor) => editor.options.get(fallbackspan);
 
 /**
  * Get the defined option whether to highlight the language dependent content blocks.

@@ -123,6 +123,7 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
             ];
         }
 
+        $config['fallbackspantag'] = (bool)get_config('tiny_multilang2', 'fallbackspantag');
         $config['highlight'] = (bool)get_config('tiny_multilang2', 'highlight');
 
         if ($config['highlight']) {

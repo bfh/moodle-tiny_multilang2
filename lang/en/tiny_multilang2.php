@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['fallbackspantag'] = 'Support &lt;span&gt; tags';
+$string['fallbackspantag_desc'] = 'In addition to the {mlang} syntax preserve the traditional &lt;span class="multilang"&gt; tags.';
 $string['helplinktext'] = 'Multi-Language Content (v2)';
 $string['highlight'] = 'Highlight delimiters';
 $string['highlight_desc'] = 'Visually highlight the multi-language content delimiters (i.e., {mlang XX} and {mlang}) in the WYSIWYG editor';

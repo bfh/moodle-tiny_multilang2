@@ -23,8 +23,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {getHighlightCss, isContentToHighlight} from './options';
-
+import {getHighlightCss, isContentToHighlight, isFallbackSpanTag} from './options';
 
 // This class inside a <span> identified the {mlang} tag that is encapsulated in a span.
 const spanClass = 'class="multilang-begin mceNonEditable"';
@@ -42,7 +41,7 @@ const isNull = a => a === null || a === undefined;
  * Convert {mlang xx} and {mlang} strings to spans, so we can style them visually.
  * Remove superflous whitespace while at it.
  * @param {tinymce.Editor} ed
- * @return {string}
+ * @return {void}
  */
 const addVisualStyling = function(ed) {
     let content = ed.getContent();
@@ -50,7 +49,7 @@ const addVisualStyling = function(ed) {
     // Do not use a variable whether text is already highlighted, do a check for the existing class
     // because this is safe for many tiny element windows at one page.
     if (content.indexOf(spanClass) !== -1) {
-        return content;
+        return;
     }
 
     content = content.replace(new RegExp('{\\s*mlang\\s+([^}]+?)\\s*}', 'ig'), function(match, p1) {
@@ -58,7 +57,23 @@ const addVisualStyling = function(ed) {
     });
     content = content.replace(new RegExp('{\\s*mlang\\s*}', 'ig'), spanMultilangEnd);
 
-    return content;
+    ed.setContent(content);
+
+    if (isFallbackSpanTag(ed)) {
+        let nodes = ed.dom.select('span.multilang');
+        for (let n = 0, l = nodes.length; n < l; n++) {
+            const span = nodes[n];
+            const innerHtml = spanMultilangBegin
+                .replace(new RegExp('%lang', 'g'), span.getAttribute('lang'))
+                .replace('mceNonEditable', 'fallback mceNonEditable')
+                .replace('<span', '<span contenteditable="false"')
+              + span.innerHTML
+              + spanMultilangEnd
+                .replace('mceNonEditable', 'fallback mceNonEditable')
+                .replace('<span', '<span contenteditable="false"');
+            ed.dom.setOuterHTML(span, innerHtml);
+        }
+    }
 };
 
 /**
@@ -68,10 +83,50 @@ const addVisualStyling = function(ed) {
  */
 const removeVisualStyling = function(ed) {
     ['begin', 'end'].forEach(function(t) {
-        let nodes = ed.dom.select('span.multilang-' + t);
-        for (let n = 0, l = nodes.length; n < l; n++) {
-            const span = nodes[n];
-            ed.dom.setOuterHTML(span, span.innerHTML.toLowerCase());
+        for (const span of ed.dom.select('span.multilang-' + t)) {
+            if (t === 'begin' && span.classList.contains('fallback')) {
+                // This placeholder tag was created from an oldstyle <span class="multilang"> tag.
+                let innerHTML = '';
+                let end = span;
+                let toRemove = [];
+                // Search the corresponding closing tag.
+                while (end) {
+                    end = end.nextSibling;
+                    if (isNull(end) || (!isNull(end.classList) && end.classList.contains('multilang-end'))) {
+                        if (!isNull(end)) {
+                            toRemove.push(end);
+                        }
+                        break;
+                    }
+                    // Sibling inside the tags need to be preserved, but moved to the innerHTML of the real
+                    // span tag. Therefore, collect the node conetens as string and remember the real nodes
+                    // to remove them later.
+                    if (end.nodeType === 3) {
+                        innerHTML += end.nodeValue;
+                    } else if (end.nodeType === 1) {
+                        innerHTML += end.outerHTML;
+                    }
+                    toRemove.push(end);
+                }
+                if (!isNull(end)) {
+                    // Extract the language from the {mlang XX} tag.
+                    const lang = span.innerHTML.match(new RegExp('{\\s*mlang\\s+([^}]+?)\\s*}', 'i'));
+                    if (lang) {
+                        // Create the new <span class="multilang"> tag with the content.
+                        ed.dom.setOuterHTML(
+                          span,
+                          '<span class="multilang" lang="' + lang[1] + '">' + innerHTML + '</span>'
+                        );
+                        // And remove the other siblings.
+                        for (end of toRemove) {
+                            ed.dom.remove(end);
+                        }
+                    }
+                }
+            } else {
+                // Normal placeholder tag, just restore the innerHTML that is {mlang XX} or {mlang}-
+                ed.dom.setOuterHTML(span, span.innerHTML.toLowerCase());
+            }
         }
     });
 };
@@ -113,7 +168,7 @@ const getHighlightNodeFromSelect = function(ed, search) {
 const onInit = function(ed) {
     if (isContentToHighlight(ed)) {
         ed.dom.addStyle(getHighlightCss(ed));
-        ed.setContent(addVisualStyling(ed));
+        addVisualStyling(ed);
     }
 };
 
@@ -129,7 +184,7 @@ const onBeforeGetContent = function(ed, content) {
         // source code dialog view, make sure we re-add the visual styling.
         var onClose = function(ed) {
             ed.off('close', onClose);
-            ed.setContent(addVisualStyling(ed));
+            addVisualStyling(ed);
         };
         ed.on('CloseWindow', () => {
             onClose(ed);
@@ -211,7 +266,11 @@ const applyLanguage = function(ed, iso) {
     const span = getHighlightNodeFromSelect(ed, 'begin');
     // If we have a span, then it's the opening tag, and we just replace this one with the new iso.
     if (!isNull(span)) {
-        ed.dom.setOuterHTML(span, spanMultilangBegin.replace(new RegExp('%lang', 'g'), iso));
+        let replacement = spanMultilangBegin.replace(new RegExp('%lang', 'g'), iso);
+        if (span.classList.contains('fallback')) {
+            replacement = replacement.replace('mceNonEditable', 'fallback mceNonEditable');
+        }
+        ed.dom.setOuterHTML(span, replacement);
         return;
     }
     // Not inside a lang tag, insert a new opening and closing tag with the selection inside.
