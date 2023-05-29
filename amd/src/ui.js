@@ -92,14 +92,16 @@ const removeVisualStyling = function(ed) {
                 // Search the corresponding closing tag.
                 while (end) {
                     end = end.nextSibling;
-                    if (isNull(end) || (!isNull(end.classList) && end.classList.contains('multilang-end'))) {
-                        if (!isNull(end)) {
-                            toRemove.push(end);
-                        }
+                    if (isNull(end)) { // Got a parent that does not exist. Stop here.
+                        break;
+                    }
+                    if (!isNull(end.classList) && end.classList.contains('multilang-end')) {
+                        // We found the multilang-end node, that needs to be removed, and also, we can stop here.
+                        toRemove.push(end);
                         break;
                     }
                     // Sibling inside the tags need to be preserved, but moved to the innerHTML of the real
-                    // span tag. Therefore, collect the node conetens as string and remember the real nodes
+                    // span tag. Therefore, collect the node content as string and remember the real nodes
                     // to remove them later.
                     if (end.nodeType === 3) {
                         innerHTML += end.nodeValue;
