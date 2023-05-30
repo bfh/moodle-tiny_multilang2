@@ -125,6 +125,7 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
 
         $config['fallbackspantag'] = (bool)get_config('tiny_multilang2', 'fallbackspantag');
         $config['highlight'] = (bool)get_config('tiny_multilang2', 'highlight');
+        $config['showalllangs'] = (bool)get_config('tiny_multilang2', 'showalllangs');
 
         if ($config['highlight']) {
             $css = trim(get_config('core', 'highlight_css'));

@@ -28,6 +28,7 @@ import {pluginName} from './common';
 
 const languages = getPluginOptionName(pluginName, 'languages');
 const fallbackspan = getPluginOptionName(pluginName, 'fallbackspantag');
+const showalllangs = getPluginOptionName(pluginName, 'showalllangs');
 const highlight = getPluginOptionName(pluginName, 'highlight');
 const highlightcss = getPluginOptionName(pluginName, 'css');
 
@@ -40,6 +41,11 @@ export const register = (editor) => {
     editor.options.register(languages, {
         processor: 'Array',
         "default": [],
+    });
+
+    editor.options.register(showalllangs, {
+        processor: 'boolean',
+        "default": false,
     });
 
     editor.options.register(fallbackspan, {
@@ -65,6 +71,14 @@ export const register = (editor) => {
  * @returns {Array}
  */
 export const getLanguageList = (editor) => editor.options.get(languages);
+
+/**
+ * Get the option whether to show all languages or not.
+ *
+ * @param {tinymce.Editor} editor
+ * @returns {boolean}
+ */
+export const showAllLanguages = (editor) => editor.options.get(showalllangs);
 
 /**
  * Get the defined option whether the classic <span class="multilang" lang="XX"> are supported as well.

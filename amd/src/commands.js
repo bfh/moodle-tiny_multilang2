@@ -23,7 +23,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {getLanguageList} from './options';
+import {getLanguageList, showAllLanguages} from './options';
 import {component} from './common';
 import {get_strings as getStrings} from 'core/str';
 import {applyLanguage, onInit, onBeforeGetContent, onPreProcess, onDelete} from './ui';
@@ -81,23 +81,27 @@ export const getSetup = async() => {
             }))
         });
 
-        for (const lang of languageList) {
-            editor.ui.registry.addButton(component + '_' + lang.iso, {
-                text: lang.iso,
-                tooltip: lang.label,
-                onAction: () => {
-                    applyLanguage(editor, lang.iso);
-                }
+        // Context menu with languages is shown only when showalllangs is set to false. Otherwise the
+        // List would be overwhelming.
+        if (!showAllLanguages(editor)) {
+            for (const lang of languageList) {
+                editor.ui.registry.addButton(component + '_' + lang.iso, {
+                    text: lang.iso,
+                    tooltip: lang.label,
+                    onAction: () => {
+                        applyLanguage(editor, lang.iso);
+                    }
+                });
+            }
+            editor.ui.registry.addContextToolbar(component, {
+                predicate: function (node) {
+                    return node.classList.contains('multilang-begin') || node.classList.contains('multilang-end');
+                },
+                items: languageList.map((lang) => (component + '_' + lang.iso)).join(' '),
+                position: 'node',
+                scope: 'node'
             });
         }
-        editor.ui.registry.addContextToolbar(component, {
-            predicate: function(node) {
-                return node.classList.contains('multilang-begin') || node.classList.contains('multilang-end');
-            },
-            items: languageList.map((lang) => (component + '_' + lang.iso)).join(' '),
-            position: 'node',
-            scope: 'node'
-        });
 
         editor.on('init', () => {
             onInit(editor);
