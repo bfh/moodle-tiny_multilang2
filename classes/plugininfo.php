@@ -105,6 +105,9 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
         // We need to pass the list of languages to tinymce.
         if (get_config('tiny_multilang2', 'showalllangs')) {
             $langs = get_string_manager()->get_list_of_languages();
+            foreach (\array_keys($langs) as $iso) {
+                $langs[$iso] .= ' (' . $iso . ')';
+            }
         } else {
             $langs = get_string_manager()->get_list_of_translations();
         }
