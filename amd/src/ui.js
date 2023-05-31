@@ -36,6 +36,8 @@ const spanMultilangEnd = spanFixedAttrs.replace('begin', 'end') + '>{mlang}</spa
 // Helper functions
 const trim = v => v.toString().replace(/^\s+/, '').replace(/\s+$/, '');
 const isNull = a => a === null || a === undefined;
+// Marker to remember when the blur event occurred.
+let isBlurred = false;
 
 /**
  * Convert {mlang xx} and {mlang} strings to spans, so we can style them visually.
@@ -206,11 +208,30 @@ const onBeforeGetContent = function(ed, content) {
  * Before saving and when the editor looses the focus, this event is triggered.
  * @param {tinymce.Editor} ed
  * @param {object} content
+ * @param {string} event
  */
-const onPreProcess = function(ed, content) {
+const onProcess = function(ed, content, event) {
     if (!isNull(content.save) && content.save === true && isContentToHighlight(ed)) {
-        removeVisualStyling(ed);
+        if (event === 'PostProcess') {
+            // When the blur event was triggered, the editor is still there, we need to reapply
+            // the previously removed styling. If this was a submit event, then do not reapply the
+            // styling to prevent that this is saved in the database.
+            if (isBlurred) {
+                ed.setContent(addVisualStyling(ed));
+                isBlurred = false;
+            }
+        } else {
+            removeVisualStyling(ed);
+        }
     }
+};
+
+
+/**
+ * Notice that when the editor content is blurred, because the focus left the editor window.
+ */
+const onBlur = function () {
+    isBlurred = true;
 };
 
 /**
@@ -286,7 +307,8 @@ const applyLanguage = function(ed, iso) {
 export {
     onInit,
     onBeforeGetContent,
-    onPreProcess,
+    onProcess,
+    onBlur,
     onDelete,
     applyLanguage
 };

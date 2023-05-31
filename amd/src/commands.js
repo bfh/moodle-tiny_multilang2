@@ -26,7 +26,7 @@
 import {getLanguageList, showAllLanguages} from './options';
 import {component} from './common';
 import {get_strings as getStrings} from 'core/str';
-import {applyLanguage, onInit, onBeforeGetContent, onPreProcess, onDelete} from './ui';
+import {applyLanguage, onInit, onBeforeGetContent, onProcess, onDelete, onBlur} from './ui';
 
 /**
  * Get the setup function for the button and the menu entry.
@@ -110,10 +110,16 @@ export const getSetup = async() => {
             onBeforeGetContent(editor, format);
         });
         editor.on('PreProcess', (format) => {
-            onPreProcess(editor, format);
+            onProcess(editor, format, 'PreProcess');
+        });
+        editor.on('PostProcess', (format) => {
+            onProcess(editor, format, 'PostProcess');
         });
         editor.on('keydown', (event) => {
             onDelete(editor, event);
+        });
+        editor.on('blur', () => {
+            onBlur();
         });
     };
 };
