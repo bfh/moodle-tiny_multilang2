@@ -109,8 +109,8 @@ export const getSetup = async() => {
         editor.on('BeforeGetContent', (format) => {
             onBeforeGetContent(editor, format);
         });
-        editor.on('PreProcess', (node) => {
-            onPreProcess(editor, node);
+        editor.on('PreProcess', (format) => {
+            onPreProcess(editor, format);
         });
         editor.on('keydown', (event) => {
             onDelete(editor, event);

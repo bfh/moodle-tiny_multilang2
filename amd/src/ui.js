@@ -26,9 +26,9 @@
 import {getHighlightCss, isContentToHighlight, isFallbackSpanTag} from './options';
 
 // This class inside a <span> identified the {mlang} tag that is encapsulated in a span.
-const spanClass = 'class="multilang-begin mceNonEditable"';
+const spanClass = 'multilang-begin mceNonEditable';
 // This is the <span> element with the data attribute.
-const spanFixedAttrs = '<span ' + spanClass + ' data-mce-contenteditable="false"';
+const spanFixedAttrs = '<span contenteditable="false" class="' + spanClass + '" data-mce-contenteditable="false"';
 // The begin span needs the language attributes inside the span and the mlang attribute.
 const spanMultilangBegin = spanFixedAttrs + ' lang="%lang" xml:lang="%lang">{mlang %lang}</span>';
 // The end span doesn't need information about the used language.
@@ -41,15 +41,18 @@ const isNull = a => a === null || a === undefined;
  * Convert {mlang xx} and {mlang} strings to spans, so we can style them visually.
  * Remove superflous whitespace while at it.
  * @param {tinymce.Editor} ed
- * @return {void}
+ * @param {string|null} content
+ * @return {string}
  */
-const addVisualStyling = function(ed) {
-    let content = ed.getContent();
+const addVisualStyling = function(ed, content) {
+    if (isNull(content)) {
+        content = ed.getContent();
+    }
 
     // Do not use a variable whether text is already highlighted, do a check for the existing class
     // because this is safe for many tiny element windows at one page.
     if (content.indexOf(spanClass) !== -1) {
-        return;
+        return content;
     }
 
     content = content.replace(new RegExp('{\\s*mlang\\s+([^}]+?)\\s*}', 'ig'), function(match, p1) {
@@ -57,23 +60,22 @@ const addVisualStyling = function(ed) {
     });
     content = content.replace(new RegExp('{\\s*mlang\\s*}', 'ig'), spanMultilangEnd);
 
-    ed.setContent(content);
-
-    if (isFallbackSpanTag(ed)) {
-        let nodes = ed.dom.select('span.multilang');
-        for (let n = 0, l = nodes.length; n < l; n++) {
-            const span = nodes[n];
-            const innerHtml = spanMultilangBegin
-                .replace(new RegExp('%lang', 'g'), span.getAttribute('lang'))
-                .replace('mceNonEditable', 'fallback mceNonEditable')
-                .replace('<span', '<span contenteditable="false"')
-              + span.innerHTML
-              + spanMultilangEnd
-                .replace('mceNonEditable', 'fallback mceNonEditable')
-                .replace('<span', '<span contenteditable="false"');
-            ed.dom.setOuterHTML(span, innerHtml);
-        }
+    if (!isFallbackSpanTag(ed)) {
+        return content;
     }
+    const dom = new DOMParser();
+    const doc = dom.parseFromString(content, 'text/html');
+    let nodes = doc.querySelectorAll('span.multilang');
+    for (const span of nodes) {
+        const newSpan = spanMultilangBegin
+            .replace(new RegExp('%lang', 'g'), span.getAttribute('lang'))
+            .replace('mceNonEditable', 'mceNonEditable fallback')
+          + span.innerHTML
+          + spanMultilangEnd
+            .replace('mceNonEditable', 'mceNonEditable fallback');
+        content = content.replace(span.outerHTML, newSpan);
+    }
+    return content;
 };
 
 /**
@@ -170,23 +172,25 @@ const getHighlightNodeFromSelect = function(ed, search) {
 const onInit = function(ed) {
     if (isContentToHighlight(ed)) {
         ed.dom.addStyle(getHighlightCss(ed));
-        addVisualStyling(ed);
+        ed.setContent(addVisualStyling(ed));
     }
 };
 
 /**
  * When the source code view dialogue is show, we must remove the highlight spans from the editor content
  * and also add them again when the dialogue is closed.
+ * Since this event is also triggered when the editor data is saved, we use this function to remove the
+ * highlighting content at that time.
  * @param {tinymce.Editor} ed
  * @param {object} content
  */
 const onBeforeGetContent = function(ed, content) {
-    if (typeof content.source_view !== 'undefined' && content.source_view === true) {
+    if (!isNull(content.source_view) && content.source_view === true) {
         // If the user clicks on 'Cancel' or the close button on the html
         // source code dialog view, make sure we re-add the visual styling.
         var onClose = function(ed) {
             ed.off('close', onClose);
-            addVisualStyling(ed);
+            ed.setContent(addVisualStyling(ed));
         };
         ed.on('CloseWindow', () => {
             onClose(ed);
@@ -199,15 +203,13 @@ const onBeforeGetContent = function(ed, content) {
 };
 
 /**
- * Add an observer to the onPreProcess event to remove the highlighting spans while saving the content.
+ * Before saving and when the editor looses the focus, this event is triggered.
  * @param {tinymce.Editor} ed
- * @param {Element} node
+ * @param {object} content
  */
-const onPreProcess = function(ed, node) {
-    if (typeof node.save !== 'undefined' && node.save === true) {
-        if (isContentToHighlight(ed)) {
-            removeVisualStyling(ed);
-        }
+const onPreProcess = function (ed, content) {
+    if (!isNull(content.save) && content.save === true && isContentToHighlight(ed)) {
+        removeVisualStyling(ed);
     }
 };
 
@@ -270,7 +272,7 @@ const applyLanguage = function(ed, iso) {
     if (!isNull(span)) {
         let replacement = spanMultilangBegin.replace(new RegExp('%lang', 'g'), iso);
         if (span.classList.contains('fallback')) {
-            replacement = replacement.replace('mceNonEditable', 'fallback mceNonEditable');
+            replacement = replacement.replace('mceNonEditable', 'mceNonEditable fallback');
         }
         ed.dom.setOuterHTML(span, replacement);
         return;
