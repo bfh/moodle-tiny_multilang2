@@ -230,7 +230,7 @@ const onProcess = function(ed, content, event) {
 /**
  * Notice that when the editor content is blurred, because the focus left the editor window.
  */
-const onBlur = function () {
+const onBlur = function() {
     isBlurred = true;
 };
 
