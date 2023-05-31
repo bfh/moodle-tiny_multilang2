@@ -94,7 +94,7 @@ export const getSetup = async() => {
                 });
             }
             editor.ui.registry.addContextToolbar(component, {
-                predicate: function (node) {
+                predicate: function(node) {
                     return node.classList.contains('multilang-begin') || node.classList.contains('multilang-end');
                 },
                 items: languageList.map((lang) => (component + '_' + lang.iso)).join(' '),

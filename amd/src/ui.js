@@ -207,7 +207,7 @@ const onBeforeGetContent = function(ed, content) {
  * @param {tinymce.Editor} ed
  * @param {object} content
  */
-const onPreProcess = function (ed, content) {
+const onPreProcess = function(ed, content) {
     if (!isNull(content.save) && content.save === true && isContentToHighlight(ed)) {
         removeVisualStyling(ed);
     }
