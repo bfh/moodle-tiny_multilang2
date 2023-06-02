@@ -57,17 +57,30 @@ const addVisualStyling = function(ed, content) {
         return content;
     }
 
+    // First look for any {mlang} tags in the content string and do a preg_replace with the corresponding
+    // <span> tag that encapsulated the {mlang} tag so that the {mlang} is highlighted.
     content = content.replace(new RegExp('{\\s*mlang\\s+([^}]+?)\\s*}', 'ig'), function(match, p1) {
         return spanMultilangBegin.replace(new RegExp('%lang', 'g'), p1);
     });
     content = content.replace(new RegExp('{\\s*mlang\\s*}', 'ig'), spanMultilangEnd);
 
+    // If we do not check for the traditional <span class="multilang"> tags, then we are done here.
     if (!isFallbackSpanTag(ed)) {
         return content;
     }
+    // Any <span class="multilang"> tag must be replaced with a <span clas="multilang-begin...>{mlang XX}</span>
+    // and the corresponding closing </span> must be replaced by <span class="multilang-end ...>{mlang}</span>.
+    // To handle this, we must convert the string into a DOMDocument so that any span.multilang tag can be searched
+    // and replaced.
     const dom = new DOMParser();
     const doc = dom.parseFromString(content, 'text/html');
-    let nodes = doc.querySelectorAll('span.multilang');
+    if (doc.children.length === 0) { // Should not happen, but anyway, keep the check.
+        return content;
+    }
+    const nodes = doc.querySelectorAll('span.multilang');
+    if (nodes.length === 0) {
+        return content;
+    }
     for (const span of nodes) {
         const newSpan = spanMultilangBegin
             .replace(new RegExp('%lang', 'g'), span.getAttribute('lang'))
@@ -75,9 +88,13 @@ const addVisualStyling = function(ed, content) {
           + span.innerHTML
           + spanMultilangEnd
             .replace('mceNonEditable', 'mceNonEditable fallback');
-        content = content.replace(span.outerHTML, newSpan);
+        // Insert the replacement string after the span tag itself by converting it into a html fragment.
+        span.insertAdjacentHTML('afterend', newSpan);
+        // Once the new tags are placed at the correct position, we can remove the original span tag.
+        span.remove();
     }
-    return content;
+    // Convert the DOMDocument into a string again.
+    return doc.getElementsByTagName('body')[0].innerHTML;
 };
 
 /**
