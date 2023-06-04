@@ -68,7 +68,7 @@ const addVisualStyling = function(ed, content) {
     if (!isFallbackSpanTag(ed)) {
         return content;
     }
-    // Any <span class="multilang"> tag must be replaced with a <span clas="multilang-begin...>{mlang XX}</span>
+    // Any <span class="multilang"> tag must be replaced with a <span class="multilang-begin...>{mlang XX}</span>
     // and the corresponding closing </span> must be replaced by <span class="multilang-end ...>{mlang}</span>.
     // To handle this, we must convert the string into a DOMDocument so that any span.multilang tag can be searched
     // and replaced.
