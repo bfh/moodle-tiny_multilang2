@@ -23,7 +23,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {getHighlightCss, isContentToHighlight, isFallbackSpanTag} from './options';
+import {getHighlightCss, isContentToHighlight, mlangFilterExists, isFallbackSpanTag} from './options';
 
 // This class inside a <span> identified the {mlang} tag that is encapsulated in a span.
 const spanClass = 'multilang-begin mceNonEditable';
@@ -33,9 +33,12 @@ const spanFixedAttrs = '<span contenteditable="false" class="' + spanClass + '" 
 const spanMultilangBegin = spanFixedAttrs + ' lang="%lang" xml:lang="%lang">{mlang %lang}</span>';
 // The end span doesn't need information about the used language.
 const spanMultilangEnd = spanFixedAttrs.replace('begin', 'end') + '>{mlang}</span>';
+// Fallback span that is used instead of the {mlang} annotation.
+const spanFallbackLang = '<span class="multilang" lang="%lang">';
 // Helper functions
 const trim = v => v.toString().replace(/^\s+/, '').replace(/\s+$/, '');
 const isNull = a => a === null || a === undefined;
+
 // Marker to remember when the blur event occurred.
 let isBlurred = false;
 
@@ -64,8 +67,9 @@ const addVisualStyling = function(ed, content) {
     });
     content = content.replace(new RegExp('{\\s*mlang\\s*}', 'ig'), spanMultilangEnd);
 
-    // If we do not check for the traditional <span class="multilang"> tags, then we are done here.
-    if (!isFallbackSpanTag(ed)) {
+    // If we have the multilang2 filter installed and wish not to check for the traditional
+    // <span class="multilang"> tags, then we are done here.
+    if (mlangFilterExists(ed) && !isFallbackSpanTag(ed)) {
         return content;
     }
     // Any <span class="multilang"> tag must be replaced with a <span class="multilang-begin...>{mlang XX}</span>
@@ -283,15 +287,21 @@ const applyLanguage = function(ed, iso) {
     if (iso === null) {
         return;
     }
+    const regexLang = /%lang/g;
     let text = ed.selection.getContent();
     // Selection is empty, just insert the lang opening and closing tag
     // together with a space where the user may add the content.
     if (trim(text) === '') {
         let newtext;
         if (isContentToHighlight(ed)) {
-            newtext = spanMultilangBegin.replace(new RegExp('%lang', 'g'), iso) + ' ' + spanMultilangEnd;
-        } else {
-            newtext = '{mlang ' + iso + '}' + ' ' + '{mlang}';
+            newtext = spanMultilangBegin.replace(regexLang, iso) + ' ' + spanMultilangEnd;
+            if (!mlangFilterExists(ed)) { // No mlang filter, add the fallback class to the highlight spans.
+                newtext = newtext.replaceAll('mceNonEditable', 'mceNonEditable fallback');
+            }
+        } else if (mlangFilterExists(ed)) { // No content to highlight but mlang filter exists.
+            newtext = '{mlang ' + iso + '} {mlang}';
+        } else { // No content and also no mlang filter exists.
+            newtext = spanFallbackLang.replace(regexLang, iso) + ' </span>';
         }
         ed.insertContent(newtext);
         return;
@@ -300,7 +310,11 @@ const applyLanguage = function(ed, iso) {
     // However, there are a few exceptions, e.g. when the selection is inside the lang tag itself. In this case
     // just change the tag without encapsulating the selection.
     if (!isContentToHighlight(ed)) {
-        ed.selection.setContent('{mlang ' + iso + '}' + text + '{mlang}');
+        if (mlangFilterExists(ed)) {
+            ed.selection.setContent('{mlang ' + iso + '}' + text + '{mlang}');
+        } else {
+            ed.selection.setContent(spanFallbackLang.replace(regexLang, iso) + text + '</span>');
+        }
         return;
     }
     // Syntax highlighting is on. Check if we are on a special span that encapsulates the language tags. Search
@@ -308,7 +322,7 @@ const applyLanguage = function(ed, iso) {
     const span = getHighlightNodeFromSelect(ed, 'begin');
     // If we have a span, then it's the opening tag, and we just replace this one with the new iso.
     if (!isNull(span)) {
-        let replacement = spanMultilangBegin.replace(new RegExp('%lang', 'g'), iso);
+        let replacement = spanMultilangBegin.replace(regexLang, iso);
         if (span.classList.contains('fallback')) {
             replacement = replacement.replace('mceNonEditable', 'mceNonEditable fallback');
         }
@@ -316,7 +330,10 @@ const applyLanguage = function(ed, iso) {
         return;
     }
     // Not inside a lang tag, insert a new opening and closing tag with the selection inside.
-    const newtext = spanMultilangBegin.replace(new RegExp('%lang', 'g'), iso) + text + spanMultilangEnd;
+    let newtext = spanMultilangBegin.replace(regexLang, iso) + text + spanMultilangEnd;
+    if (!mlangFilterExists(ed)) { // No mlang filter, add the fallback class to the highlight spans.
+        newtext = newtext.replaceAll('mceNonEditable', 'mceNonEditable fallback');
+    }
     ed.selection.setContent(newtext);
 };
 

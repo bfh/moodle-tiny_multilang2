@@ -27,6 +27,7 @@ import {getPluginOptionName} from 'editor_tiny/options';
 import {pluginName} from './common';
 
 const languages = getPluginOptionName(pluginName, 'languages');
+const mlangfilter = getPluginOptionName(pluginName, 'mlangfilter');
 const fallbackspan = getPluginOptionName(pluginName, 'fallbackspantag');
 const showalllangs = getPluginOptionName(pluginName, 'showalllangs');
 const highlight = getPluginOptionName(pluginName, 'highlight');
@@ -41,6 +42,11 @@ export const register = (editor) => {
     editor.options.register(languages, {
         processor: 'Array',
         "default": [],
+    });
+
+    editor.options.register(mlangfilter, {
+        processor: 'boolean',
+        "default": false,
     });
 
     editor.options.register(showalllangs, {
@@ -71,6 +77,13 @@ export const register = (editor) => {
  * @returns {Array}
  */
 export const getLanguageList = (editor) => editor.options.get(languages);
+
+/**
+ * Get the information whether the multilang2 filter is installed or not.
+ * @param {tinymce.Editor} editor
+ * @return {boolean}
+ */
+export const mlangFilterExists = (editor) => editor.options.get(mlangfilter);
 
 /**
  * Get the option whether to show all languages or not.

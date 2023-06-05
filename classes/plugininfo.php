@@ -88,18 +88,20 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
     public static function get_plugin_configuration_for_context(context $context, array $options, array $fpoptions,
                                                                 ?editor $editor = null): array {
 
-        // The settings of the langages that are available. If this is empty, the plugin will not be active.
+        // Check, if the multilang2 filter is active.
+        $filters = filter_get_active_in_context($context);
+        $mlangfilter = array_key_exists('multilang2', $filters);
+
+        // The settings of the languages that are available. If this is empty, the plugin will not be active.
+        // Also, add here the information of the existence or absence of the multilang2 filter.
         $config = [
             'languages' => [],
+            'mlangfilter' => $mlangfilter,
         ];
 
-        // When the setting to require the multilang2 filter is set to true,
-        // also check if the multilang2 filter is available.
-        if ((bool)get_config('tiny_multilang2', 'requiremultilang2')) {
-            $filters = filter_get_active_in_context($context);
-            if (!array_key_exists('multilang2', $filters)) {
-                return $config;
-            }
+        // When the setting to require the multilang2 filter is set to true, and there is no multilang filter.
+        if ((bool)get_config('tiny_multilang2', 'requiremultilang2') && !$mlangfilter) {
+            return $config;
         }
 
         // We need to pass the list of languages to tinymce.
@@ -120,10 +122,13 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
                     'label' => str_replace(["\xe2\x80\x8e", "\xe2\x80\x8f"], '', $label),
                 ];
             }
-            $config['languages'][] = [
-                'iso' => 'other',
-                'label' => get_string('multilang2:other', 'tiny_multilang2') . ' (other)',
-            ];
+            // Only multilang2 filter allows a general catch all fallback.
+            if ($mlangfilter) {
+                $config['languages'][] = [
+                    'iso' => 'other',
+                    'label' => get_string('multilang2:other', 'tiny_multilang2') . ' (other)',
+                ];
+            }
         }
 
         $config['fallbackspantag'] = (bool)get_config('tiny_multilang2', 'fallbackspantag');
