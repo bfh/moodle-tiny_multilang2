@@ -13,19 +13,27 @@ The plugin is developed to work with [Iñaki Arenaza's multilang2 filter](https:
 on [his plugin for TinyMCE editor](https://github.com/iarenaza/moodle-tinymce_moodlelang2) and will work with TinyMCE 6
 that is included in Moodle ≥ 4.1.
 
-After the installation there is a new Button (with a globe icon) and a menu entry in the Format section where you can
-select a language. Clicking on a language entry adds a language opening and closing tag to your text at the current
-cursor position. If there is a selection then the language tags are places around the selection. In case you use the
-highlighting option and see the yellow language tags, you may click one of these tags then select a new language
-from the menu and that will change the language of the existing tag. You may also remove it by
-hitting the backspace or delete key. This will remove the tag, and it's counterpart in case the formatting is correct.
+After the installation of the plugin, the TinyMCE shows a new Button (with a globe icon) and a menu entry in the
+"Format" section where you can select a language. Clicking on a language entry adds a language opening and closing
+tag to your text at the current cursor position. If there is a selection then the language tags are places around
+the selection. In case you use the highlighting option and see the yellow language tags, you may click one of these
+tags then select a new language from the menu and that will change the
+language of the existing tag. You may also remove it by  hitting the backspace
+or delete key. This will remove the tag, and it's counterpart in case the
+formatting is correct.
 
 ## Current version
 
 The latest release is v0.2.3 (build 2023050300) for Moodle 4.1 and newer.
 
 ## Requirements
-The plugin [filter_multilang2](https://github.com/iarenaza/moodle-filter_multilang2) must be installed and enabled.
+
+There are no additional requirements. To benefit from the plugin capabilities
+the TinyMCE editor must be used in text area (either set as a user preference or
+being the standard editor set by the Moodle site admin). Also, more than one
+language must be active in your Moodle.
+The plugin [filter_multilang2](https://github.com/iarenaza/moodle-filter_multilang2) is supported as well,
+but it is not anymore a requirement to have it installed.
 
 ## Installation
 
@@ -42,6 +50,14 @@ If the language selection does not appear in the editor:
  - Check that your site has at least two languages installed.
 
 ## Version History
+
+### Current Master
+
+- Support for the standard language tags in Moodle without having to install the [filter_multilang2](https://github.com/iarenaza/moodle-filter_multilang2).
+- Tooltip with possible languages is shown when a highlighted language tag is selected (only when `showalllanguages` is off, otherwise the tooltip list would be too long).
+- Fix: when the text editor lost the focus the highlighting of the language tags disappeared.
+- Fix: the iso code was not displayed in the language list in the menu when `showalllanguages` was enabled.
+- Some internal refactoring because of the changes from above that made them necessary.
 
 ### 0.2.3
 
