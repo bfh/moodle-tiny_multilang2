@@ -23,6 +23,8 @@ use editor_tiny\plugin_with_menuitems;
 use editor_tiny\plugin_with_buttons;
 use editor_tiny\plugin_with_configuration;
 
+defined('MOODLE_INTERNAL') || die;
+
 require_once(__DIR__ . '/../../../../../behat/classes/util.php');
 
 /**
