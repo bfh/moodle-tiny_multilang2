@@ -1,11 +1,12 @@
 @editor @editor_tiny @tiny @tiny_multilang2 @javascript
-Feature: Tiny editor multilang plugin
-  To put content in Tiny in different languages, I need to use the mlang button to encapsulate the text in language tags.
+Feature: Tiny editor multilang plugin with multilangfilter2
+  To put content in Tiny in different languages, I use the language button to encapsulate the text in language tags.
 
   Background: I login as admin and add a text to the description with two paragraphs.
     Given the following config values are set as admin:
       | requiremultilang2 | 0 | tiny_multilang2 |
       | highlight | 1 | tiny_multilang2 |
+      | simulatemultilang2 | 1 | tiny_multilang2 |
     And the following "language packs" exist:
       | language |
       | de       |

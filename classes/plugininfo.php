@@ -23,6 +23,8 @@ use editor_tiny\plugin_with_menuitems;
 use editor_tiny\plugin_with_buttons;
 use editor_tiny\plugin_with_configuration;
 
+require_once(__DIR__ . '/../../../../../behat/classes/util.php');
+
 /**
  * Plugin for Moodle 'Multilingual content' drop down menu in TinyMCE 6.
  *
@@ -33,6 +35,16 @@ use editor_tiny\plugin_with_configuration;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_buttons, plugin_with_configuration {
+
+    /**
+     * There is a config setting that can be set to true for testing purposes so that even though the
+     * multilang2 filter is missing, the behat tests can be executed pretending that the multilang2 filter
+     * is installed.
+     * @return  bool
+     */
+    public static function is_multilang2_simulated_for_test(): bool {
+        return \behat_util::is_test_site() && get_config('tiny_multilang2', 'simulatemultilang2');
+    }
 
     /**
      * Check if user has sufficient rights to use the plugin.
@@ -89,8 +101,12 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
                                                                 ?editor $editor = null): array {
 
         // Check, if the multilang2 filter is active.
-        $filters = filter_get_active_in_context($context);
-        $mlangfilter = array_key_exists('multilang2', $filters);
+        if (self::is_multilang2_simulated_for_test()) {
+            $mlangfilter = true;
+        } else {
+            $filters = filter_get_active_in_context($context);
+            $mlangfilter = array_key_exists('multilang2', $filters);
+        }
 
         // The settings of the languages that are available. If this is empty, the plugin will not be active.
         // Also, add here the information of the existence or absence of the multilang2 filter.

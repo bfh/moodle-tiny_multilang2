@@ -31,6 +31,7 @@
 
 require_once(__DIR__ . '/../../../../tests/behat/behat_editor_tiny.php');
 
+
 /**
  * Extends general TinyMCE test to test the tiny_multilang2 plugin.
  */
