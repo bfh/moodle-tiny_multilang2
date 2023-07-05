@@ -15,7 +15,7 @@ Feature: Tiny editor multilang plugin for default behaviour with no multilangfil
     And the following "courses" exist:
       | fullname | shortname | category |
       | Course 1 | C1        | 0        |
-     And the following "activities" exist:
+    And the following "activities" exist:
       | activity | name       | intro      | introformat | course | content                                       | contentformat | idnumber |
       | page     | PageName1  | PageDesc1  | 1           | C1     | <p>Some plain text</p><p>Ein anderer Text</p> | 1             | 1        |
     And I log in as "admin"
