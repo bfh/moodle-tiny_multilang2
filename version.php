@@ -28,6 +28,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tiny_multilang2';
 $plugin->release = '0.3';
-$plugin->version = 2023060600;
+$plugin->version = 2023070600;
 $plugin->requires = 2022112800;
 $plugin->maturity = MATURITY_RC;

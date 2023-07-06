@@ -24,7 +24,7 @@ formatting is correct.
 
 ## Current version
 
-The latest release is v0.3 (build 2023060600) for Moodle 4.1 and newer.
+The latest release is v0.3 (build 2023070600) for Moodle 4.1 and newer.
 
 ## Requirements
 
