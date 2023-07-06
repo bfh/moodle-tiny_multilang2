@@ -1,7 +1,7 @@
 TinyMCE multilanguage plugin
 ============================
 
-![Release](https://img.shields.io/badge/Release-0.2.3-blue.svg)
+![Release](https://img.shields.io/badge/Release-0.3-blue.svg)
 [![Moodle Plugin CI](https://github.com/bfh/moodle-tiny_multilang2/workflows/Moodle%20Plugin%20CI/badge.svg?branch=master)](https://github.com/bfh/moodle-tiny_multilang2/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amaster)
 ![Supported](https://img.shields.io/badge/Moodle-4.1+-orange.svg)
 [![License GPL-3.0](https://img.shields.io/github/license/bfh/moodle-tiny_multilang2?color=lightgrey)](https://github.com/bfh/moodle-tiny_multilang2/blob/main/LICENSE)
@@ -24,7 +24,7 @@ formatting is correct.
 
 ## Current version
 
-The latest release is v0.2.3 (build 2023050300) for Moodle 4.1 and newer.
+The latest release is v0.3 (build 2023060600) for Moodle 4.1 and newer.
 
 ## Requirements
 
@@ -51,13 +51,15 @@ If the language selection does not appear in the editor:
 
 ## Version History
 
-### Current Master
+### 0.3
 
 - Support for the standard language tags in Moodle without having to install the [filter_multilang2](https://github.com/iarenaza/moodle-filter_multilang2).
 - Tooltip with possible languages is shown when a highlighted language tag is selected (only when `showalllanguages` is off, otherwise the tooltip list would be too long).
 - Fix: when the text editor lost the focus the highlighting of the language tags disappeared.
 - Fix: the iso code was not displayed in the language list in the menu when `showalllanguages` was enabled.
 - Some internal refactoring because of the changes from above that made them necessary.
+- Adjust behat tests to test both, standard annotation and multilang2 filter annotation.
+- Change code maturity to RC.
 
 ### 0.2.3
 
