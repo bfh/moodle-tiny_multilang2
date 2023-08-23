@@ -23,7 +23,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {getHighlightCss, isContentToHighlight, mlangFilterExists, isFallbackSpanTag} from './options';
+import {getHighlightCss, isContentToHighlight, mlangFilterExists, isFallbackSpanTag, getRTLLanguages} from './options';
 
 // This class inside a <span> identified the {mlang} tag that is encapsulated in a span.
 const spanClass = 'multilang-begin mceNonEditable';
@@ -138,12 +138,14 @@ const removeVisualStyling = function(ed) {
                 if (!isNull(end)) {
                     // Extract the language from the {mlang XX} tag.
                     const lang = span.innerHTML.match(new RegExp('{\\s*mlang\\s+([^}]+?)\\s*}', 'i'));
+                    // Right to left default languages.
+                    const rtlLanguages = getRTLLanguages();
                     if (lang) {
-                        // Create the new <span class="multilang"> tag with the content.
-                        ed.dom.setOuterHTML(
-                          span,
-                          '<span class="multilang" lang="' + lang[1] + '">' + innerHTML + '</span>'
-                        );
+                        const langCode = lang[1];
+                        // Add dir="rtl" to the html tag any time the overall document direction is right-to-left.
+                        const dir = rtlLanguages.includes(langCode) ? 'rtl' : 'ltr';
+                        const newHTML = '<span class="multilang" lang="' + lang[1] + '" dir="' + dir + '">' + innerHTML + '</span>';
+                        ed.dom.setOuterHTML(span, newHTML);
                         // And remove the other siblings.
                         for (end of toRemove) {
                             ed.dom.remove(end);
@@ -193,9 +195,9 @@ const getHighlightNodeFromSelect = function(ed, search) {
  * @param {tinymce.Editor} ed
  */
 const onInit = function(ed) {
+    ed.setContent(addVisualStyling(ed));
     if (isContentToHighlight(ed)) {
         ed.dom.addStyle(getHighlightCss(ed));
-        ed.setContent(addVisualStyling(ed));
     }
 };
 
@@ -218,10 +220,7 @@ const onBeforeGetContent = function(ed, content) {
         ed.on('CloseWindow', () => {
             onClose(ed);
         });
-
-        if (isContentToHighlight(ed)) {
             removeVisualStyling(ed);
-        }
     }
 };
 
@@ -232,7 +231,7 @@ const onBeforeGetContent = function(ed, content) {
  * @param {string} event
  */
 const onProcess = function(ed, content, event) {
-    if (!isNull(content.save) && content.save === true && isContentToHighlight(ed)) {
+    if (!isNull(content.save) && content.save === true) {
         if (event === 'PostProcess') {
             // When the blur event was triggered, the editor is still there, we need to reapply
             // the previously removed styling. If this was a submit event, then do not reapply the
@@ -262,7 +261,7 @@ const onBlur = function() {
  * @param {Object} event
  */
 const onDelete = function(ed, event) {
-    if (event.isComposing || (event.keyCode !== 46 && event.keyCode !== 8) || !isContentToHighlight(ed)) {
+    if (event.isComposing || (event.keyCode !== 46 && event.keyCode !== 8)) {
         return;
     }
     // Key <del> was pressed, to delete some content. Check if we are inside a span for the lang.
@@ -287,11 +286,20 @@ const applyLanguage = function(ed, iso) {
     if (iso === null) {
         return;
     }
+    if (iso === "remove") {
+        const elements = ed.contentDocument.body;
+        // Find all elements with the class "multilang-begin" or "multilang-end".
+        const multiLangElements = elements.querySelectorAll('.multilang-begin, .multilang-end');
+        multiLangElements.forEach(element => {
+            ed.dom.remove(element);
+        });
+        removeVisualStyling(ed);
+    }
     const regexLang = /%lang/g;
     let text = ed.selection.getContent();
     // Selection is empty, just insert the lang opening and closing tag
     // together with a space where the user may add the content.
-    if (trim(text) === '') {
+    if (trim(text) === '' && iso !== "remove") {
         let newtext;
         if (isContentToHighlight(ed)) {
             newtext = spanMultilangBegin.replace(regexLang, iso) + ' ' + spanMultilangEnd;
@@ -312,10 +320,7 @@ const applyLanguage = function(ed, iso) {
     if (!isContentToHighlight(ed)) {
         if (mlangFilterExists(ed)) {
             ed.selection.setContent('{mlang ' + iso + '}' + text + '{mlang}');
-        } else {
-            ed.selection.setContent(spanFallbackLang.replace(regexLang, iso) + text + '</span>');
         }
-        return;
     }
     // Syntax highlighting is on. Check if we are on a special span that encapsulates the language tags. Search
     // for the start span tag.
@@ -334,9 +339,11 @@ const applyLanguage = function(ed, iso) {
     if (!mlangFilterExists(ed)) { // No mlang filter, add the fallback class to the highlight spans.
         newtext = newtext.replaceAll('mceNonEditable', 'mceNonEditable fallback');
     }
-    ed.selection.setContent(newtext);
+    // Not insert a new opening and closing tag with the "Remove all lang tags" option.
+    if (iso !== "remove") {
+        ed.selection.setContent(newtext);
+    }
 };
-
 
 export {
     onInit,
