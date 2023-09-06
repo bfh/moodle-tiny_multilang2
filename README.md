@@ -58,6 +58,10 @@ If the language selection does not appear in the editor:
 
 ## Version History
 
+### current master
+- Fix issue [TinyMCE link plugin does not work properly when multilang2 is installed](https://github.com/bfh/moodle-tiny_multilang2/issues/4).
+  Many thanks to [Mario Wehr](https://github.com/mwehr) for his contribution.
+
 ### 0.3
 
 - Support for the standard language tags in Moodle without having to install the [filter_multilang2](https://github.com/iarenaza/moodle-filter_multilang2).
