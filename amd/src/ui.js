@@ -313,10 +313,7 @@ const applyLanguage = function(ed, iso) {
     if (!mlangFilterExists(ed)) { // No mlang filter, add the fallback class to the highlight spans.
         newtext = newtext.replaceAll('mceNonEditable', 'mceNonEditable fallback');
     }
-    // Not insert a new opening and closing tag with the "Remove all lang tags" option.
-    if (iso !== "remove") {
-        ed.selection.setContent(newtext);
-    }
+    ed.selection.setContent(newtext);
 };
 
 export {
