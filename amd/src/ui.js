@@ -256,23 +256,31 @@ const onDelete = function(ed, event) {
  * @param {string} iso
  */
 const applyLanguage = function(ed, iso) {
-    if (iso === null) {
+    if (isNull(iso)) {
         return;
     }
     if (iso === "remove") {
-        const elements = ed.contentDocument.body;
-        // Find all elements with the class "multilang-begin" or "multilang-end".
-        const multiLangElements = elements.querySelectorAll('.multilang-begin, .multilang-end');
-        multiLangElements.forEach(element => {
-            ed.dom.remove(element);
-        });
-        removeVisualStyling(ed);
+        if (isContentToHighlight(ed)) {
+            const elements = ed.contentDocument.body;
+            // Find all elements with the class "multilang-begin" or "multilang-end".
+            const multiLangElements = elements.querySelectorAll('.multilang-begin, .multilang-end');
+            multiLangElements.forEach(element => {
+                ed.dom.remove(element);
+            });
+            return;
+        }
+        const content = ed.getContent();
+        const newText = content.replace(/\{mlang( \w+)?\}/g, '');
+        if (newText !== content) {
+            ed.setContent(newText);
+        }
+        return;
     }
     const regexLang = /%lang/g;
     let text = ed.selection.getContent();
     // Selection is empty, just insert the lang opening and closing tag
     // together with a space where the user may add the content.
-    if (trim(text) === '' && iso !== "remove") {
+    if (trim(text) === '') {
         let newtext;
         if (isContentToHighlight(ed)) {
             newtext = spanMultilangBegin.replace(regexLang, iso) + ' ' + spanMultilangEnd;
@@ -292,8 +300,9 @@ const applyLanguage = function(ed, iso) {
     // just change the tag without encapsulating the selection.
     if (!isContentToHighlight(ed)) {
         if (mlangFilterExists(ed)) {
-            ed.selection.setContent('{mlang ' + iso + '}' + text + '{mlang}');
+            ed.selection.setContent('{mlang ' + iso + '}' + trim(text) + '{mlang}');
         }
+        return;
     }
     // Syntax highlighting is on. Check if we are on a special span that encapsulates the language tags. Search
     // for the start span tag.
