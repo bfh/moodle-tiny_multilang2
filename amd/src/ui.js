@@ -295,16 +295,8 @@ const applyLanguage = function(ed, iso) {
         ed.insertContent(newtext);
         return;
     }
-    // Selection contains something, we need to place the open and closing lang tags around the selection.
-    // However, there are a few exceptions, e.g. when the selection is inside the lang tag itself. In this case
-    // just change the tag without encapsulating the selection.
-    if (!isContentToHighlight(ed)) {
-        if (mlangFilterExists(ed)) {
-            ed.selection.setContent('{mlang ' + iso + '}' + trim(text) + '{mlang}');
-        }
-        return;
-    }
-    // Syntax highlighting is on. Check if we are on a special span that encapsulates the language tags. Search
+    // No matter if we have syntax highlighting enabled or not, the spans around the language tags exist
+    // in the WYSIWYG mode. So check if we are on a special span that encapsulates the language tags. Search
     // for the start span tag.
     const span = getHighlightNodeFromSelect(ed, 'begin');
     // If we have a span, then it's the opening tag, and we just replace this one with the new iso.
