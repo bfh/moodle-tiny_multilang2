@@ -134,6 +134,10 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
 
         if (count($langs) > 1) {
             asort($langs);
+            $config['languages'][] = [
+                'iso' => 'remove',
+                'label' => get_string('removealltags', 'tiny_multilang2'),
+            ];
             foreach ($langs as $iso => $label) {
                 $config['languages'][] = [
                     'iso' => $iso,
@@ -152,15 +156,55 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
         $config['fallbackspantag'] = (bool)get_config('tiny_multilang2', 'fallbackspantag');
         $config['highlight'] = (bool)get_config('tiny_multilang2', 'highlight');
         $config['showalllangs'] = (bool)get_config('tiny_multilang2', 'showalllangs');
+        $config['addlanguage'] = (bool)get_config('tiny_multilang2', 'addlanguage');
 
         if ($config['highlight']) {
-            $css = trim(get_config('core', 'highlight_css'));
+            $css = trim(get_config('tiny_multilang2', 'highlight_css'));
             if (empty($css)) {
                 $css = self::get_default_css();
             }
             $config['css'] = $css;
         }
 
+        if ($config['addlanguage']) {
+            $optionlanguages = array_filter(
+                array_map('trim', preg_split("/\r\n|\n|\r/", get_config('tiny_multilang2', 'languageoptions')))
+            );
+            $langsavailable = get_string_manager()->get_list_of_languages();
+            $config['optionlanguages'][] = [
+                'iso' => 'remove',
+                'label' => get_string('removealltags', 'tiny_multilang2'),
+            ];
+            if (count($optionlanguages) > 1) {
+                foreach ($optionlanguages as $option) {
+                    if ($haschild = strpos($option, '-')) {
+                        // Sub lang, use the 'parent' first lang option for checks.
+                        $parentlang = substr($option, 0 , $haschild);
+                        if (!isset($langsavailable[$parentlang])) {
+                            continue;
+                        }
+                        // Find a lang string for this language, otherwise use parent.
+                        if (get_string_manager()->string_exists($option, 'tiny_multilang2')) {
+                            $text = get_string($option, 'tiny_multilang2');
+                        } else {
+                            $text = $langsavailable[$parentlang];
+                        }
+                        $langsavailable[$option] = $text;
+                    } else {
+                        // Force lower case on standard options.
+                        $option = strtolower($option);
+                        // Don't include lang if it's not available.
+                        if (!isset($langsavailable[$option])) {
+                            continue;
+                        }
+                    }
+                    $config['optionlanguages'][] = [
+                        'iso' => $option,
+                        'label' => $langsavailable[$option] . " (" . $option . ")",
+                    ];
+                }
+            }
+        }
         return $config;
     }
 
@@ -177,6 +221,23 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
                 margin: 0em 0.1em;
                 background-color: #ffffaa;
             }
+        ';
+    }
+
+    /**
+     * Return the default languages.
+     *
+     * @return string
+     */
+    public static function get_default_languages(): string {
+        return '
+zh
+en
+hi
+es
+ms
+ru
+bn
         ';
     }
 

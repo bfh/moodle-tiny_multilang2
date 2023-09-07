@@ -23,7 +23,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {getLanguageList, showAllLanguages} from './options';
+import {getLanguageList, showAllLanguages, isAddLanguage, getLanguageOptions} from './options';
 import {component} from './common';
 import {get_strings as getStrings} from 'core/str';
 import {applyLanguage, onInit, onBeforeGetContent, onSubmit, onDelete} from './ui';
@@ -43,13 +43,17 @@ export const getSetup = async() => {
     ] = await getStrings(['multilang2:language', 'multilang2:desc'].map((key) => ({key, component})));
 
     return (editor) => {
-
-        const languageList = getLanguageList(editor);
+        let languageList;
+        // If the 'Add language' setting is enabled, the list of languages will be based on the input languages.
+        if (isAddLanguage(editor)) {
+            languageList = getLanguageOptions(editor);
+        } else {
+            languageList = getLanguageList(editor);
+        }
         // If there is just one language, we don't need the plugin.
         if (languageList.length < 2) {
             return;
         }
-
         editor.ui.registry.addSplitButton(component, {
             icon: 'language',
             tooltip: tooltip,
@@ -83,15 +87,17 @@ export const getSetup = async() => {
 
         // Context menu with languages is shown only when showalllangs is set to false. Otherwise the
         // List would be overwhelming.
-        if (!showAllLanguages(editor)) {
+        if (!showAllLanguages(editor) || isAddLanguage(editor)) {
             for (const lang of languageList) {
-                editor.ui.registry.addButton(component + '_' + lang.iso, {
-                    text: lang.iso,
-                    tooltip: lang.label,
-                    onAction: () => {
-                        applyLanguage(editor, lang.iso);
-                    }
-                });
+                if (lang.iso !== "remove") {
+                    editor.ui.registry.addButton(component + '_' + lang.iso, {
+                        text: lang.iso,
+                        tooltip: lang.label,
+                        onAction: () => {
+                            applyLanguage(editor, lang.iso, event);
+                        }
+                    });
+                }
             }
             editor.ui.registry.addContextToolbar(component, {
                 predicate: function(node) {

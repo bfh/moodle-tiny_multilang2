@@ -46,4 +46,13 @@ if ($ADMIN->fulltree) {
         \tiny_multilang2\plugininfo::get_default_css(),
         PARAM_RAW
     ));
+    $settings->add(new admin_setting_configcheckbox('tiny_multilang2/addlanguage',
+        get_string('addlanguage', 'tiny_multilang2'), get_string('addlanguage_desc', 'tiny_multilang2'), 0));
+    $settings->add(new admin_setting_configtextarea(
+        'tiny_multilang2/languageoptions',
+        get_string('languageoptions', 'tiny_multilang2'),
+        get_string('language_options_desc', 'tiny_multilang2'),
+        \tiny_multilang2\plugininfo::get_default_languages(),
+        PARAM_RAW
+    ));
 }

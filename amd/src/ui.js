@@ -23,7 +23,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {getHighlightCss, isContentToHighlight, mlangFilterExists, isFallbackSpanTag} from './options';
+import {getHighlightCss, isContentToHighlight, mlangFilterExists, isFallbackSpanTag, getRTLLanguages} from './options';
 
 // This class inside a <span> identified the {mlang} tag that is encapsulated in a span.
 const spanClass = 'multilang-begin mceNonEditable';
@@ -33,8 +33,6 @@ const spanFixedAttrs = '<span contenteditable="false" class="' + spanClass + '" 
 const spanMultilangBegin = spanFixedAttrs + ' lang="%lang" xml:lang="%lang">{mlang %lang}</span>';
 // The end span doesn't need information about the used language.
 const spanMultilangEnd = spanFixedAttrs.replace('begin', 'end') + '>{mlang}</span>';
-// Fallback span that is used instead of the {mlang} annotation.
-const spanFallbackLang = '<span class="multilang" lang="%lang">';
 // Helper functions
 const trim = v => v.toString().replace(/^\s+/, '').replace(/\s+$/, '');
 const isNull = a => a === null || a === undefined;
@@ -133,12 +131,14 @@ const removeVisualStyling = function(ed) {
                 if (!isNull(end)) {
                     // Extract the language from the {mlang XX} tag.
                     const lang = span.innerHTML.match(new RegExp('{\\s*mlang\\s+([^}]+?)\\s*}', 'i'));
+                    // Right to left default languages.
+                    const rtlLanguages = getRTLLanguages();
                     if (lang) {
-                        // Create the new <span class="multilang"> tag with the content.
-                        ed.dom.setOuterHTML(
-                          span,
-                          '<span class="multilang" lang="' + lang[1] + '">' + innerHTML + '</span>'
-                        );
+                        const langCode = lang[1];
+                        // Add dir="rtl" to the html tag any time the overall document direction is right-to-left.
+                        const dir = rtlLanguages.includes(langCode) ? 'rtl' : 'ltr';
+                        const newHTML = '<span class="multilang" lang="' + lang[1] + '" dir="' + dir + '">' + innerHTML + '</span>';
+                        ed.dom.setOuterHTML(span, newHTML);
                         // And remove the other siblings.
                         for (end of toRemove) {
                             ed.dom.remove(end);
@@ -184,13 +184,48 @@ const getHighlightNodeFromSelect = function(ed, search) {
 };
 
 /**
+ * Return the block element node from the string, in case the text fragment is some parsable HTML.
+ * @param {string} text
+ * @return {Node|undefined}
+ */
+const getBlockElement = function(text) {
+    const dom = new DOMParser();
+    const body = dom.parseFromString(text, 'text/html').body;
+    // We must have one child and a node element only, otherwise the selection may span via several paragraphs.
+    if (body.firstChild.nodeType !== Node.ELEMENT_NODE || body.children.length > 1) {
+        return;
+    }
+    // These are not all block elements, we check for some only where the lang tags should be placed inside.
+    const blockTags = ['address', 'article', 'aside', 'blockquote',
+        'dd', 'div', 'dl', 'dt', 'figcaption', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'li', 'ol', 'p', 'pre', 'section', 'tfoot', 'ul'];
+    if (blockTags.indexOf(body.firstChild.tagName.toString().toLowerCase()) != -1) {
+        return body.firstChild;
+    }
+};
+
+/**
+ * Check for the parent hierarchy elements, if there's a context toolbar container, then hide it.
+ * @param {Node} el
+ */
+const hideContentToolbar = function(el) {
+    while (!isNull(el)) {
+        if (el.nodeType === Node.ELEMENT_NODE && el.getAttribute('class').indexOf('tox-pop-') != -1) {
+            el.style.display = 'none';
+            return;
+        }
+        el = el.parentNode;
+    }
+};
+
+/**
  * When loading the editor for the first time, add the spans for highlighting the content.
  * @param {tinymce.Editor} ed
  */
 const onInit = function(ed) {
+    ed.setContent(addVisualStyling(ed));
     if (isContentToHighlight(ed)) {
         ed.dom.addStyle(getHighlightCss(ed));
-        ed.setContent(addVisualStyling(ed));
     }
 };
 
@@ -213,10 +248,7 @@ const onBeforeGetContent = function(ed, content) {
         ed.on('CloseWindow', () => {
             onClose(ed);
         });
-
-        if (isContentToHighlight(ed)) {
-            removeVisualStyling(ed);
-        }
+        removeVisualStyling(ed);
     }
 };
 
@@ -235,7 +267,7 @@ const onSubmit = function(ed) {
  * @param {Object} event
  */
 const onDelete = function(ed, event) {
-    if (event.isComposing || (event.keyCode !== 46 && event.keyCode !== 8) || !isContentToHighlight(ed)) {
+    if (event.isComposing || (event.keyCode !== 46 && event.keyCode !== 8)) {
         return;
     }
     // Key <del> was pressed, to delete some content. Check if we are inside a span for the lang.
@@ -255,9 +287,19 @@ const onDelete = function(ed, event) {
  * position or around the selection.
  * @param {tinymce.Editor} ed
  * @param {string} iso
+ * @param {Event} event
  */
-const applyLanguage = function(ed, iso) {
-    if (iso === null) {
+const applyLanguage = function(ed, iso, event) {
+    if (isNull(iso)) {
+        return;
+    }
+    if (iso === "remove") {
+        const elements = ed.contentDocument.body;
+        // Find all elements with the class "multilang-begin" or "multilang-end".
+        const multiLangElements = elements.querySelectorAll('.multilang-begin, .multilang-end');
+        multiLangElements.forEach(element => {
+            ed.dom.remove(element);
+        });
         return;
     }
     const regexLang = /%lang/g;
@@ -265,32 +307,27 @@ const applyLanguage = function(ed, iso) {
     // Selection is empty, just insert the lang opening and closing tag
     // together with a space where the user may add the content.
     if (trim(text) === '') {
-        let newtext;
-        if (isContentToHighlight(ed)) {
-            newtext = spanMultilangBegin.replace(regexLang, iso) + ' ' + spanMultilangEnd;
-            if (!mlangFilterExists(ed)) { // No mlang filter, add the fallback class to the highlight spans.
-                newtext = newtext.replaceAll('mceNonEditable', 'mceNonEditable fallback');
-            }
-        } else if (mlangFilterExists(ed)) { // No content to highlight but mlang filter exists.
-            newtext = '{mlang ' + iso + '} {mlang}';
-        } else { // No content and also no mlang filter exists.
-            newtext = spanFallbackLang.replace(regexLang, iso) + ' </span>';
+        // Event is set when the context menu was hit, here the editor lost the previously selected node. Therfore,
+        // don't do anything.
+        if (!isNull(event)) {
+            hideContentToolbar(event.target);
+            return;
+        }
+        let newtext = spanMultilangBegin.replace(regexLang, iso) + ' ' + spanMultilangEnd;
+        if (!mlangFilterExists(ed)) {
+            // No mlang filter, add the fallback class to the highlight spans so that these are translated
+            // to the standard <span class="multilang"> elements.
+            newtext = newtext.replaceAll('mceNonEditable', 'mceNonEditable fallback');
         }
         ed.insertContent(newtext);
         return;
     }
-    // Selection contains something, we need to place the open and closing lang tags around the selection.
-    // However, there are a few exceptions, e.g. when the selection is inside the lang tag itself. In this case
-    // just change the tag without encapsulating the selection.
-    if (!isContentToHighlight(ed)) {
-        if (mlangFilterExists(ed)) {
-            ed.selection.setContent('{mlang ' + iso + '}' + text + '{mlang}');
-        } else {
-            ed.selection.setContent(spanFallbackLang.replace(regexLang, iso) + text + '</span>');
-        }
-        return;
+    // Hide context toolbar, because at any subsequent call the node is not selected anymore.
+    if (!isNull(event)) {
+        hideContentToolbar(event.target);
     }
-    // Syntax highlighting is on. Check if we are on a special span that encapsulates the language tags. Search
+    // No matter if we have syntax highlighting enabled or not, the spans around the language tags exist
+    // in the WYSIWYG mode. So check if we are on a special span that encapsulates the language tags. Search
     // for the start span tag.
     const span = getHighlightNodeFromSelect(ed, 'begin');
     // If we have a span, then it's the opening tag, and we just replace this one with the new iso.
@@ -302,6 +339,18 @@ const applyLanguage = function(ed, iso) {
         ed.dom.setOuterHTML(span, replacement);
         return;
     }
+    const blockEl = getBlockElement(text);
+    if (blockEl) {
+        // We have a block element selected, such as a hX or p tag. Then keep this tag and place the
+        // language tags inside but around the content of the block element.
+        let newtext = spanMultilangBegin.replace(regexLang, iso) + blockEl.innerHTML + spanMultilangEnd;
+        if (!mlangFilterExists(ed)) { // No mlang filter, add the fallback class to the highlight spans.
+            newtext = newtext.replaceAll('mceNonEditable', 'mceNonEditable fallback');
+        }
+        blockEl.innerHTML = newtext;
+        ed.selection.setContent(blockEl.outerHTML);
+        return;
+    }
     // Not inside a lang tag, insert a new opening and closing tag with the selection inside.
     let newtext = spanMultilangBegin.replace(regexLang, iso) + text + spanMultilangEnd;
     if (!mlangFilterExists(ed)) { // No mlang filter, add the fallback class to the highlight spans.
@@ -309,7 +358,6 @@ const applyLanguage = function(ed, iso) {
     }
     ed.selection.setContent(newtext);
 };
-
 
 export {
     onInit,

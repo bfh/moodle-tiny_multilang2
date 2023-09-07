@@ -32,6 +32,8 @@ const fallbackspan = getPluginOptionName(pluginName, 'fallbackspantag');
 const showalllangs = getPluginOptionName(pluginName, 'showalllangs');
 const highlight = getPluginOptionName(pluginName, 'highlight');
 const highlightcss = getPluginOptionName(pluginName, 'css');
+const addlanguage = getPluginOptionName(pluginName, 'addlanguage');
+const languageoptions = getPluginOptionName(pluginName, 'optionlanguages');
 
 /**
  * Register the options for the Tiny Equation plugin.
@@ -67,6 +69,16 @@ export const register = (editor) => {
     editor.options.register(highlightcss, {
         processor: 'string',
        "default": '',
+    });
+
+    editor.options.register(addlanguage, {
+        processor: 'boolean',
+        "default": false,
+    });
+
+    editor.options.register(languageoptions, {
+        processor: 'Array',
+        "default": [],
     });
 };
 
@@ -116,3 +128,26 @@ export const isContentToHighlight = (editor) => editor.options.get(highlight);
  * @returns {string}
  */
 export const getHighlightCss = (editor) => editor.options.get(highlightcss);
+
+/**
+ * Get the defined option whether to add language manually.
+ *
+ * @param {tinymce.Editor} editor
+ * @returns {boolean}
+ */
+export const isAddLanguage = (editor) => editor.options.get(addlanguage);
+
+/**
+ * Get the language options.
+ *
+ * @param {tinymce.Editor} editor
+ * @returns {Array}
+ */
+export const getLanguageOptions = (editor) => editor.options.get(languageoptions);
+
+/**
+ * Returns an array of all the languages that have the direction right to left (RTL).
+ *
+ * @returns {string[]} An array of language codes representing RTL languages.
+ */
+export const getRTLLanguages = () => ['ar', 'az', 'dv', 'he', 'ku', 'fa', 'ur'];
