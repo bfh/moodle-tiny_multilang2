@@ -20,6 +20,7 @@
  * @package     tiny_multilang2
  * @author      Iñaki Arenaza <iarenaza@mondragon.edu>
  * @author      Stephan Robotta <stephan.robotta@bfh.ch>
+ * @author      Tai Le Tan <dev.tailetan@gmail.com>
  * @copyright   2015 onwards Iñaki Arenaza & Mondragon Unibertsitatea
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

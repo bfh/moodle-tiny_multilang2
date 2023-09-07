@@ -19,6 +19,7 @@
  * @module      tiny_multilang2
  * @author      Iñaki Arenaza <iarenaza@mondragon.edu>
  * @author      Stephan Robotta <stephan.robotta@bfh.ch>
+ * @author      Tai Le Tan <dev.tailetan@gmail.com>
  * @copyright   2015 onwards Iñaki Arenaza & Mondragon Unibertsitatea
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -186,14 +187,14 @@ const getHighlightNodeFromSelect = function(ed, search) {
 /**
  * Return the block element node from the string, in case the text fragment is some parsable HTML.
  * @param {string} text
- * @return {Node|undefined}
+ * @return {Node|null}
  */
 const getBlockElement = function(text) {
     const dom = new DOMParser();
     const body = dom.parseFromString(text, 'text/html').body;
     // We must have one child and a node element only, otherwise the selection may span via several paragraphs.
     if (body.firstChild.nodeType !== Node.ELEMENT_NODE || body.children.length > 1) {
-        return;
+        return null;
     }
     // These are not all block elements, we check for some only where the lang tags should be placed inside.
     const blockTags = ['address', 'article', 'aside', 'blockquote',
@@ -202,6 +203,7 @@ const getBlockElement = function(text) {
     if (blockTags.indexOf(body.firstChild.tagName.toString().toLowerCase()) != -1) {
         return body.firstChild;
     }
+    return null;
 };
 
 /**

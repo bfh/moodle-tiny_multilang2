@@ -59,8 +59,22 @@ If the language selection does not appear in the editor:
 ## Version History
 
 ### current master
+
 - Fix issue [TinyMCE link plugin does not work properly when multilang2 is installed](https://github.com/bfh/moodle-tiny_multilang2/issues/4).
   Many thanks to [Mario Wehr](https://github.com/mwehr) for his contribution.
+- Fix: tag replacement did not work in the same way when highlighting was on or off.
+- Fix: additional CSS for highlighting the code was not applied correctly.
+- Fix: context menu sometimes inserted empty tags, when another language was selected.
+- Fix: if an entire paragraph is selected, language tags are now applied inside the content
+  (within te block element)
+- New settings: admin may define a list of languages that can be used with the plugin,
+  independent whether these are installed or not.
+- New option to remove all language tags within the text.
+- New feature: `<span>` elements use the `dir` attribute to annotate left to right and
+  right to left languages.
+
+Many thanks to [Tai Le Tan](https://github.com/tailetan) from the Open University that
+provided a comprehensive [pull request](https://github.com/bfh/moodle-tiny_multilang2/pull/3).
 
 ### 0.3
 
