@@ -39,20 +39,15 @@ const spanFallbackLang = '<span class="multilang" lang="%lang">';
 const trim = v => v.toString().replace(/^\s+/, '').replace(/\s+$/, '');
 const isNull = a => a === null || a === undefined;
 
-// Marker to remember when the blur event occurred.
-let isBlurred = false;
-
 /**
  * Convert {mlang xx} and {mlang} strings to spans, so we can style them visually.
  * Remove superflous whitespace while at it.
  * @param {tinymce.Editor} ed
- * @param {string|null} content
  * @return {string}
  */
-const addVisualStyling = function(ed, content) {
-    if (isNull(content)) {
-        content = ed.getContent();
-    }
+const addVisualStyling = function(ed) {
+
+    let content = ed.getContent();
 
     // Do not use a variable whether text is already highlighted, do a check for the existing class
     // because this is safe for many tiny element windows at one page.
@@ -225,33 +220,11 @@ const onBeforeGetContent = function(ed, content) {
 };
 
 /**
- * Before saving and when the editor looses the focus, this event is triggered.
+ * Fires when the form containing the editor is submitted.
  * @param {tinymce.Editor} ed
- * @param {object} content
- * @param {string} event
  */
-const onProcess = function(ed, content, event) {
-    if (!isNull(content.save) && content.save === true) {
-        if (event === 'PostProcess') {
-            // When the blur event was triggered, the editor is still there, we need to reapply
-            // the previously removed styling. If this was a submit event, then do not reapply the
-            // styling to prevent that this is saved in the database.
-            if (isBlurred) {
-                ed.setContent(addVisualStyling(ed));
-                isBlurred = false;
-            }
-        } else {
-            removeVisualStyling(ed);
-        }
-    }
-};
-
-
-/**
- * Notice that when the editor content is blurred, because the focus left the editor window.
- */
-const onBlur = function() {
-    isBlurred = true;
+const onSubmit = function(ed) {
+    removeVisualStyling(ed);
 };
 
 /**
@@ -348,8 +321,7 @@ const applyLanguage = function(ed, iso) {
 export {
     onInit,
     onBeforeGetContent,
-    onProcess,
-    onBlur,
+    onSubmit,
     onDelete,
     applyLanguage
 };
