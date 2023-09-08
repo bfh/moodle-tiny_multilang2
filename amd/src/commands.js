@@ -40,7 +40,8 @@ export const getSetup = async() => {
     const [
         buttonText,
         tooltip,
-    ] = await getStrings(['multilang2:language', 'multilang2:desc'].map((key) => ({key, component})));
+        removeTag,
+    ] = await getStrings(['multilang2:language', 'multilang2:desc', 'multilang2:removetag'].map((key) => ({key, component})));
 
     return (editor) => {
         const languageList = getLanguageList(editor);
@@ -84,7 +85,14 @@ export const getSetup = async() => {
         // List would be overwhelming.
         if (!showAllLanguages(editor) || isAddLanguage(editor)) {
             for (const lang of languageList) {
-                if (lang.iso !== "remove") {
+                editor.ui.registry.addButton(component + '_remove', {
+                    icon: 'remove',
+                    tooltip: removeTag,
+                    onAction: () => {
+                        onDelete(editor, event);
+                    }
+                });
+                if (lang.iso !== 'remove') {
                     editor.ui.registry.addButton(component + '_' + lang.iso, {
                         text: lang.iso,
                         tooltip: lang.label,
