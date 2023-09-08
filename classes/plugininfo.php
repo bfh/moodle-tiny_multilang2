@@ -100,8 +100,7 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
      * @throws \dml_exception
      */
     public static function get_plugin_configuration_for_context(context $context, array $options, array $fpoptions,
-                                                                ?editor $editor = null): array
-    {
+                                                                ?editor $editor = null): array {
 
         // Check, if the multilang2 filter is active.
         if (self::is_multilang2_simulated_for_test()) {
@@ -164,7 +163,6 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
         $config['fallbackspantag'] = (bool)get_config('tiny_multilang2', 'fallbackspantag');
         $config['highlight'] = (bool)get_config('tiny_multilang2', 'highlight');
         $config['showalllangs'] = (bool)get_config('tiny_multilang2', 'showalllangs');
-
 
         if ($config['highlight']) {
             $css = trim(get_config('tiny_multilang2', 'highlight_css'));
