@@ -138,14 +138,6 @@ export const getHighlightCss = (editor) => editor.options.get(highlightcss);
 export const isAddLanguage = (editor) => editor.options.get(addlanguage);
 
 /**
- * Get the language options.
- *
- * @param {tinymce.Editor} editor
- * @returns {Array}
- */
-export const getLanguageOptions = (editor) => editor.options.get(languageoptions);
-
-/**
  * Returns an array of all the languages that have the direction right to left (RTL).
  *
  * @returns {string[]} An array of language codes representing RTL languages.

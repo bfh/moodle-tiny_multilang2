@@ -23,7 +23,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {getLanguageList, showAllLanguages, isAddLanguage, getLanguageOptions} from './options';
+import {getLanguageList, showAllLanguages, isAddLanguage} from './options';
 import {component} from './common';
 import {get_strings as getStrings} from 'core/str';
 import {applyLanguage, onInit, onBeforeGetContent, onSubmit, onDelete} from './ui';
@@ -43,13 +43,8 @@ export const getSetup = async() => {
     ] = await getStrings(['multilang2:language', 'multilang2:desc'].map((key) => ({key, component})));
 
     return (editor) => {
-        let languageList;
-        // If the 'Add language' setting is enabled, the list of languages will be based on the input languages.
-        if (isAddLanguage(editor)) {
-            languageList = getLanguageOptions(editor);
-        } else {
-            languageList = getLanguageList(editor);
-        }
+        const languageList = getLanguageList(editor);
+
         // If there is just one language, we don't need the plugin.
         if (languageList.length < 2) {
             return;
