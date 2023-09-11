@@ -1,7 +1,7 @@
 TinyMCE multilanguage plugin
 ============================
 
-![Release](https://img.shields.io/badge/Release-0.3-blue.svg)
+![Release](https://img.shields.io/badge/Release-1.0-blue.svg)
 [![Moodle Plugin CI](https://github.com/bfh/moodle-tiny_multilang2/workflows/Moodle%20Plugin%20CI/badge.svg?branch=master)](https://github.com/bfh/moodle-tiny_multilang2/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amaster)
 ![Supported](https://img.shields.io/badge/Moodle-4.1+-orange.svg)
 [![License GPL-3.0](https://img.shields.io/github/license/bfh/moodle-tiny_multilang2?color=lightgrey)](https://github.com/bfh/moodle-tiny_multilang2/blob/main/LICENSE)
@@ -112,7 +112,7 @@ provided iso codes is preserved.
 
 ## Version History
 
-### current master
+### 1.0
 
 - Fix issue [TinyMCE link plugin does not work properly when multilang2 is installed](https://github.com/bfh/moodle-tiny_multilang2/issues/4).
   Many thanks to [Mario Wehr](https://github.com/mwehr) for his contribution.
@@ -127,6 +127,8 @@ provided iso codes is preserved.
 - New feature, `<span>` elements use the `dir` attribute to annotate left to right and
   right to left languages (in standard Moodle annotation).
 - New feature: the context menu has an icon to remove the selected language tag pair.
+- Enhanced documentation to iclude new changes and add a chapter about usage. 
+- Lift version from 0.3 to 1.0 to reflect maturity.
 
 Many thanks to [Tai Le Tan](https://github.com/tailetan) from the Open University that
 provided a comprehensive [pull request](https://github.com/bfh/moodle-tiny_multilang2/pull/3).

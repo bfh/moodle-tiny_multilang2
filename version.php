@@ -28,7 +28,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tiny_multilang2';
-$plugin->release = '0.3';
-$plugin->version = 2023082300;
+$plugin->release = '1.0';
+$plugin->version = 2023091100;
 $plugin->requires = 2022112800;
 $plugin->maturity = MATURITY_RC;
