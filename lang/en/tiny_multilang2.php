@@ -64,3 +64,4 @@ $string['multilang2:desc'] = 'Helps adding multilingual content (you need the Mu
 $string['multilang2:language'] = 'Language';
 $string['multilang2:viewlanguagemenu'] = 'View language dropdown menu in TinyMCE editor';
 $string['multilang2:other'] = 'Fallback';
+$string['multilang2:removetag'] = 'Remove language tag';

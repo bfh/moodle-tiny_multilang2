@@ -115,6 +115,7 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
         $config = [
             'languages' => [],
             'mlangfilter' => $mlangfilter,
+            'addlanguage' => (bool)get_config('tiny_multilang2', 'addlanguage'),
         ];
 
         // When the setting to require the multilang2 filter is set to true, and there is no multilang filter.
@@ -123,17 +124,23 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
         }
 
         // We need to pass the list of languages to tinymce.
-        if (get_config('tiny_multilang2', 'showalllangs')) {
+        if ($config['addlanguage']) {
+            // If the option addlanguage is set, then use a custom list of languages from setting languageoptions.
+            $langs = static::get_language_options();
+        } else if (get_config('tiny_multilang2', 'showalllangs')) {
+            // If the option showalllangs is set, use all available languages in Moodle.
             $langs = get_string_manager()->get_list_of_languages();
             foreach (\array_keys($langs) as $iso) {
                 $langs[$iso] .= ' (' . $iso . ')';
             }
+            asort($langs);
         } else {
+            // Get the list of installed languages.
             $langs = get_string_manager()->get_list_of_translations();
+            asort($langs);
         }
 
         if (count($langs) > 1) {
-            asort($langs);
             $config['languages'][] = [
                 'iso' => 'remove',
                 'label' => get_string('removealltags', 'tiny_multilang2'),
@@ -156,7 +163,6 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
         $config['fallbackspantag'] = (bool)get_config('tiny_multilang2', 'fallbackspantag');
         $config['highlight'] = (bool)get_config('tiny_multilang2', 'highlight');
         $config['showalllangs'] = (bool)get_config('tiny_multilang2', 'showalllangs');
-        $config['addlanguage'] = (bool)get_config('tiny_multilang2', 'addlanguage');
 
         if ($config['highlight']) {
             $css = trim(get_config('tiny_multilang2', 'highlight_css'));
@@ -166,46 +172,48 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
             $config['css'] = $css;
         }
 
-        if ($config['addlanguage']) {
-            $optionlanguages = array_filter(
-                array_map('trim', preg_split("/\r\n|\n|\r/", get_config('tiny_multilang2', 'languageoptions')))
-            );
-            $langsavailable = get_string_manager()->get_list_of_languages();
-            $config['optionlanguages'][] = [
-                'iso' => 'remove',
-                'label' => get_string('removealltags', 'tiny_multilang2'),
-            ];
-            if (count($optionlanguages) > 1) {
-                foreach ($optionlanguages as $option) {
-                    if ($haschild = strpos($option, '-')) {
-                        // Sub lang, use the 'parent' first lang option for checks.
-                        $parentlang = substr($option, 0 , $haschild);
-                        if (!isset($langsavailable[$parentlang])) {
-                            continue;
-                        }
-                        // Find a lang string for this language, otherwise use parent.
-                        if (get_string_manager()->string_exists($option, 'tiny_multilang2')) {
-                            $text = get_string($option, 'tiny_multilang2');
-                        } else {
-                            $text = $langsavailable[$parentlang];
-                        }
-                        $langsavailable[$option] = $text;
-                    } else {
-                        // Force lower case on standard options.
-                        $option = strtolower($option);
-                        // Don't include lang if it's not available.
-                        if (!isset($langsavailable[$option])) {
-                            continue;
-                        }
+        return $config;
+    }
+
+    /**
+     * Get a list of languages from the languageoption setting that contains a list of iso codes.
+     * @return array
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    public static function get_language_options(): array {
+        $languagelist = [];
+        $optionlanguages = array_filter(
+            array_map('trim', preg_split("/\r\n|\n|\r/", get_config('tiny_multilang2', 'languageoptions')))
+        );
+        $langsavailable = get_string_manager()->get_list_of_languages();
+        if (count($optionlanguages) > 1) {
+            foreach ($optionlanguages as $option) {
+                if ($haschild = strpos($option, '-')) {
+                    // Sub lang, use the 'parent' first lang option for checks.
+                    $parentlang = substr($option, 0 , $haschild);
+                    if (!isset($langsavailable[$parentlang])) {
+                        continue;
                     }
-                    $config['optionlanguages'][] = [
-                        'iso' => $option,
-                        'label' => $langsavailable[$option] . " (" . $option . ")",
-                    ];
+                    // Find a lang string for this language, otherwise use parent.
+                    if (get_string_manager()->string_exists($option, 'tiny_multilang2')) {
+                        $text = get_string($option, 'tiny_multilang2');
+                    } else {
+                        $text = $langsavailable[$parentlang];
+                    }
+                    $langsavailable[$option] = $text;
+                } else {
+                    // Force lower case on standard options.
+                    $option = strtolower($option);
+                    // Don't include lang if it's not available.
+                    if (!isset($langsavailable[$option])) {
+                        continue;
+                    }
                 }
+                $languagelist[$option] = $langsavailable[$option] . ' (' . $option . ')';
             }
         }
-        return $config;
+        return $languagelist;
     }
 
     /**

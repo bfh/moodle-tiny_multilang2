@@ -212,7 +212,10 @@ const getBlockElement = function(text) {
  */
 const hideContentToolbar = function(el) {
     while (!isNull(el)) {
-        if (el.nodeType === Node.ELEMENT_NODE && el.getAttribute('class').indexOf('tox-pop-') != -1) {
+        if (el.nodeType === Node.ELEMENT_NODE &&
+            !isNull(el.getAttribute('class')) &&
+            el.getAttribute('class').indexOf('tox-pop-') != -1
+        ) {
             el.style.display = 'none';
             return;
         }
@@ -269,18 +272,28 @@ const onSubmit = function(ed) {
  * @param {Object} event
  */
 const onDelete = function(ed, event) {
-    if (event.isComposing || (event.keyCode !== 46 && event.keyCode !== 8)) {
+    // We are not in composing mode, have not clicked and key <del> or <backspace> was not pressed.
+    if (event.isComposing || (isNull(event.clientX) && event.keyCode !== 46 && event.keyCode !== 8)) {
         return;
     }
-    // Key <del> was pressed, to delete some content. Check if we are inside a span for the lang.
+    // In case we clicked, check that we clicked an icon (this must have been the trash icon in the context menu).
+    if (!isNull(event.clientX) &&
+        (event.target.nodeType !== Node.ELEMENT_NODE || (event.target.nodeName !== 'path' && event.target.nodeName !== 'svg'))) {
+        return;
+    }
+    // Conditions match either key <del> or <backspace> was pressed, or an click on an svg icon was done.
+    // Check if we are inside a span for the language tag.
     const begin = getHighlightNodeFromSelect(ed, 'begin');
     const end = getHighlightNodeFromSelect(ed, 'end');
-    // Only if both, start and end tag are found, then delete the nodes here and prevent the default handling
+    // Only if both, start and end tags are found, then delete the nodes here and prevent the default handling
     // because the stuff to be deleted is already gone.
     if (!isNull(begin) && !isNull(end)) {
         event.preventDefault();
         ed.dom.remove(begin);
         ed.dom.remove(end);
+        if (!isNull(event.clientX)) {
+            hideContentToolbar(event.target);
+        }
     }
 };
 
