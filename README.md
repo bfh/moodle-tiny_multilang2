@@ -28,7 +28,7 @@ formatting of the text is correct.
 
 ## Current version
 
-The latest release is v0.3 (build 2023070600) for Moodle 4.1 and newer.
+The latest release is v1.0 (build 2023091100) for Moodle 4.1 and newer.
 
 ## Requirements
 
@@ -127,7 +127,7 @@ provided iso codes is preserved.
 - New feature, `<span>` elements use the `dir` attribute to annotate left to right and
   right to left languages (in standard Moodle annotation).
 - New feature: the context menu has an icon to remove the selected language tag pair.
-- Enhanced documentation to iclude new changes and add a chapter about usage. 
+- Enhanced documentation to include new changes and add a chapter about usage. 
 - Lift version from 0.3 to 1.0 to reflect maturity.
 
 Many thanks to [Tai Le Tan](https://github.com/tailetan) from the Open University that
