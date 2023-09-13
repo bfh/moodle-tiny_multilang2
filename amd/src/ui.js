@@ -39,6 +39,12 @@ const trim = v => v.toString().replace(/^\s+/, '').replace(/\s+$/, '');
 const isNull = a => a === null || a === undefined;
 
 /**
+ * @type {object}
+ * @private
+ */
+const _options = {};
+
+/**
  * Convert {mlang xx} and {mlang} strings to spans, so we can style them visually.
  * Remove superflous whitespace while at it.
  * @param {tinymce.Editor} ed
@@ -185,25 +191,39 @@ const getHighlightNodeFromSelect = function(ed, search) {
 };
 
 /**
- * Return the block element node from the string, in case the text fragment is some parsable HTML.
+ * From the given text (that is derived from a selection) we try to check if we have block elements selected and
+ * in case yes, how many.
+ * Return an object with:
+ *  el: the first block element node from the string
+ *  cnt: number of block elements found on the first level
+ * In case the text fragment is not valid parsable HTML, then null and 0 is returned.
  * @param {string} text
- * @return {Node|null}
+ * @return {object}
  */
 const getBlockElement = function(text) {
+    let result = {el: null, cnt: 0};
     const dom = new DOMParser();
     const body = dom.parseFromString(text, 'text/html').body;
-    // We must have one child and a node element only, otherwise the selection may span via several paragraphs.
-    if (body.firstChild.nodeType !== Node.ELEMENT_NODE || body.children.length > 1) {
-        return null;
+    // If the children nodes start with no block element, then just quit here.
+    if (body.firstChild.nodeType !== Node.ELEMENT_NODE) {
+        return result;
     }
     // These are not all block elements, we check for some only where the lang tags should be placed inside.
     const blockTags = ['address', 'article', 'aside', 'blockquote',
         'dd', 'div', 'dl', 'dt', 'figcaption', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
         'li', 'ol', 'p', 'pre', 'section', 'tfoot', 'ul'];
-    if (blockTags.indexOf(body.firstChild.tagName.toString().toLowerCase()) != -1) {
-        return body.firstChild;
+    for (let i = 0; i < body.children.length; i++) {
+        if (body.children[i].nodeType !== Node.ELEMENT_NODE) {
+            continue;
+        }
+        if (blockTags.indexOf(body.children[i].tagName.toString().toLowerCase()) != -1) {
+            result.cnt += 1;
+            if (isNull(result.el)) {
+                result.el = body.children[i];
+            }
+        }
     }
-    return null;
+    return result;
 };
 
 /**
@@ -224,10 +244,16 @@ const hideContentToolbar = function(el) {
 };
 
 /**
- * When loading the editor for the first time, add the spans for highlighting the content.
+ * When loading the editor for the first time, add the spans for highlighting the lang tags.
+ * These are highlighted with the appropriate css only.
+ * In addition pass some options to the plugin instance.
  * @param {tinymce.Editor} ed
+ * @param {object} options
  */
-const onInit = function(ed) {
+const onInit = function(ed, options) {
+    Object.keys(options).forEach(function(key) {
+        _options[key] = options[key];
+    });
     ed.setContent(addVisualStyling(ed));
     if (isContentToHighlight(ed)) {
         ed.dom.addStyle(getHighlightCss(ed));
@@ -262,7 +288,8 @@ const onBeforeGetContent = function(ed, content) {
  * @param {tinymce.Editor} ed
  */
 const onSetContent = function(ed) {
-    ed.setContent(addVisualStyling(ed), {no_events: true});
+    // eslint-disable-next-line camelcase
+    ed.setContent(addVisualStyling(ed), {"no_events": true});
 };
 
 /**
@@ -362,17 +389,34 @@ const applyLanguage = function(ed, iso, event) {
         ed.dom.setOuterHTML(span, replacement);
         return;
     }
-    const blockEl = getBlockElement(text);
-    if (blockEl) {
-        // We have a block element selected, such as a hX or p tag. Then keep this tag and place the
-        // language tags inside but around the content of the block element.
-        let newtext = spanMultilangBegin.replace(regexLang, iso) + blockEl.innerHTML + spanMultilangEnd;
-        if (!mlangFilterExists(ed)) { // No mlang filter, add the fallback class to the highlight spans.
-            newtext = newtext.replaceAll('mceNonEditable', 'mceNonEditable fallback');
-        }
-        blockEl.innerHTML = newtext;
-        ed.selection.setContent(blockEl.outerHTML);
+    // Check if we have language tags inside the selection:
+    if (text.indexOf('multilang-begin') !== -1 || text.indexOf('multilang-end') !== -1) {
+        ed.notificationManager.open({
+                text: _options.langInSelectionErrMsg,
+                type: 'error',
+            });
         return;
+    }
+    const block = getBlockElement(text);
+    if (!isNull(block.el)) {
+        if (block.cnt === 1) {
+            // We have a block element selected, such as a hX or p tag. Then keep this tag and place the
+            // language tags inside but around the content of the block element.
+            let newtext = spanMultilangBegin.replace(regexLang, iso) + block.el.innerHTML + spanMultilangEnd;
+            if (!mlangFilterExists(ed)) { // No mlang filter, add the fallback class to the highlight spans.
+                newtext = newtext.replaceAll('mceNonEditable', 'mceNonEditable fallback');
+            }
+            block.el.innerHTML = newtext;
+            ed.selection.setContent(block.el.outerHTML);
+            return;
+        }
+        if (!mlangFilterExists(ed)) {
+            ed.notificationManager.open({
+                text: _options.multipleBlocksErrMsg,
+                type: 'error',
+            });
+            return;
+        }
     }
     // Not inside a lang tag, insert a new opening and closing tag with the selection inside.
     let newtext = spanMultilangBegin.replace(regexLang, iso) + text + spanMultilangEnd;

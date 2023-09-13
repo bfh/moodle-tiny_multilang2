@@ -41,7 +41,16 @@ export const getSetup = async() => {
         buttonText,
         tooltip,
         removeTag,
-    ] = await getStrings(['multilang2:language', 'multilang2:desc', 'multilang2:removetag'].map((key) => ({key, component})));
+        selectErr,
+        langTagErr,
+    ] = await getStrings([
+          'multilang2:language',
+          'multilang2:desc',
+          'multilang2:removetag',
+          'multilang2:multiBlockElements',
+          'multilang2:langTagsInSelection',
+      ].map((key) => ({key, component}))
+    );
 
     return (editor) => {
         const languageList = getLanguageList(editor);
@@ -113,7 +122,7 @@ export const getSetup = async() => {
         }
 
         editor.on('init', () => {
-            onInit(editor);
+            onInit(editor, {"multipleBlocksErrMsg": selectErr, "langInSelectionErrMsg": langTagErr});
         });
         editor.on('BeforeGetContent', (format) => {
             onBeforeGetContent(editor, format);

@@ -65,3 +65,5 @@ $string['multilang2:language'] = 'Language';
 $string['multilang2:viewlanguagemenu'] = 'View language dropdown menu in TinyMCE editor';
 $string['multilang2:other'] = 'Fallback';
 $string['multilang2:removetag'] = 'Remove language tag';
+$string['multilang2:multiBlockElements'] = 'Selected text spans multiple paragraphs/block elements. Please select one only.';
+$string['multilang2:langTagsInSelection'] = 'Selected text contains language tags. Please click on a tag to select it.';
