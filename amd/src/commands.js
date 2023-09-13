@@ -26,7 +26,7 @@
 import {getLanguageList, showAllLanguages, isAddLanguage} from './options';
 import {component} from './common';
 import {get_strings as getStrings} from 'core/str';
-import {applyLanguage, onInit, onBeforeGetContent, onSubmit, onDelete} from './ui';
+import {applyLanguage, onInit, onBeforeGetContent, onSetContent, onSubmit, onDelete} from './ui';
 
 /**
  * Get the setup function for the button and the menu entry.
@@ -117,6 +117,12 @@ export const getSetup = async() => {
         });
         editor.on('BeforeGetContent', (format) => {
             onBeforeGetContent(editor, format);
+        });
+        editor.on('focus', () => {
+            onSetContent(editor);
+        });
+        editor.on('SetContent', () => {
+            onSetContent(editor);
         });
         editor.on('submit', () => {
             onSubmit(editor);

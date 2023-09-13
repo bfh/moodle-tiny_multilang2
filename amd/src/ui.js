@@ -258,6 +258,14 @@ const onBeforeGetContent = function(ed, content) {
 };
 
 /**
+ * Whenever a content modification happens, make sure that the styling for the language tags is added.
+ * @param {tinymce.Editor} ed
+ */
+const onSetContent = function(ed) {
+    ed.setContent(addVisualStyling(ed), {no_events: true});
+};
+
+/**
  * Fires when the form containing the editor is submitted.
  * @param {tinymce.Editor} ed
  */
@@ -377,6 +385,7 @@ const applyLanguage = function(ed, iso, event) {
 export {
     onInit,
     onBeforeGetContent,
+    onSetContent,
     onSubmit,
     onDelete,
     applyLanguage
