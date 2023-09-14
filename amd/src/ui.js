@@ -39,6 +39,13 @@ const trim = v => v.toString().replace(/^\s+/, '').replace(/\s+$/, '');
 const isNull = a => a === null || a === undefined;
 
 /**
+ * Marker to remember that the submit button was hit.
+ * @type {boolean}
+ * @private
+ */
+let _isSubmit = false;
+
+/**
  * @type {object}
  * @private
  */
@@ -263,8 +270,6 @@ const onInit = function(ed, options) {
 /**
  * When the source code view dialogue is show, we must remove the highlight spans from the editor content
  * and also add them again when the dialogue is closed.
- * Since this event is also triggered when the editor data is saved, we use this function to remove the
- * highlighting content at that time.
  * @param {tinymce.Editor} ed
  * @param {object} content
  */
@@ -284,20 +289,27 @@ const onBeforeGetContent = function(ed, content) {
 };
 
 /**
- * Whenever a content modification happens, make sure that the styling for the language tags is added.
+ * When the submit button is hit, the marker spans are removed. However, if there's an error
+ * in saving the content (via ajax) the editor remains with the cleaned content. Therefore,
+ * we need to add the marker span elements once again when the user tries to change the content
+ * of the editor.
  * @param {tinymce.Editor} ed
  */
-const onSetContent = function(ed) {
-    // eslint-disable-next-line camelcase
-    ed.setContent(addVisualStyling(ed), {"no_events": true});
+const onFocus = function(ed) {
+    if (_isSubmit) {
+        // eslint-disable-next-line camelcase
+        ed.setContent(addVisualStyling(ed), {no_events: true});
+        _isSubmit = false;
+    }
 };
 
 /**
- * Fires when the form containing the editor is submitted.
+ * Fires when the form containing the editor is submitted. Remove all the marker span elements.
  * @param {tinymce.Editor} ed
  */
 const onSubmit = function(ed) {
     removeVisualStyling(ed);
+    _isSubmit = true;
 };
 
 /**
@@ -429,7 +441,7 @@ const applyLanguage = function(ed, iso, event) {
 export {
     onInit,
     onBeforeGetContent,
-    onSetContent,
+    onFocus,
     onSubmit,
     onDelete,
     applyLanguage
