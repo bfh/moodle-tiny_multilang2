@@ -49,7 +49,6 @@ is enabled, the standard `<span class="multilang">` tags are used.
 
 If the language selection does not appear in the editor:
  - Check that the [multilang2 filter][1] is installed and enabled.
- - If you don't use the [multilang2 filter][1], check that the setting `fallbackspantag` is active.
  - Check that your site has at least two languages installed.
  - If you don't have more than one language installed, enable the `addlanguage` option and
    set a few language iso codes in the `languageoptions` setting.
@@ -88,8 +87,7 @@ transformed into the standard Moodle annotation is used. These are span elements
 and the `dir` attribute annotates whether this is a left to right language or vice versa.
 
 When loading a text, both annotations are read and translated into marked language tags in the
-WYSIWYG mode, if the setting `fallbackspantag` is enabled. Otherwise, the Moodle default
-span tags are ignored. If mixed annotations are used in the text, these are preserved upon
+WYSIWYG mode. If mixed annotations are used in the text, these are preserved upon
 saving.
 
 ### Possible languages options

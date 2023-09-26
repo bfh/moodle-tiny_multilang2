@@ -28,7 +28,6 @@ import {pluginName} from './common';
 
 const languages = getPluginOptionName(pluginName, 'languages');
 const mlangfilter = getPluginOptionName(pluginName, 'mlangfilter');
-const fallbackspan = getPluginOptionName(pluginName, 'fallbackspantag');
 const showalllangs = getPluginOptionName(pluginName, 'showalllangs');
 const highlight = getPluginOptionName(pluginName, 'highlight');
 const highlightcss = getPluginOptionName(pluginName, 'css');
@@ -52,11 +51,6 @@ export const register = (editor) => {
     });
 
     editor.options.register(showalllangs, {
-        processor: 'boolean',
-        "default": false,
-    });
-
-    editor.options.register(fallbackspan, {
         processor: 'boolean',
         "default": false,
     });
@@ -104,14 +98,6 @@ export const mlangFilterExists = (editor) => editor.options.get(mlangfilter);
  * @returns {boolean}
  */
 export const showAllLanguages = (editor) => editor.options.get(showalllangs);
-
-/**
- * Get the defined option whether the classic <span class="multilang" lang="XX"> are supported as well.
- *
- * @param {tinymce.Editor} editor
- * @returns {boolean}
- */
-export const isFallbackSpanTag = (editor) => editor.options.get(fallbackspan);
 
 /**
  * Get the defined option whether to highlight the language dependent content blocks.

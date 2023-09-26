@@ -33,8 +33,6 @@ $settings = new admin_settingpage('tiny_multilang2_settings', new lang_string('s
 if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('tiny_multilang2/requiremultilang2',
         get_string('requiremultilang2', 'tiny_multilang2'), get_string('requiremultilang2_desc', 'tiny_multilang2'), 1));
-    $settings->add(new admin_setting_configcheckbox('tiny_multilang2/fallbackspantag',
-        get_string('fallbackspantag', 'tiny_multilang2'), get_string('fallbackspantag_desc', 'tiny_multilang2'), 0));
     $settings->add(new admin_setting_configcheckbox('tiny_multilang2/showalllangs',
         get_string('showalllangs', 'tiny_multilang2'), get_string('showalllangs_desc', 'tiny_multilang2'), 0));
     $settings->add(new admin_setting_configcheckbox('tiny_multilang2/highlight',

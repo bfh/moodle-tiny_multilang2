@@ -22,8 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['fallbackspantag'] = 'Beachte die <span> tags';
-$string['fallbackspantag_desc'] = 'Neben der {mlang} Syntax werden die herkömmlichen <span class="multilang"> tags unterstützt.';
 $string['highlightcss'] = 'CSS für Sprachtag';
 $string['highlightcss_desc'] = "CSS für die Marker um dem sprachabhängigen Inhalt anzuzeigen.
 

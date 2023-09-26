@@ -24,7 +24,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {getHighlightCss, isContentToHighlight, mlangFilterExists, isFallbackSpanTag, getRTLLanguages} from './options';
+import {getHighlightCss, isContentToHighlight, mlangFilterExists, getRTLLanguages} from './options';
 
 // This class inside a <span> identified the {mlang} tag that is encapsulated in a span.
 const spanClass = 'multilang-begin mceNonEditable';
@@ -74,11 +74,7 @@ const addVisualStyling = function(ed) {
     });
     content = content.replace(new RegExp('{\\s*mlang\\s*}', 'ig'), spanMultilangEnd);
 
-    // If we have the multilang2 filter installed and wish not to check for the traditional
-    // <span class="multilang"> tags, then we are done here.
-    if (mlangFilterExists(ed) && !isFallbackSpanTag(ed)) {
-        return content;
-    }
+    // Check for the traditional <span class="multilang"> tags, in case these were used as well in the text.
     // Any <span class="multilang"> tag must be replaced with a <span class="multilang-begin...>{mlang XX}</span>
     // and the corresponding closing </span> must be replaced by <span class="multilang-end ...>{mlang}</span>.
     // To handle this, we must convert the string into a DOMDocument so that any span.multilang tag can be searched

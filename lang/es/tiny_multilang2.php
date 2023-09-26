@@ -22,8 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['fallbackspantag'] = 'Accepta los tags <span>';
-$string['fallbackspantag_desc'] = 'Aparte de syntax {mlang} los classico tags <span class="multilang"> ha soportado tambien.';
 $string['highlightcss'] = 'CSS para los delimitadores';
 $string['highlightcss_desc'] = "CSS usado para destacar los delimitadores del contenido multi-idioma.
 
