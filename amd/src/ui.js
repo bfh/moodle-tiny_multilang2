@@ -337,6 +337,21 @@ const onDelete = function(ed, event) {
         if (!isNull(event.clientX)) {
             hideContentToolbar(event.target);
         }
+        cleanupBogus(ed);
+    }
+};
+
+/**
+ * In the tinyMCE of Moodle 4.1 and 4.2 some leftovers from the element selection can be seen when the source code
+ * is displayed. Remove these. Apparently 4.3 does not have this problem anymore.
+ * @param {tinymce.Editor} ed
+ */
+const cleanupBogus = function(ed) {
+    for (const span of ed.dom.select('span[class*="multilang"')) {
+        const p = span.parentElement;
+        if (!isNull(p.classList) && p.classList.contains('mce-offscreen-selection')) {
+            ed.dom.remove(p);
+        }
     }
 };
 
@@ -395,6 +410,7 @@ const applyLanguage = function(ed, iso, event) {
             replacement = replacement.replace('mceNonEditable', 'mceNonEditable fallback');
         }
         ed.dom.setOuterHTML(span, replacement);
+        cleanupBogus(ed);
         return;
     }
     // Check if we have language tags inside the selection:
