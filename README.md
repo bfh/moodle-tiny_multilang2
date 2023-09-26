@@ -43,7 +43,7 @@ is enabled, the standard `<span class="multilang">` tags are used.
 
  - Unzip the archive file or copy repository content into `*moodleroot*/lib/editor/tiny/plugins`.
  - Install the plugin within Moodle via the upgrade script.
- - Optional: Adjust the settings in "Site administration" -> "Plugins" -> "Tiny Multi-Language Content (v2) settings".
+ - Optional: Adjust the settings in "Site administration" -> "Plugins" -> "Tiny Multi-Language Content (v2)".
 
 ## Troubleshooting
 

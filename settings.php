@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die;
 
 $ADMIN->add('editortiny', new admin_category('tiny_multilang2', new lang_string('pluginname', 'tiny_multilang2')));
 
-$settings = new admin_settingpage('tiny_multilang2_settings', new lang_string('settings', 'tiny_multilang2'));
+$settings = new admin_settingpage('tiny_multilang2_settings', new lang_string('pluginname', 'tiny_multilang2'));
 
 if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('tiny_multilang2/requiremultilang2',

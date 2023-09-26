@@ -41,7 +41,6 @@ Si vous souhaitez afficher la langue pour les blocs {mlang}, vous pouvez utilise
 $string['highlight'] = 'mettre en évidence les délimiteurs';
 $string['highlight_desc'] = "Mettre en évidence visuellement les délimiteurs multilingues (c.-à-d. {mlang XX} et {mlang}) dans l'éditeur WYSIWYG.";
 $string['pluginname'] = 'Contenu multilingue (v2)';
-$string['settings'] = 'Tiny Contenu multilingue (v2) paramètres';
 $string['requiremultilang2'] = 'Exige le filtre Contenu multilingue (v2)';
 $string['requiremultilang2_desc'] = 'Si activé, le menu déroulant des langues sera visible uniquement lorsque le filtre Contenu multilingue (v2) est activé.';
 $string['showalllangs'] = 'Afficher toutes les langues';

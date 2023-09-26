@@ -79,7 +79,13 @@ Feature: Tiny editor multilang plugin with multilangfilter2
     Given the following config values are set as admin:
       | addlanguage        | 1 | tiny_multilang2 |
       | simulatemultilang2 | 0 | tiny_multilang2 |
-    And I navigate to "Plugins > Text editors > Atto HTML editor > Tiny Multi-Language Content (v2) settings" in site administration
+    # And I navigate to "Plugins > Text editors > TinyMCE editor > Multi-Language Content (v2)" in site administration
+    # doesn't work because the same menu item exists for the Atto editor which comes first (apparently the level before,
+    # the editor, seems not to work in this navigation string).
+    And I log in as "admin"
+    And I click on "Site administration" "link"
+    And I click on "Plugins" "link"
+    And I click on "//a[contains(@href, 'tiny_multilang2_settings')]" "xpath"
     When I set the field "id_s_tiny_multilang2_languageoptions" to multiline:
     """
     zh
@@ -103,7 +109,11 @@ Feature: Tiny editor multilang plugin with multilangfilter2
     Given the following config values are set as admin:
       | addlanguage        | 1 | tiny_multilang2 |
       | simulatemultilang2 | 0 | tiny_multilang2 |
-    And I navigate to "Plugins > Text editors > Atto HTML editor > Tiny Multi-Language Content (v2) settings" in site administration
+    # And I navigate to "Plugins > Text editors > TinyMCE editor > Multi-Language Content (v2)" in site administration
+    And I log in as "admin"
+    And I click on "Site administration" "link"
+    And I click on "Plugins" "link"
+    And I click on "//a[contains(@href, 'tiny_multilang2_settings')]" "xpath"
     When I set the field "id_s_tiny_multilang2_languageoptions" to multiline:
     """
     AZ

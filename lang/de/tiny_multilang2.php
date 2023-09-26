@@ -41,7 +41,6 @@ Wenn Sie die Spache anzeigen möchten, die in einem sprachabhängigen Block verw
 $string['highlight'] = 'Trennzeichen hervorheben';
 $string['highlight_desc'] = 'Die Trennzeichen für den sprachabhänigen Inhalt sollen hervorgehoben werden (z.B., {mlang XX} und {mlang}) im WYSIWYG Editor';
 $string['pluginname'] = 'Multi-Language Content (v2)';
-$string['settings'] = 'Tiny Multi-Language Content (v2) Einstellungen';
 $string['requiremultilang2'] = 'Benötigt Multi-Language Content (v2) Filter';
 $string['requiremultilang2_desc'] = 'Wenn aktiviert, wird das Menü und der Button im Editor nur dann angezeigt, wenn der Multi-Language Content (v2) Filter aktiv ist.';
 $string['showalllangs'] = 'Zeige alle Sprachen';

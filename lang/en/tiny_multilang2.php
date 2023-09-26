@@ -53,7 +53,6 @@ $string['languageoptions'] = 'Language';
 $string['removealltags'] = 'Remove all lang tags';
 $string['requiremultilang2'] = 'Require Multi-Language Content (v2) filter';
 $string['requiremultilang2_desc'] = 'If enabled, the language drop down menu is visible only when the Multi-Language Content (v2) filter is enabled.';
-$string['settings'] = 'Tiny Multi-Language Content (v2) settings';
 $string['showalllangs'] = 'Show all languages';
 $string['showalllangs_desc'] = 'If enabled, the language drop down menu will contain all the languages Moodle supports. If not, only the installed and enabled languages will be shown.';
 
