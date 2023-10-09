@@ -1,7 +1,7 @@
 TinyMCE multilanguage plugin
 ============================
 
-![Release](https://img.shields.io/badge/Release-1.0-blue.svg)
+![Release](https://img.shields.io/badge/Release-1.1-blue.svg)
 [![Moodle Plugin CI](https://github.com/bfh/moodle-tiny_multilang2/workflows/Moodle%20Plugin%20CI/badge.svg?branch=master)](https://github.com/bfh/moodle-tiny_multilang2/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amaster)
 ![Supported](https://img.shields.io/badge/Moodle-4.1+-orange.svg)
 [![License GPL-3.0](https://img.shields.io/github/license/bfh/moodle-tiny_multilang2?color=lightgrey)](https://github.com/bfh/moodle-tiny_multilang2/blob/main/LICENSE)
@@ -28,7 +28,7 @@ formatting of the text is correct.
 
 ## Current version
 
-The latest release is v1.0 (build 2023091100) for Moodle 4.1 and newer.
+The latest release is v1.1 (build 2023100900) for Moodle 4.1 and newer.
 
 ## Requirements
 
@@ -109,6 +109,20 @@ The languages are ordered alphabetically when using the installed languages or t
 provided iso codes is preserved.
 
 ## Version History
+
+### 1.1
+- Fix finally [There are some issues with the latest version #6](https://github.com/bfh/moodle-tiny_multilang2/issues/6)
+- Fix problem with already defined behat test steps by switching behat class to use traits
+  (thank you, [Jason Platts](https://github.com/jason-platts))
+- Removed setting: `fallbackspantag`
+    - It was not observed correctly (markup in the editor is still
+      applied even if the setting was off).
+    - Correcting the first point would have lead to no styling which
+      is somewhat awkward when there are `<span class="multilang">`
+      tags contained in the text but not marked as such (because
+      of the setting being disabled).
+- In Site administration -> Plugins -> Text editors the label for this plugin settings uses
+  noe the same language key as the plugin name itself (the "settings" suffix vanished).
 
 ### 1.0
 
