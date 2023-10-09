@@ -71,9 +71,15 @@ Feature: Tiny editor multilang plugin with multilangfilter2
     And I click on the "Format > Language > English (en)" submenu item for the "Description" TinyMCE editor
     And I select the inner "p" element in position "1" of the "Description" TinyMCE editor
     And I click on the "Format > Language > Deutsch (de)" submenu item for the "Description" TinyMCE editor
-    When I click on the "Format > Language > Remove all lang tags" submenu item for the "Description" TinyMCE editor
-    And I click on the "View > Source code" submenu item for the "Description" TinyMCE editor
-    Then "//textarea[@class='tox-textarea'][contains(@data-initial-value, '<p>Some plain text</p>')][contains(@data-initial-value, '<p>Ein anderer Text</p>')]" "xpath_element" should exist
+    And I press "Update profile"
+    Then "//p[contains(text(), '{mlang en}Some plain text{mlang}')]" "xpath_element" should exist
+    And "//p[contains(text(), '{mlang de}Ein anderer Text{mlang}')]" "xpath_element" should exist
+    When I click on "Edit profile" "link"
+    And I wait until the page is ready
+    And I click on the "Format > Language > Remove all lang tags" submenu item for the "Description" TinyMCE editor
+    And I press "Update profile"
+    Then "//p[contains(text(), 'Some plain text')]" "xpath_element" should exist
+    And "//p[contains(text(), 'Ein anderer Text')]" "xpath_element" should exist
 
   Scenario: Test language direction.
     Given the following config values are set as admin:
