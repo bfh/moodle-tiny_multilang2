@@ -122,7 +122,8 @@ provided iso codes is preserved.
       tags contained in the text but not marked as such (because
       of the setting being disabled).
 - In Site administration -> Plugins -> Text editors the label for this plugin settings uses
-  noe the same language key as the plugin name itself (the "settings" suffix vanished).
+  now the same language key as the plugin name itself (the "settings" suffix vanished).
+- Add ci workflow for Moodle 4.3 and adapt behat test that used the source view of TinyMCE. 
 
 ### 1.0
 
