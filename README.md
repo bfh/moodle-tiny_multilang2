@@ -36,8 +36,8 @@ There are no additional requirements. To benefit from the plugin capabilities
 the TinyMCE editor must be used in text area (either set as a user preference or
 being the standard editor set by the Moodle site admin). 
 If you use the plugin with the [multilang2 filter][1] the
-`{mlang}` tags for the filter are used. If the filter is not installed and the fallback
-is enabled, the standard `<span class="multilang">` tags are used.
+`{mlang}` tags for the filter are used. If the filter is not installed,
+the standard `<span class="multilang">` tags are used.
 
 ## Installation
 
