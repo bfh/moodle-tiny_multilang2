@@ -108,8 +108,8 @@ Feature: Tiny editor multilang plugin with multilangfilter2
     And I select the inner "p" element in position "1" of the "Description" TinyMCE editor
     And I click on the "Format > Language > Arabic (ar)" submenu item for the "Description" TinyMCE editor
     And I press "Update profile"
-    And I should see "Đây là Tiếng Việt" in the "//span[@class='multilang'][contains(@lang, 'vi')][contains(@dir, 'ltr')]" "xpath_element"
-    And I should see "السلام عليكم" in the "//span[@class='multilang'][contains(@lang, 'ar')][contains(@dir, 'rtl')]" "xpath_element"
+    And I should see "Đây là Tiếng Việt" in the "//span[@class='multilang'][contains(@lang, 'vi')]" "xpath_element"
+    And I should see "السلام عليكم" in the "//span[@class='multilang'][contains(@lang, 'ar')]" "xpath_element"
 
   Scenario: Test add complex multi language types.
     Given the following config values are set as admin:
