@@ -82,9 +82,12 @@ of the editor are converted to correct language tags that can be used within the
 If the [multilang2 filter][1] is installed
 and active on the Moodle site, the `{mlan xx}` annotation is used, where `xx` is the iso code of
 the selected language. If the [multilang2 filter][1] is not installed, the language tags are
-transformed into the standard Moodle annotation is used. These are span elements that look like
+transformed into the standard Moodle annotation. These are span elements that look like
 `<span class="multilang" lang="xx" dir="ltr">`, where `xx` contains the iso code of the language
 and the `dir` attribute annotates whether this is a left to right language or vice versa.
+
+Note: for the moment the `dir="ltr"` attribute is not included in the code because
+it breaks the Moodle multilanguage filter.
 
 When loading a text, both annotations are read and translated into marked language tags in the
 WYSIWYG mode. If mixed annotations are used in the text, these are preserved upon
@@ -109,6 +112,10 @@ The languages are ordered alphabetically when using the installed languages or t
 provided iso codes is preserved.
 
 ## Version History
+
+### Master
+- Removal of the attribute `dir` e.g. `dir="ltr"` for language direction because it
+breaks the standard multilanguage filter in Moodle.
 
 ### 1.1
 - Fix finally [There are some issues with the latest version #6](https://github.com/bfh/moodle-tiny_multilang2/issues/6)

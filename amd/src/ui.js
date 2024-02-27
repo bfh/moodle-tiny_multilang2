@@ -24,7 +24,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {getHighlightCss, isContentToHighlight, mlangFilterExists, getRTLLanguages} from './options';
+import {getHighlightCss, isContentToHighlight, mlangFilterExists} from './options';
 
 // This class inside a <span> identified the {mlang} tag that is encapsulated in a span.
 const spanClass = 'multilang-begin mceNonEditable';
@@ -141,13 +141,17 @@ const removeVisualStyling = function(ed) {
                 if (!isNull(end)) {
                     // Extract the language from the {mlang XX} tag.
                     const lang = span.innerHTML.match(new RegExp('{\\s*mlang\\s+([^}]+?)\\s*}', 'i'));
-                    // Right to left default languages.
-                    const rtlLanguages = getRTLLanguages();
                     if (lang) {
+                        /* Do not add the dir attribute as it breaks the Moodle language filter.
+                        // Right to left default languages.
+                        const rtlLanguages = getRTLLanguages();
                         const langCode = lang[1];
                         // Add dir="rtl" to the html tag any time the overall document direction is right-to-left.
                         const dir = rtlLanguages.includes(langCode) ? 'rtl' : 'ltr';
-                        const newHTML = '<span class="multilang" lang="' + lang[1] + '" dir="' + dir + '">' + innerHTML + '</span>';
+                        // Do not add the dir attribute as it breaks the Moodle language filter.
+                        const newHTML = `<span class="multilang" lang="${lang[1]}" dir="${dir}">${innerHTML}</span>`;
+                        */
+                        const newHTML = `<span class="multilang" lang="${lang[1]}">${innerHTML}</span>`;
                         ed.dom.setOuterHTML(span, newHTML);
                         // And remove the other siblings.
                         for (end of toRemove) {
@@ -219,7 +223,7 @@ const getBlockElement = function(text) {
         if (body.children[i].nodeType !== Node.ELEMENT_NODE) {
             continue;
         }
-        if (blockTags.indexOf(body.children[i].tagName.toString().toLowerCase()) != -1) {
+        if (blockTags.indexOf(body.children[i].tagName.toString().toLowerCase()) !== -1) {
             result.cnt += 1;
             if (isNull(result.el)) {
                 result.el = body.children[i];
