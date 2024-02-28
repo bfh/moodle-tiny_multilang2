@@ -10,7 +10,7 @@ Feature: Tiny editor multilang plugin for default behaviour with no multilangfil
       | language |
       | de       |
     And the "multilang" filter is "on"
-    And the "multilang" filter applies to "content"
+    And the "multilang" filter applies to "content and headings"
     And the following "courses" exist:
       | fullname | shortname | category |
       | Course 1 | C1        | 0        |
