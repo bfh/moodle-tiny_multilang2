@@ -3,7 +3,8 @@ TinyMCE multilanguage plugin
 
 ![Release](https://img.shields.io/badge/Release-1.1-blue.svg)
 [![Moodle Plugin CI](https://github.com/bfh/moodle-tiny_multilang2/workflows/Moodle%20Plugin%20CI/badge.svg?branch=main)](https://github.com/bfh/moodle-tiny_multilang2/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amain)
-![Supported](https://img.shields.io/badge/Moodle-4.1+-orange.svg)
+[![PHP Support](https://img.shields.io/badge/php-7.4--8.3-blue)](https://github.com/bfh/moodle-tiny_multilang2/actions)
+[![Moodle Support](https://img.shields.io/badge/Moodle-4.1--4.4+-orange)](https://github.com/bfh/moodle-tiny_multilang2/actions)
 [![License GPL-3.0](https://img.shields.io/github/license/bfh/moodle-tiny_multilang2?color=lightgrey)](https://github.com/bfh/moodle-tiny_multilang2/blob/main/LICENSE)
 [![GitHub contributors](https://img.shields.io/github/contributors/bfh/moodle-tiny_multilang2)](https://github.com/bfh/moodle-tiny_multilang2/graphs/contributors)
 

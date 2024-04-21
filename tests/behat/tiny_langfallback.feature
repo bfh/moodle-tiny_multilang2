@@ -11,6 +11,8 @@ Feature: Tiny editor multilang plugin for default behaviour with no multilangfil
       | de       |
     And the "multilang" filter is "on"
     And the "multilang" filter applies to "content and headings"
+    And the "multilang2" filter is "on"
+    And the "multilang2" filter applies to "content and headings"
     And the following "courses" exist:
       | fullname | shortname | category |
       | Course 1 | C1        | 0        |
@@ -25,22 +27,25 @@ Feature: Tiny editor multilang plugin for default behaviour with no multilangfil
 
   Scenario: I login as admin and select the paragraphs and set the language to english and german
     When I am on "Course 1" course homepage
-    And I am on the "PageName1" "page activity" page
+    And I am on the "PageName1" "page activity editing" page logged in as admin
     And I navigate to "Settings" in current page administration
-    And I click on "//a[@id='collapseElement-0']" "xpath_element"
+    And I expand all fieldsets
     And I select the inner "p" element in position "0" of the "Page content" TinyMCE editor
     And I click on the "Format > Language > English (en)" submenu item for the "Page content" TinyMCE editor
     And I click on "//h1" "xpath_element"
     And I select the inner "p" element in position "1" of the "Page content" TinyMCE editor
     And I click on the "Format > Language > Deutsch (de)" submenu item for the "Page content" TinyMCE editor
     And I press "Save and display"
-    # Because the two texts are in different nodes, we are only able to check that the <span> elements have been applied.
-    Then I should see "Some plain text" in the "//span[@lang='en'][1]" "xpath_element"
-    And I should see "Ein anderer Text" in the "//span[@lang='de'][1]" "xpath_element"
-    And I navigate to "Settings" in current page administration
-    And I click on "//a[@id='collapseElement-0']" "xpath_element"
+    Then I should see "Some plain text"
+    And I should not see "Ein anderer Text"
+    And I follow "Language" in the user menu
+    And I follow "Deutsch ‎(de)‎"
+    And I should see "Ein anderer Text"
+    And I should not see "Some plain text"
+    And I am on the "PageName1" "page activity editing" page logged in as admin
+    And I expand all fieldsets
     And I select the "span" element in position "2" of the "Page content" TinyMCE editor
     And I click on the "Format > Language > English (en)" submenu item for the "Page content" TinyMCE editor
     And I press "Save and display"
-    Then I should see "Some plain text" in the "//p[1]/span[@lang='en']" "xpath_element"
-    And I should see "Ein anderer Text" in the "//p[2]/span[@lang='en']" "xpath_element"
+    Then I should see "Some plain text"
+    And I should see "Ein anderer Text"
