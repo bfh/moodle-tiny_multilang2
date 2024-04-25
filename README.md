@@ -1,7 +1,7 @@
 TinyMCE multilanguage plugin
 ============================
 
-![Release](https://img.shields.io/badge/Release-1.1-blue.svg)
+![Release](https://img.shields.io/badge/Release-1.2-blue.svg)
 [![Moodle Plugin CI](https://github.com/bfh/moodle-tiny_multilang2/workflows/Moodle%20Plugin%20CI/badge.svg?branch=main)](https://github.com/bfh/moodle-tiny_multilang2/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amain)
 [![PHP Support](https://img.shields.io/badge/php-7.4--8.3-blue)](https://github.com/bfh/moodle-tiny_multilang2/actions)
 [![Moodle Support](https://img.shields.io/badge/Moodle-4.1--4.4+-orange)](https://github.com/bfh/moodle-tiny_multilang2/actions)
@@ -29,7 +29,7 @@ formatting of the text is correct.
 
 ## Current version
 
-The latest release is v1.1 (build 2023100900) for Moodle 4.1 and newer.
+The latest release is v1.2 (build 2024042200) for Moodle 4.1 and newer.
 
 ## Requirements
 
@@ -114,9 +114,12 @@ provided iso codes is preserved.
 
 ## Version History
 
-### Unreleased
+### 1.2
 - Removal of the attribute `dir` e.g. `dir="ltr"` for language direction because it
-breaks the standard multilanguage filter in Moodle.
+  breaks the standard multilanguage filter in Moodle.
+- Support for Moodle 4.4 and PHP 8.3.
+- Corrections of content and typos in README.
+- Maturity changed to STABLE.
 
 ### 1.1
 - Fix finally [There are some issues with the latest version #6](https://github.com/bfh/moodle-tiny_multilang2/issues/6)

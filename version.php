@@ -31,5 +31,5 @@ $plugin->component = 'tiny_multilang2';
 $plugin->release = '1.2';
 $plugin->version = 2024042200;
 $plugin->requires = 2022112800;
-$plugin->maturity = MATURITY_RC;
+$plugin->maturity = MATURITY_STABLE;
 $plugin->supported = [401, 404];
