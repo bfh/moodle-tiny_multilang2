@@ -28,8 +28,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tiny_multilang2';
-$plugin->release = '1.2';
-$plugin->version = 2024042200;
+$plugin->release = '1.3';
+$plugin->version = 2024100900;
 $plugin->requires = 2022112800;
 $plugin->maturity = MATURITY_STABLE;
-$plugin->supported = [401, 404];
+$plugin->supported = [401, 405];

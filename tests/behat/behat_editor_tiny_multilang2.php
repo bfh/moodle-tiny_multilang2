@@ -40,6 +40,18 @@ class behat_editor_tiny_multilang2 extends behat_base {
     use editor_tiny_helpers;
 
     /**
+     * The menu element of the TinyMCE editor.
+     * @var \Behat\Mink\Element\NodeElement
+     */
+    private $menubar;
+
+    /**
+     * The menu items in the TinyMCE editor that should be clicked.
+     * @var string[]
+     */
+    private $menus;
+
+    /**
      * Click on a button for the specified TinyMCE editor.
      *
      * phpcs:disable
@@ -50,20 +62,33 @@ class behat_editor_tiny_multilang2 extends behat_base {
      * @param string $locator The locator for the editor
      */
     public function i_click_on_submenuitem_in_menu(string $menuitem, string $locator): void {
+        global $CFG;
+
         $this->require_tiny_tags();
         $container = $this->get_editor_container_for_locator($locator);
 
-        $menubar = $container->find('css', '[role="menubar"]');
+        $this->menubar = $container->find('css', '[role="menubar"]');
 
-        $menus = array_map(function(string $value): string {
+        $this->menus = array_map(function(string $value): string {
             return trim($value);
         }, explode('>', $menuitem));
 
-        // Open the menu bar.
-        $mainmenu = array_shift($menus);
-        $this->execute('behat_general::i_click_on_in_the', [$mainmenu, 'button', $menubar, 'NodeElement']);
+        if ($CFG->version < 2024100700) {
+            $this->before_four_five();
+        } else {
+            $this->four_five_and_later();
+        }
+    }
 
-        foreach ($menus as $menuitem) {
+    /**
+     * Click the TinyMCE menu prior to Moodle 4.5
+     */
+    private function before_four_five() {
+        // Open the menu bar.
+        $mainmenu = array_shift($this->menus);
+        $this->execute('behat_general::i_click_on_in_the', [$mainmenu, 'button', $this->menubar, 'NodeElement']);
+
+        foreach ($this->menus as $menuitem) {
             // Find the menu that was opened.
             $openmenu = $this->find('css', '.tox-selected-menu');
 
@@ -78,6 +103,25 @@ class behat_editor_tiny_multilang2 extends behat_base {
             // Now match by title where the role matches any menuitem, or menuitemcheckbox, or menuitem*.
             $link = $openmenu->find('css', "[title='{$menuitem}'][role^='menuitem']");
             $this->execute('behat_general::i_click_on', [$link, 'NodeElement']);
+        }
+    }
+
+    /**
+     * Click the TinyMCE menu in Moodle 4.5 and later.
+     */
+    private function four_five_and_later() {
+        // Open the menu bar.
+        $mainmenu = array_shift($this->menus);
+        $button = $this->menubar->find('xpath', "//span[text()='{$mainmenu}']");
+        $this->execute('behat_general::i_click_on', [$button, 'NodeElement']);
+
+        // Find the menu that was opened.
+        $openmenu = $this->find('css', '.tox-selected-menu');
+
+        foreach ($this->menus as $i => $menuitem) {
+            $item = $openmenu->find('css', "[aria-label='{$menuitem}']");
+            $item->mouseover();
+            $this->execute('behat_general::i_click_on', [$item, 'NodeElement']);
         }
     }
 

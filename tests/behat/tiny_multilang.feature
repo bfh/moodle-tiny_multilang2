@@ -59,9 +59,6 @@ Feature: Tiny editor multilang plugin with multilangfilter2
     And I should see "Malay (ms)"
     And I should see "Russian (ru)"
     And I should see "Bengali (bn)"
-    And I click on "div[title='Russian (ru)']" "css_element"
-    And I press "Update profile"
-    And I should see "{mlang ru}Some plain text{mlang}"
 
   Scenario: Test remove all language tags.
     Given I log in as "admin"

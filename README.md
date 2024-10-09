@@ -1,10 +1,10 @@
 TinyMCE multilanguage plugin
 ============================
 
-![Release](https://img.shields.io/badge/Release-1.2-blue.svg)
+![Release](https://img.shields.io/badge/Release-1.3-blue.svg)
 [![Moodle Plugin CI](https://github.com/bfh/moodle-tiny_multilang2/workflows/Moodle%20Plugin%20CI/badge.svg?branch=main)](https://github.com/bfh/moodle-tiny_multilang2/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amain)
 [![PHP Support](https://img.shields.io/badge/php-7.4--8.3-blue)](https://github.com/bfh/moodle-tiny_multilang2/actions)
-[![Moodle Support](https://img.shields.io/badge/Moodle-4.1--4.4+-orange)](https://github.com/bfh/moodle-tiny_multilang2/actions)
+[![Moodle Support](https://img.shields.io/badge/Moodle-4.1--4.5+-orange)](https://github.com/bfh/moodle-tiny_multilang2/actions)
 [![License GPL-3.0](https://img.shields.io/github/license/bfh/moodle-tiny_multilang2?color=lightgrey)](https://github.com/bfh/moodle-tiny_multilang2/blob/main/LICENSE)
 [![GitHub contributors](https://img.shields.io/github/contributors/bfh/moodle-tiny_multilang2)](https://github.com/bfh/moodle-tiny_multilang2/graphs/contributors)
 
@@ -29,7 +29,7 @@ formatting of the text is correct.
 
 ## Current version
 
-The latest release is v1.2 (build 2024042200) for Moodle 4.1 and newer.
+The latest release is v1.3 (build 2024100900) for Moodle 4.1 and newer.
 
 ## Requirements
 
@@ -113,6 +113,9 @@ The languages are ordered alphabetically when using the installed languages or t
 provided iso codes is preserved.
 
 ## Version History
+
+### 1.3
+- Adaptions for Moodle 4.5.
 
 ### 1.2
 - Removal of the attribute `dir` e.g. `dir="ltr"` for language direction because it
