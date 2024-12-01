@@ -67,12 +67,40 @@ const addVisualStyling = function(ed) {
         return content;
     }
 
+    let intermediateReplacements = [];
+    // Helper function to check wether te matching {mland} is inside a html node or not.
+    const replaceHelper = function(m0, m1, p, c) {
+        // Check if we are inside a html node by checking where the next > and < are.
+        const textBefore = c.substring(0, p);
+        const textAfter = c.substring(p + m0.length);
+        const open = textBefore.lastIndexOf('<');
+        const close = textBefore.lastIndexOf('>');
+        // If open < close we are outside a html node and can modify the original content
+        if (open < close) {
+            if (!m1) {
+                m0 = spanMultilangEnd;
+            } else {
+                m0 = spanMultilangBegin.replace(new RegExp('%lang', 'g'), m1);
+            }
+        } // If open > close we are inside a html node and do not modify the original content.
+        // Store the matched {mlang} tag in the replacements array.
+        intermediateReplacements.push(m0);
+        return `${textBefore}___~~${intermediateReplacements.length}~~___${textAfter}`;
+    };
     // First look for any {mlang} tags in the content string and do a preg_replace with the corresponding
     // <span> tag that encapsulated the {mlang} tag so that the {mlang} is highlighted.
-    content = content.replace(new RegExp('{\\s*mlang\\s+([^}]+?)\\s*}', 'ig'), function(match, p1) {
-        return spanMultilangBegin.replace(new RegExp('%lang', 'g'), p1);
-    });
-    content = content.replace(new RegExp('{\\s*mlang\\s*}', 'ig'), spanMultilangEnd);
+    // eslint-disable-next-line no-constant-condition
+    while (1) {
+        const m = content.match(new RegExp('{\\s*mlang(\\s+([^}]+?))?\\s*}', 'i'));
+        if (!m) {
+            break;
+        }
+        content = replaceHelper(m[0], m[2], m.index, m.input);
+    }
+    // Revert all placeholders back to the original {mlang} tags.
+    for (let i = 0; i < intermediateReplacements.length; i++) {
+        content = content.replace(`___~~${i + 1}~~___`, intermediateReplacements[i]);
+    }
 
     // Check for the traditional <span class="multilang"> tags, in case these were used as well in the text.
     // Any <span class="multilang"> tag must be replaced with a <span class="multilang-begin...>{mlang XX}</span>
