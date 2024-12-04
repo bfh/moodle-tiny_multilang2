@@ -320,6 +320,14 @@ const onBeforeGetContent = function(ed, content) {
                 });
                 // Stop observing once the modal is found.
                 obs.disconnect();
+                return;
+            }
+            const tinyMceModal = document.querySelector('.tox-dialog-wrap');
+            if (tinyMceModal) {
+                ed.on('CloseWindow', () => {
+                    onClose(ed);
+                });
+                obs.disconnect();
             }
         });
         observer.observe(document.body, {childList: true, subtree: true});
