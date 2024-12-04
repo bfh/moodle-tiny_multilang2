@@ -305,13 +305,24 @@ const onBeforeGetContent = function(ed, content) {
     if (!isNull(content.source_view) && content.source_view === true) {
         // If the user clicks on 'Cancel' or the close button on the html
         // source code dialog view, make sure we re-add the visual styling.
-        var onClose = function(ed) {
+        const onClose = function(ed) {
             ed.off('close', onClose);
             ed.setContent(addVisualStyling(ed));
         };
-        ed.on('CloseWindow', () => {
-            onClose(ed);
+        const observer = new MutationObserver((mutations, obs) => {
+            const viewSrcModal = document.querySelector('[data-region="modal"]');
+            if (viewSrcModal) {
+                viewSrcModal.addEventListener('click', (event) => {
+                    const {action} = event.target.dataset;
+                    if (['cancel', 'save', 'hide'].includes(action)) {
+                        onClose(ed);
+                    }
+                });
+                // Stop observing once the modal is found.
+                obs.disconnect();
+            }
         });
+        observer.observe(document.body, {childList: true, subtree: true});
         removeVisualStyling(ed);
     }
 };
