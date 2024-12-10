@@ -25,19 +25,8 @@
  */
 
 import {getHighlightCss, isContentToHighlight, mlangFilterExists} from './options';
-
-// This class inside a <span> identified the {mlang} tag that is encapsulated in a span.
-const spanClass = 'multilang-begin mceNonEditable';
-// This is the <span> element with the data attribute.
-const spanFixedAttrs = '<span contenteditable="false" class="' + spanClass + '" data-mce-contenteditable="false"';
-// The begin span needs the language attributes inside the span and the mlang attribute.
-const spanMultilangBegin = spanFixedAttrs + ' lang="%lang" xml:lang="%lang">{mlang %lang}</span>';
-// The end span doesn't need information about the used language.
-const spanMultilangEnd = spanFixedAttrs.replace('begin', 'end') + '>{mlang}</span>';
-// Helper functions
-const trim = v => v.toString().replace(/^\s+/, '').replace(/\s+$/, '');
-const isNull = a => a === null || a === undefined;
-
+import {isNull, trim, blockTags, spanMultilangBegin, spanMultilangEnd} from './constants';
+import {parseEditorContent} from './htmlparser';
 /**
  * Marker to remember that the submit button was hit.
  * @type {boolean}
@@ -59,48 +48,8 @@ const _options = {};
  */
 const addVisualStyling = function(ed) {
 
-    let content = ed.getContent();
-
-    // Do not use a variable whether text is already highlighted, do a check for the existing class
-    // because this is safe for many tiny element windows at one page.
-    if (content.indexOf(spanClass) !== -1) {
-        return content;
-    }
-
-    let intermediateReplacements = [];
-    // Helper function to check wether te matching {mland} is inside a html node or not.
-    const replaceHelper = function(m0, m1, p, c) {
-        // Check if we are inside a html node by checking where the next > and < are.
-        const textBefore = c.substring(0, p);
-        const textAfter = c.substring(p + m0.length);
-        const open = textBefore.lastIndexOf('<');
-        const close = textBefore.lastIndexOf('>');
-        // If open < close we are outside a html node and can modify the original content
-        if (open < close) {
-            if (!m1) {
-                m0 = spanMultilangEnd;
-            } else {
-                m0 = spanMultilangBegin.replace(new RegExp('%lang', 'g'), m1);
-            }
-        } // If open > close we are inside a html node and do not modify the original content.
-        // Store the matched {mlang} tag in the replacements array.
-        intermediateReplacements.push(m0);
-        return `${textBefore}___~~${intermediateReplacements.length}~~___${textAfter}`;
-    };
-    // First look for any {mlang} tags in the content string and do a preg_replace with the corresponding
-    // <span> tag that encapsulated the {mlang} tag so that the {mlang} is highlighted.
-    // eslint-disable-next-line no-constant-condition
-    while (1) {
-        const m = content.match(new RegExp('{\\s*mlang(\\s+([^}]+?))?\\s*}', 'i'));
-        if (!m) {
-            break;
-        }
-        content = replaceHelper(m[0], m[2], m.index, m.input);
-    }
-    // Revert all placeholders back to the original {mlang} tags.
-    for (let i = 0; i < intermediateReplacements.length; i++) {
-        content = content.replace(`___~~${i + 1}~~___`, intermediateReplacements[i]);
-    }
+    // Parse the editor content and check for all {mlang} tags that are in the html content.
+    let content = parseEditorContent(ed.getContent());
 
     // Check for the traditional <span class="multilang"> tags, in case these were used as well in the text.
     // Any <span class="multilang"> tag must be replaced with a <span class="multilang-begin...>{mlang XX}</span>
@@ -243,10 +192,7 @@ const getBlockElement = function(text) {
     if (body.firstChild.nodeType !== Node.ELEMENT_NODE) {
         return result;
     }
-    // These are not all block elements, we check for some only where the lang tags should be placed inside.
-    const blockTags = ['address', 'article', 'aside', 'blockquote',
-        'dd', 'div', 'dl', 'dt', 'figcaption', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-        'li', 'ol', 'p', 'pre', 'section', 'tfoot', 'ul'];
+    // Lang tags should be placed inside block elements.
     for (let i = 0; i < body.children.length; i++) {
         if (body.children[i].nodeType !== Node.ELEMENT_NODE) {
             continue;
