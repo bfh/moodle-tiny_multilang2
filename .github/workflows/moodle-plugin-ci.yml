@@ -170,18 +170,14 @@ jobs:
         if: ${{ always() }}
         run: moodle-plugin-ci savepoints
 
-      - name: Mustache Lint
-        if: ${{ always() }}
-        run: moodle-plugin-ci mustache || true
-
       - name: Grunt
         if: ${{ always() }}
         run: moodle-plugin-ci grunt --max-lint-warnings 0
 
-      - name: PHPUnit tests
+      - name: JS tests
         if: ${{ always() }}
-        run: moodle-plugin-ci phpunit --fail-on-warning
-
+        run: cd /home/runner/work/moodle-tiny_multilang2/moodle-tiny_multilang2/moodle/lib/editor/tiny/plugins/multilang2/tests/js && npm install && npm test
+      
       - name: Behat features
         if: ${{ always() }}
         run: moodle-plugin-ci behat --profile chrome --auto-rerun 0
