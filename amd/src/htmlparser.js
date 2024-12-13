@@ -33,6 +33,7 @@ class HTMLParser {
         this.onTagOpen = null;
         this.onTagClose = null;
         this.onText = null;
+        this.onComment = null;
         this.chunk = '';
         this.parse = function(input) {
             let content = input;
@@ -42,6 +43,7 @@ class HTMLParser {
                     let index = match.index;
                     if (index > 0) {
                         this.chunk = content.substring(0, index);
+                        content = content.substring(index);
                         if (typeof this.onText === 'function') {
                             this.onText(this.chunk);
                         }
@@ -49,7 +51,19 @@ class HTMLParser {
                     this.chunk = match[0];
                     if (match[0].charAt(1) === '/') {
                         if (typeof this.onTagClose === 'function') {
-                            this.onTagClose(match[0].substring(2, match[0].length - 1).trim());
+                            const tag = match[0].substring(2, match[0].length - 1).trim().toLowerCase();
+                            this.onTagClose(tag);
+                        }
+                    } else if (match[0].indexOf('<!--') === 0) {
+                        let end = content.indexOf('-->');
+                        if (end === -1) {
+                            end = content.length;
+                        } else {
+                            end += 3;
+                        }
+                        this.chunk = content.substring(0, end);
+                        if (typeof this.onComment === 'function') {
+                            this.onComment(this.chunk);
                         }
                     } else if (typeof this.onTagOpen === 'function') {
                         const attr1 = this.mapAttrs(match[0].match(/([\w\-_]+)="([^"]*)"/g));
@@ -57,7 +71,7 @@ class HTMLParser {
                         const tag = match[0].match(/^<(\w+)/);
                         this.onTagOpen(tag[1].toLowerCase(), {...attr1, ...attr2});
                     }
-                    content = content.substring(index + match[0].length);
+                    content = content.substring(this.chunk.length);
                 } else {
                     if (typeof this.onText === 'function') {
                         this.onText(content);
@@ -146,6 +160,9 @@ export const parseEditorContent = function(html) {
             text = text.replace(`___~~${i + 1}~~___`, intermediateReplacements[i]);
         }
         newHtml += text;
+    };
+    parser.onComment = function(comment) {
+        newHtml += comment;
     };
     parser.parse(html);
     return newHtml;
