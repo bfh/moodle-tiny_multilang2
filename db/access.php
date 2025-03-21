@@ -27,6 +27,14 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
+    'tiny/multilang2:use' => [
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_USER,
+        'archetypes' => [
+            'editingteacher' => CAP_ALLOW,
+        ],
+    ],
+    // Deprecated since 1.4
     'tiny/multilang2:viewlanguagemenu' => [
         'captype'      => 'write',
         'contextlevel' => CONTEXT_COURSE,
