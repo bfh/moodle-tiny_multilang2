@@ -32,7 +32,7 @@ export const spanMultilangEnd = spanFixedAttrs.replace('begin', 'end') + '>{mlan
 // Helper functions
 export const trim = v => v.toString().replace(/^\s+/, '').replace(/\s+$/, '');
 export const isNull = a => a === null || a === undefined;
-// These are HTML block elements that are not allowed to be inside a {mlang} tag.
+// These are HTML block elements.
 export const blockTags = ['address', 'article', 'aside', 'blockquote',
     'dd', 'div', 'dl', 'dt', 'figcaption', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
     'li', 'ol', 'p', 'pre', 'section', 'tfoot', 'ul'];

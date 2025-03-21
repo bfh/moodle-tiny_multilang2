@@ -1,45 +1,51 @@
-// This file is part of Moodle - https://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
-
-/**
- * Test suite for the HTML parser.
- *
- * @module      tiny_multilang2
- * @copyright   2024 Stephan Robotta <stephan.robotta@bfh.ch>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 import {expect, test} from '@jest/globals';
 import {parseEditorContent} from './src/htmlparser.mjs';
 
 test('Language markers spread via several block elements.', () => {
-    const html = '<p class="clo">{mlang de}</p><div>Foo bar {mlang}</div>';
-    const parsed = '<p class="clo"><span contenteditable="false" class="multilang-begin mceNonEditable" '
+    const html = '<div class="clo">{mlang de}</div><div>Foo bar {mlang}</div>';
+    const parsed = '<div class="clo"><span contenteditable="false" class="multilang-begin mceNonEditable" '
         + 'data-mce-contenteditable="false" lang="de" xml:lang="de">{mlang de}</span>'
-        + '<span contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}</span>'
-        + '<div>Foo bar <span contenteditable="false" class="multilang-begin mceNonEditable" data-mce-contenteditable="false" '
-        + 'lang="other" xml:lang="other">{mlang other}</span><span contenteditable="false" class="multilang-end mceNonEditable" '
-        + 'data-mce-contenteditable="false">{mlang}</span>';
+        + '</div><div>Foo bar <span contenteditable="false" class="multilang-end mceNonEditable" '
+        + 'data-mce-contenteditable="false">{mlang}</span></div>';
+    expect(parseEditorContent(html)).toEqual(parsed);
+});
+
+test('Linebreak tag in between language markers.', () => {
+    const html = '{mlang de}<br>{mlang}';
+    const parsed = '<span contenteditable="false" class="multilang-begin mceNonEditable" '
+        + 'data-mce-contenteditable="false" lang="de" xml:lang="de">{mlang de}</span><br>'
+        + '<span contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}</span>';
+    expect(parseEditorContent(html)).toEqual(parsed);
+});
+
+test('Image tag enclosed by language markers.', () => {
+    const html = '{mlang de}<img src="https://example.com/image.jpg">{mlang}';
+    const parsed = '<span contenteditable="false" class="multilang-begin mceNonEditable" '
+        + 'data-mce-contenteditable="false" lang="de" xml:lang="de">{mlang de}</span>'
+        + '<img src="https://example.com/image.jpg">'
+        + '<span contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}</span>';
     expect(parseEditorContent(html)).toEqual(parsed);
 });
 
 test('Only one closing language tag.', () => {
     const html = '<div>Foo bar {mlang}</div>';
-    const parsed = '<div>Foo bar <span contenteditable="false" class="multilang-begin mceNonEditable" '
-        + 'data-mce-contenteditable="false" lang="other" xml:lang="other">{mlang other}</span>'
-        + '<span contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}</span>';
+    expect(parseEditorContent(html)).toEqual(html);
+});
+
+test('Only one opening language tag.', () => {
+    const html = '<div>{mlang de}Foo bar</div>';
+    const parsed = '<div><span contenteditable="false" class="multilang-begin mceNonEditable" '
+        + 'data-mce-contenteditable="false" lang="de" xml:lang="de">{mlang de}</span>Foo bar</div>';
+    expect(parseEditorContent(html)).toEqual(parsed);
+});
+
+test('Enclosed language tags in between.', () => {
+    const html = '<div>{mlang de}Foo bar{mlang other}Bar baz{mlang}{mlang}</div>';
+    const parsed = '<div><span contenteditable="false" class="multilang-begin mceNonEditable" '
+        + 'data-mce-contenteditable="false" lang="de" xml:lang="de">{mlang de}</span>Foo bar'
+        + '{mlang other}Bar baz{mlang}'
+        + '<span contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}</span>'
+        + '</div>';
     expect(parseEditorContent(html)).toEqual(parsed);
 });
 
@@ -51,12 +57,7 @@ test('Language tags in text and attribures, attributes without value.', () => {
         + '<p>{mlang de}</p>\n'
         + '<p>ein Paragraf auf Deutch</p>\n'
         + '<br><hr strong/>\n'
-        + '<p class="clo">{mlang}</p>\n'
-        + '<p>{mlang other}This is <b>a</b> test{mlang}{mlang de}Das ist ein Test{mlang}.</p>\n'
-        + '<p>{mlang en}This is a test{mlang}{mlang de}Das ist ein Test{mlang}.</p>\n'
-        + '<p><span contenteditable="false" class="multilang-begin mceNonEditable"\n'
-        + 'data-mce-contenteditable="false" lang="en" xml:lang="en">{mlang en}</span>English rules'
-        + '<span contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}</span></p>';
+        + '<p class="clo">{mlang}</p>\n';
     const parsed = '<p><span contenteditable="false" class="multilang-begin mceNonEditable" data-mce-contenteditable="false" '
         + 'lang="en" xml:lang="en">{mlang en}</span>This is a test<span contenteditable="false" class="multilang-end mceNonEditable" '
         + 'data-mce-contenteditable="false">{mlang}</span><span contenteditable="false" class="multilang-begin mceNonEditable" '
@@ -70,35 +71,39 @@ test('Language tags in text and attribures, attributes without value.', () => {
         + 'data-mce-contenteditable="false" lang="en" xml:lang="en">{mlang en}</span>other<span contenteditable="false" '
         + 'class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}</span></a></p>\n'
         + '<p><span contenteditable="false" class="multilang-begin mceNonEditable" data-mce-contenteditable="false" lang="de" '
-        + 'xml:lang="de">{mlang de}</span><span contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}</span>\n'
+        + 'xml:lang="de">{mlang de}</span></p>\n'
         + '<p>ein Paragraf auf Deutch</p>\n'
         + '<br><hr strong/>\n'
-        + '<p class="clo"><span contenteditable="false" class="multilang-begin mceNonEditable" data-mce-contenteditable="false" '
-        + 'lang="other" xml:lang="other">{mlang other}</span><span contenteditable="false" class="multilang-end mceNonEditable" '
-        + 'data-mce-contenteditable="false">{mlang}</span>\n'
-        + '<p><span contenteditable="false" class="multilang-begin mceNonEditable" data-mce-contenteditable="false" '
-        + 'lang="other" xml:lang="other">{mlang other}</span>This is <b>a</b> test{mlang}{mlang de}Das ist ein Test{mlang}.'
-        + '<span contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}</span>\n'
-        + '<p><span contenteditable="false" class="multilang-begin mceNonEditable" data-mce-contenteditable="false" '
-        + 'lang="en" xml:lang="en">{mlang en}</span>This is a test<span contenteditable="false" class="multilang-end mceNonEditable" '
-        + 'data-mce-contenteditable="false">{mlang}</span><span contenteditable="false" class="multilang-begin mceNonEditable" '
-        + 'data-mce-contenteditable="false" lang="de" xml:lang="de">{mlang de}</span>Das ist ein Test<span '
-        + 'contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}</span>.</p>\n'
-        + '<p><span contenteditable="false" class="multilang-begin mceNonEditable"\n'
-        + 'data-mce-contenteditable="false" lang="en" xml:lang="en">{mlang en}</span>English rules<span '
-        + 'contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}</span></p>';
+        + '<p class="clo"><span contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">'
+        + '{mlang}</span></p>\n';
     expect(parseEditorContent(html)).toEqual(parsed);
 });
+
+test('Language tag mixed with already translated spans.', () => {
+    const html = '<p>{mlang other}This is <b>a</b> test{mlang}{mlang de}Das ist ein Test{mlang}.</p>\n'
+        + '<p><span contenteditable="false" class="multilang-begin mceNonEditable"\n'
+        + 'data-mce-contenteditable="false" lang="en" xml:lang="en">{mlang en}</span>English rules'
+        + '<span contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}</span></p>';
+    const parsed = '<p><span contenteditable="false" class="multilang-begin mceNonEditable" data-mce-contenteditable="false" '
+        + 'lang="other" xml:lang="other">{mlang other}</span>This is <b>a</b> test'
+        + '<span contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}</span>'
+        + '<span contenteditable="false" class="multilang-begin mceNonEditable" data-mce-contenteditable="false" '
+        + 'lang="de" xml:lang="de">{mlang de}</span>Das ist ein Test'
+        + '<span contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}</span>.</p>\n'
+        + '<p><span contenteditable="false" class="multilang-begin mceNonEditable"\n'
+        + 'data-mce-contenteditable="false" lang="en" xml:lang="en">{mlang en}</span>English rules'
+        + '<span contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}</span></p>';
+    expect(parseEditorContent(html)).toEqual(parsed);
+});
+
 test('Already containing tiny tags for language markers.', () => {
     const html = '<p><span contenteditable="false" class="multilang-begin mceNonEditable"\n'
         + 'data-mce-contenteditable="false" lang="en" xml:lang="en">{mlang en}</span>English rules'
         + '<span contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}'
         + '</span></p>';
-    const parsed = '<p><span contenteditable="false" class="multilang-begin mceNonEditable"\n'
-        + 'data-mce-contenteditable="false" lang="en" xml:lang="en">{mlang en}</span>English rules<span '
-        + 'contenteditable="false" class="multilang-end mceNonEditable" data-mce-contenteditable="false">{mlang}</span></p>';
-    expect(parseEditorContent(html)).toEqual(parsed);
+    expect(parseEditorContent(html)).toEqual(html);
 });
+
 test('Html containing comments.', () => {
     const html = '<p><!-- {mlang de}</p>\n'
         + '<p>Hallo</p>\n'
@@ -115,6 +120,7 @@ test('Html containing comments.', () => {
         + '<p>Done</p>\n';
     expect(parseEditorContent(html)).toEqual(parsed);
 });
+
 test('Html containing a svg.', () => {
     const html = '<p>Resistor: <svg xmlns="http://www.w3.org/2000/svg"\n'
         + ' version="1.1" baseProfile="full"\n'
@@ -127,10 +133,12 @@ test('Html containing a svg.', () => {
         + '</svg></p>';
     expect(parseEditorContent(html)).toEqual(html);
 });
+
 test('Html with tex anotations.', () => {
     const html = '<p>The Quadratic Equation: <span class="math-tex">\\(ax^2 + bx + c = 0\\)</span></p>';
     expect(parseEditorContent(html)).toEqual(html);
 });
+
 test('Html containing mathml elements.', () => {
     const html = '<p>The Quadratic Equation: <span><math xmlns="http://www.w3.org/1998/Math/MathML">'
 	      + '  <mrow>\n'

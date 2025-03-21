@@ -22,7 +22,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {spanMultilangBegin, spanMultilangEnd, blockTags} from './constants';
+import {spanMultilangBegin, spanMultilangEnd} from './constants';
 
 /**
  * This class is used to parse HTML content and call a callback function
@@ -35,13 +35,22 @@ class HTMLParser {
         this.onText = null;
         this.onComment = null;
         this.chunk = '';
+
+        /**
+         * Parser function that receives the HTML string matches tags, text and comments
+         * and calls the corresponding callback functions.
+         * @param {string} input The HTML content to parse.
+         */
         this.parse = function(input) {
             let content = input;
             while (content.length > 0) {
+                // Find the next < with chars and some time later a >.
                 let match = content.match(/<[^>]*>/);
                 if (match) {
                     let index = match.index;
                     if (index > 0) {
+                        // The < was not at the beginning of the string.
+                        // All before the < is text.
                         this.chunk = content.substring(0, index);
                         content = content.substring(index);
                         if (typeof this.onText === 'function') {
@@ -49,12 +58,15 @@ class HTMLParser {
                         }
                     }
                     this.chunk = match[0];
+                    // First char is a / so the matched tag is a closing tag.
                     if (match[0].charAt(1) === '/') {
                         if (typeof this.onTagClose === 'function') {
                             const tag = match[0].substring(2, match[0].length - 1).trim().toLowerCase();
                             this.onTagClose(tag);
                         }
-                    } else if (match[0].indexOf('<!--') === 0) {
+                    }
+                    // We found the start of a comment.
+                    else if (match[0].indexOf('<!--') === 0) {
                         let end = content.indexOf('-->');
                         if (end === -1) {
                             end = content.length;
@@ -65,14 +77,20 @@ class HTMLParser {
                         if (typeof this.onComment === 'function') {
                             this.onComment(this.chunk);
                         }
-                    } else if (typeof this.onTagOpen === 'function') {
+                    }
+                    // None of the above, so we have an opening tag.
+                    else if (typeof this.onTagOpen === 'function') {
                         const attr1 = this.mapAttrs(match[0].match(/([\w\-_]+)="([^"]*)"/g));
                         const attr2 = this.mapAttrs(match[0].match(/([\w\-_]+)='([^']*)'/g));
                         const tag = match[0].match(/^<(\w+)/);
                         this.onTagOpen(tag[1].toLowerCase(), {...attr1, ...attr2});
                     }
+                    // Remove the chunk from the content, that we just parsed and start from the
+                    // beginning again, to match the next tag.
                     content = content.substring(this.chunk.length);
-                } else {
+                }
+                // No more tags, so the rest is text.
+                else {
                     if (typeof this.onText === 'function') {
                         this.onText(content);
                     }
@@ -81,9 +99,23 @@ class HTMLParser {
                 }
             }
         };
+
+        /**
+         * During the parsing process, this function returns the current chunk of the
+         * parsed HTML content. This is either text, an opening tag including attributes,
+         * a closing tag or a comment (including comment tags).
+         * @returns {string} The current chunk of the parsed HTML content.
+         */
         this.getChunk = function() {
             return this.chunk;
         };
+
+        /**
+         * The function receives an array of attributes in the form of key="value" pairs
+         * and returns an object with the key-value pairs.
+         * @param {Array} attrs An array of key="value" pairs.
+         * @returns {Object} An object with the key-value pairs of the attributes.
+         */
         this.mapAttrs = function(attrs) {
             let res = {};
             if (attrs) {
@@ -97,41 +129,52 @@ class HTMLParser {
     }
 }
 
+/**
+ * The parser function that receives the HTML content and parses it to add the
+ * visual styling and helper nodes to modify language settings.
+ * @param {string} html
+ * @returns {string} The modified HTML content.
+ */
 export const parseEditorContent = function(html) {
     let newHtml = '';
     let mlang = 0;
     let inClose = false;
     const parser = new HTMLParser();
+
+    /**
+     * Callback function when an opening tag is found.
+     * @param {string} tag
+     * @param {object} attr
+     */
     parser.onTagOpen = function(tag, attr) {
         if (tag === 'span' && attr.class && attr.class.indexOf('multilang-begin') > -1) {
             mlang++;
-        } else if (tag === 'span' && attr.class && attr.class.indexOf('multilang-end') > -1) {
+        } else if (tag === 'span' && attr.class && attr.class.indexOf('multilang-end') > -1 &&
+            mlang > 0
+        ) {
             mlang--;
             inClose = true;
         }
         newHtml += parser.getChunk();
     };
+
+    /**
+     * Callback function when a closing tag is found.
+     * @param {string} tag
+     */
     parser.onTagClose = function(tag) {
-        if (blockTags.indexOf(tag) > -1 && mlang != 0) {
-            if (mlang > 0) {
-                newHtml += spanMultilangEnd;
-                mlang--;
-            } else {
-                const t = newHtml.lastIndexOf(spanMultilangEnd);
-                newHtml = newHtml.substring(0, t)
-                    + spanMultilangBegin.replace(new RegExp('%lang', 'g'), 'other')
-                    + newHtml.substring(t);
-                mlang++;
-            }
-            return;
-        }
         if (tag === 'span' && inClose) {
             inClose = false;
         }
         newHtml += parser.getChunk();
     };
+
+    /**
+     * Callback function when text is found.
+     * @param {string} text
+     */
     parser.onText = function(text) {
-        if (mlang > 0 || inClose) {
+        if (inClose) {
             newHtml += text;
             return;
         }
@@ -146,10 +189,14 @@ export const parseEditorContent = function(html) {
             const textAfter = text.substring(m.index + m[0].length);
             let r = m[0];
             if (!m[2]) {
-                r = spanMultilangEnd;
+                if (mlang === 1) {
+                    r = spanMultilangEnd;
+                }
                 mlang--;
             } else {
-                r = spanMultilangBegin.replace(new RegExp('%lang', 'g'), m[2]);
+                if (mlang === 0) {
+                    r = spanMultilangBegin.replace(new RegExp('%lang', 'g'), m[2]);
+                }
                 mlang++;
             }
             intermediateReplacements.push(r);
@@ -161,9 +208,17 @@ export const parseEditorContent = function(html) {
         }
         newHtml += text;
     };
+
+    /**
+     * Callback function when a comment is found.
+     * @param {string} comment
+     */
     parser.onComment = function(comment) {
         newHtml += comment;
     };
+
+    // Parse the HTML content.
     parser.parse(html);
+    // And return the modified content.
     return newHtml;
 };
