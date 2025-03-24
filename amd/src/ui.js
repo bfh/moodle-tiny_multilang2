@@ -145,9 +145,9 @@ const removeVisualStyling = function(ed) {
 };
 
 /**
- * At the current selection lookup for the current node. If we are inside a special span that encapsulates
- * the {lang} tag, then look for the corresponding opening or closing tag, depending on what's set in the
- * search param.
+ * At the current selection lookup for the current node. If we are inside a special span that
+ * encapsulates the {lang} tag, then look for the corresponding opening or closing tag,
+ * depending on what's set in the search param.
  * @param {tinymce.Editor} ed
  * @param {string} search
  * @return {Node|null} The encapsulating span tag if found.
@@ -157,14 +157,13 @@ const getHighlightNodeFromSelect = function(ed, search) {
     ed.dom.getParents(ed.selection.getStart(), elm => {
         // Are we in a span that highlights the lang tag.
         if (!isNull(elm.classList)) {
-            // If we are on an opening/closing lang tag, we need to search for the corresponding opening/closing tag.
-            const pair = search === 'begin' ? 'end' : 'begin';
-            if (elm.classList.contains('multilang-' + pair)) {
-                span = elm;
-                do {
-                    // If we look for begin, go back siblings, otherwise look fnext siblings until end is found.
-                    span = search === 'begin' ? span.previousSibling : span.nextSibling;
-                } while (!isNull(span) && (isNull(span.classList) || !span.classList.contains('multilang-' + search)));
+            // If we are on an opening/closing lang tag, we need to search for the
+            // corresponding closing/opening tag.
+            const counterpart = search === 'begin' ? 'end' : 'begin';
+            if (elm.classList.contains('multilang-' + counterpart)) {
+                // If we look for begin, go back the document, otherwise go down the doccument.
+                // Search for the next corresponding tag in the complete hierarchy.
+                span = search === 'begin' ? findClosestAncestor(ed, elm) : findClosestSuccessor(ed, elm);
             } else if (elm.classList.contains('multilang-' + search)) {
                 // We are already on the correct tag we search for
                 span = elm;
@@ -172,6 +171,55 @@ const getHighlightNodeFromSelect = function(ed, search) {
         }
     });
     return span;
+};
+
+/**
+ * Find the closest ancestor span that is a multilang-begin span in relation to the given
+ * span.multilang-end tag.
+ * @param {tinymce.Editor} ed
+ * @param {Node} node
+ * @returns {Node|null}
+ */
+const findClosestAncestor = function(ed, node) {
+    const nodeList = ed.dom.select('span.multilang-begin, span.multilang-end');
+    for (let i = 0; i < nodeList.length; i++) {
+        if (nodeList[i] === node && i > 0 &&
+            isMultilangTag(nodeList[i - 1], 'begin')
+        ) {
+            return nodeList[i - 1];
+        }
+    }
+    return null;
+};
+
+/**
+ * Find the closest successor span that is a multilang-end span in relation to the given
+ * span.multilang-begin tag.
+ * @param {tinymce.Editor} ed
+ * @param {Node} node
+ * @returns {Node|null}
+ */
+const findClosestSuccessor = function(ed, node) {
+    const nodeList = ed.dom.select('span.multilang-begin, span.multilang-end');
+    for (let i = 0; i < nodeList.length; i++) {
+        if (nodeList[i] === node && i < nodeList.length -1 &&
+            isMultilangTag(nodeList[i + 1], 'end')
+        ) {
+            return nodeList[i + 1];
+        }
+    }
+    return null;
+};
+
+/**
+ * Returns true if the given node is a multilang (begin|end) tag by checking whether the
+ * appropriate class is set.
+ * @param {Node} node
+ * @param {string} search
+ * @returns {boolean}
+ */
+const isMultilangTag = function(node, search) {
+    return !isNull(node.classList) && node.classList.contains('multilang-' + search);
 };
 
 /**
