@@ -202,7 +202,7 @@ const findClosestAncestor = function(ed, node) {
 const findClosestSuccessor = function(ed, node) {
     const nodeList = ed.dom.select('span.multilang-begin, span.multilang-end');
     for (let i = 0; i < nodeList.length; i++) {
-        if (nodeList[i] === node && i < nodeList.length -1 &&
+        if (nodeList[i] === node && i < nodeList.length - 1 &&
             isMultilangTag(nodeList[i + 1], 'end')
         ) {
             return nodeList[i + 1];

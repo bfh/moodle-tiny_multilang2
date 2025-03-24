@@ -34,7 +34,7 @@ $capabilities = [
             'editingteacher' => CAP_ALLOW,
         ],
     ],
-    // Deprecated since 1.4
+    // Deprecated since 1.4.
     'tiny/multilang2:viewlanguagemenu' => [
         'captype'      => 'write',
         'contextlevel' => CONTEXT_COURSE,

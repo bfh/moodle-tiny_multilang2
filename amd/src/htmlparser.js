@@ -64,9 +64,8 @@ class HTMLParser {
                             const tag = match[0].substring(2, match[0].length - 1).trim().toLowerCase();
                             this.onTagClose(tag);
                         }
-                    }
-                    // We found the start of a comment.
-                    else if (match[0].indexOf('<!--') === 0) {
+                    } else if (match[0].indexOf('<!--') === 0) {
+                        // We found the start of a comment.
                         let end = content.indexOf('-->');
                         if (end === -1) {
                             end = content.length;
@@ -77,9 +76,8 @@ class HTMLParser {
                         if (typeof this.onComment === 'function') {
                             this.onComment(this.chunk);
                         }
-                    }
-                    // None of the above, so we have an opening tag.
-                    else if (typeof this.onTagOpen === 'function') {
+                    } else if (typeof this.onTagOpen === 'function') {
+                        // None of the above, so we have an opening tag.
                         const attr1 = this.mapAttrs(match[0].match(/([\w\-_]+)="([^"]*)"/g));
                         const attr2 = this.mapAttrs(match[0].match(/([\w\-_]+)='([^']*)'/g));
                         const tag = match[0].match(/^<(\w+)/);
@@ -88,9 +86,8 @@ class HTMLParser {
                     // Remove the chunk from the content, that we just parsed and start from the
                     // beginning again, to match the next tag.
                     content = content.substring(this.chunk.length);
-                }
-                // No more tags, so the rest is text.
-                else {
+                } else {
+                    // No more tags, so the rest is text.
                     if (typeof this.onText === 'function') {
                         this.onText(content);
                     }
