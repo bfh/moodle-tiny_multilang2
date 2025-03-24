@@ -1,7 +1,7 @@
 TinyMCE multilanguage plugin
 ============================
 
-![Release](https://img.shields.io/badge/Release-1.3-blue.svg)
+![Release](https://img.shields.io/badge/Release-1.4-blue.svg)
 [![Moodle Plugin CI](https://github.com/bfh/moodle-tiny_multilang2/workflows/Moodle%20Plugin%20CI/badge.svg?branch=main)](https://github.com/bfh/moodle-tiny_multilang2/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amain)
 [![PHP Support](https://img.shields.io/badge/php-7.4--8.3-blue)](https://github.com/bfh/moodle-tiny_multilang2/actions)
 [![Moodle Support](https://img.shields.io/badge/Moodle-4.1--4.5+-orange)](https://github.com/bfh/moodle-tiny_multilang2/actions)
@@ -29,7 +29,7 @@ formatting of the text is correct.
 
 ## Current version
 
-The latest release is v1.3 (build 2024100900) for Moodle 4.1 and newer.
+The latest release is v1.4 (build 2025031400) for Moodle 4.1 and newer.
 
 ## Requirements
 
@@ -113,6 +113,16 @@ The languages are ordered alphabetically when using the installed languages or t
 provided iso codes is preserved.
 
 ## Version History
+
+### 1.4
+- Add new capability tiny/multilang2:use that is the default capability required by Moodle.
+- Declare capability tiny/multilang2:viewlanguagemenu to be obsolete.
+- Rewrite the HTML parser to highlight the language tags.
+- Add some js unit tests to the project (HTML parser at the moment only).
+- Improve parsing of html when {mlang} tags are misplaced. Also, be more flexible where
+  mlang tags can be placed.
+- TinyMCE\Lang: mlang tag disappears after viewing the source code Pro #841026,
+  thanks to [Tai Le Tan](https://github.com/tailetan)
 
 ### 1.3
 - Adaptions for Moodle 4.5.
