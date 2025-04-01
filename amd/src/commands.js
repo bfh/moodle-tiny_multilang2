@@ -24,9 +24,10 @@
  */
 
 import {getLanguageList, showAllLanguages, isAddLanguage} from './options';
-import {component} from './common';
+import {component, buttonIcon} from './common';
 import {get_strings as getStrings} from 'core/str';
 import {applyLanguage, onInit, onBeforeGetContent, onFocus, onSubmit, onDelete} from './ui';
+import {getButtonImage} from 'editor_tiny/utils';
 
 /**
  * Get the setup function for the button and the menu entry.
@@ -51,6 +52,11 @@ export const getSetup = async() => {
           'multilang2:langTagsInSelection',
       ].map((key) => ({key, component}))
     );
+    const [
+        buttonImage,
+    ] = await Promise.all([
+        getButtonImage('icon', component)
+    ]);
 
     return (editor) => {
         const languageList = getLanguageList(editor);
@@ -59,8 +65,12 @@ export const getSetup = async() => {
         if (languageList.length < 2) {
             return;
         }
+
+        // Register the plugin Icon.
+        editor.ui.registry.addIcon(buttonIcon, buttonImage.html);
+
         editor.ui.registry.addSplitButton(component, {
-            icon: 'language',
+            icon: buttonIcon,
             tooltip: tooltip,
             fetch: function(callback) {
                 const items = languageList.map((lang) => ({
@@ -79,7 +89,7 @@ export const getSetup = async() => {
         });
 
         editor.ui.registry.addNestedMenuItem(component, {
-            icon: 'language',
+            icon: buttonIcon,
             text: buttonText,
             getSubmenuItems: () => languageList.map((lang) => ({
                 type: 'menuitem',
