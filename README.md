@@ -116,6 +116,8 @@ provided iso codes is preserved.
 
 ### 1.5
 - Add support for Moodle 5.0.
+- Add support for moodle icon [#19](https://github.com/bfh/moodle-tiny_multilang2/pull/19),
+  thank you [Jason Platts](https://github.com/jason-platts).
 
 ### 1.4
 - Add new capability tiny/multilang2:use that is the default capability required by Moodle.
