@@ -24,7 +24,6 @@
 
 $string['addlanguage'] = 'Add language manually';
 $string['addlanguage_desc'] = 'If you choose this option, you can manually add languages by entering the iso code of the language in the textbox below. Otherwise, you must install at least 2 languages in the Language Pack.';
-$string['helplinktext'] = 'Multi-Language Content (v2)';
 $string['highlight'] = 'Highlight delimiters';
 $string['highlight_desc'] = 'Visually highlight the multi-language content delimiters (i.e., {mlang XX} and {mlang}) in the WYSIWYG editor';
 $string['highlightcss'] = 'CSS for language tag';
@@ -54,7 +53,7 @@ $string['multilang2:language'] = 'Language';
 $string['multilang2:multiBlockElements'] = 'Selected text spans multiple paragraphs/block elements. Please select one only.';
 $string['multilang2:other'] = 'Fallback';
 $string['multilang2:removetag'] = 'Remove language tag';
-$string['multilang2:viewlanguagemenu'] = 'View language dropdown menu in TinyMCE editor';
+$string['multilang2:use'] = 'Use language dropdown menu in TinyMCE';
 $string['pluginname'] = 'Multi-Language Content (v2)';
 $string['privacy:metadata'] = 'The Tiny Multi-Language Content (v2) plugin does not store any personal data.';
 $string['removealltags'] = 'Remove all lang tags';
@@ -62,3 +61,8 @@ $string['requiremultilang2'] = 'Require Multi-Language Content (v2) filter';
 $string['requiremultilang2_desc'] = 'If enabled, the language drop down menu is visible only when the Multi-Language Content (v2) filter is enabled.';
 $string['showalllangs'] = 'Show all languages';
 $string['showalllangs_desc'] = 'If enabled, the language drop down menu will contain all the languages Moodle supports. If not, only the installed and enabled languages will be shown.';
+
+// Deprecated since Moodle 4.5.
+$string['helplinktext'] = 'Multi-Language Content (v2)';
+// Deprecated since tiny_multilang 1.4.
+$string['multilang2:viewlanguagemenu'] = 'View language dropdown menu in TinyMCE editor';
