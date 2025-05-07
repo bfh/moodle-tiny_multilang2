@@ -65,7 +65,7 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
         ?\editor_tiny\editor $editor = null
     ): bool {
         // Users must have permission to embed content.
-        return has_capability('tiny/multilang2:viewlanguagemenu', $context);
+        return has_capability('tiny/multilang2:use', $context);
     }
 
     /**
