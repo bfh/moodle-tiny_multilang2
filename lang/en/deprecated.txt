@@ -1,1 +1,1 @@
-helplinktext,multilang2:viewlanguagemenu
+helplinktext,tiny_multilang2
