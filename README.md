@@ -107,12 +107,19 @@ make the menu having too many options.
 
 The option *Fallback (other)* is available only when the [multilang2 filter][1] is installed
 because the standard Moodle has no fallback option.
+Also you may control in the admin settings in the option `showfallbackother` whether this option
+should be displayed at all when the [multilang2 filter][1] is installed.
 
 The languages are ordered alphabetically when using the installed languages or the option
 `showalllang` is enabled. If the languages are defined via `languageoptions` the order of the
 provided iso codes is preserved.
 
 ## Version History
+
+### Current main
+- Add a new setting `showfallbackother` to toggle the appearance of the "Fallback (other)"
+menu item in the language list.
+- Update the documentation.
 
 ### 1.6
 - Fix format of deprecated language strings [#20](https://github.com/bfh/moodle-tiny_multilang2/pull/20), thank you [Jason Platts](https://github.com/jason-platts)
