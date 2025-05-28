@@ -35,6 +35,8 @@ if ($ADMIN->fulltree) {
         get_string('requiremultilang2', 'tiny_multilang2'), get_string('requiremultilang2_desc', 'tiny_multilang2'), 1));
     $settings->add(new admin_setting_configcheckbox('tiny_multilang2/showalllangs',
         get_string('showalllangs', 'tiny_multilang2'), get_string('showalllangs_desc', 'tiny_multilang2'), 0));
+    $settings->add(new admin_setting_configcheckbox('tiny_multilang2/showfallbackother',
+        get_string('showfallbackother', 'tiny_multilang2'), get_string('showfallbackother_desc', 'tiny_multilang2'), 1));
     $settings->add(new admin_setting_configcheckbox('tiny_multilang2/highlight',
         get_string('highlight', 'tiny_multilang2'), get_string('highlight_desc', 'tiny_multilang2'), 1));
     $settings->add(new admin_setting_configtextarea(

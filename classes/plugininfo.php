@@ -153,10 +153,14 @@ class plugininfo extends plugin implements plugin_with_menuitems, plugin_with_bu
             }
             // Only multilang2 filter allows a general catch all fallback.
             if ($mlangfilter) {
-                $config['languages'][] = [
-                    'iso' => 'other',
-                    'label' => get_string('multilang2:other', 'tiny_multilang2') . ' (other)',
-                ];
+                // Also check that the fallback option is enabled (which is true by default).
+                $showfallbackother = (bool)get_config('tiny_multilang2', 'showfallbackother');
+                if ($showfallbackother) {
+                    $config['languages'][] = [
+                        'iso' => 'other',
+                        'label' => get_string('multilang2:other', 'tiny_multilang2') . ' (other)',
+                    ];
+                }
             }
         }
 

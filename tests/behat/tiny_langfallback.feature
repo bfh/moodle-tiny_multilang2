@@ -5,7 +5,7 @@ Feature: Tiny editor multilang plugin for default behaviour with no multilangfil
   Background: I login as admin and add a text to the description with two paragraphs.
     Given the following config values are set as admin:
       | requiremultilang2 | 0 | tiny_multilang2 |
-      | highlight | 1 | tiny_multilang2 |
+      | highlight         | 1 | tiny_multilang2 |
     And the following "language packs" exist:
       | language |
       | de       |
