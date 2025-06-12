@@ -62,7 +62,7 @@ $string['requiremultilang2_desc'] = 'If enabled, the language drop down menu is 
 $string['showalllangs'] = 'Show all languages';
 $string['showalllangs_desc'] = 'If enabled, the language drop down menu will contain all the languages Moodle supports. If not, only the installed and enabled languages will be shown.';
 $string['showfallbackother'] = 'Show fallback (other) option';
-$string['showfallbackother_desc'] = 'With the Multi-Language filter, a fallback (other) option exisits, when defining a language block that should match any installed language and there is no part for the current used language defined.';
+$string['showfallbackother_desc'] = 'With the Multi-Language content filter v2 plugin, a fallback (other) option exists, when defining a language block that should match any installed language and there is no part for the current used language defined. Disabling this setting that fallback option won't be shown.';
 
 // Deprecated since Moodle 4.5.
 $string['helplinktext'] = 'Multi-Language Content (v2)';
