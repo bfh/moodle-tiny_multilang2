@@ -149,3 +149,11 @@ test('Html containing mathml elements.', () => {
         + '</math></span></p>';
     expect(parseEditorContent(html)).toEqual(html);
 });
+
+test('Html with <script> Tags.', () => {
+    const html = '<script>'
+        + '  let a = 5;'
+        + '  if (a < 10) {}'
+        + '</script>';
+    expect(parseEditorContent(html)).toEqual(html);
+})

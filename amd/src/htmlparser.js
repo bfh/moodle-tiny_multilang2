@@ -34,6 +34,8 @@ class HTMLParser {
         this.onTagClose = null;
         this.onText = null;
         this.onComment = null;
+        this.onScript = null;
+        this.onStyle = null;
         this.chunk = '';
 
         /**
@@ -66,15 +68,19 @@ class HTMLParser {
                         }
                     } else if (match[0].indexOf('<!--') === 0) {
                         // We found the start of a comment.
-                        let end = content.indexOf('-->');
-                        if (end === -1) {
-                            end = content.length;
-                        } else {
-                            end += 3;
-                        }
-                        this.chunk = content.substring(0, end);
+                        this.handleInlineCode('-->', content);
                         if (typeof this.onComment === 'function') {
                             this.onComment(this.chunk);
+                        }
+                    } else if (match[0].toLowerCase().indexOf('<script') === 0) {
+                        this.handleInlineCode('</script>', content);
+                        if (typeof this.onScript === 'function') {
+                            this.onScript(this.chunk);
+                        }
+                    } else if (match[0].toLowerCase().indexOf('<style') === 0) {
+                        this.handleInlineCode('</style>', content);
+                        if (typeof this.onStyle === 'function') {
+                            this.onStyle(this.chunk);
                         }
                     } else if (typeof this.onTagOpen === 'function') {
                         // None of the above, so we have an opening tag.
@@ -123,6 +129,22 @@ class HTMLParser {
             }
             return res;
         };
+
+        /**
+         * This function is used on tags where the content should remain unchanged. These
+         * are at the moment comments, script and style tags.
+         * @param {string} endTag
+         * @param {string} content
+         */
+        this.handleInlineCode = function(endTag, content) {
+            let end = content.toLowerCase().indexOf(endTag);
+            if (end === -1) {
+                end = content.length;
+            } else {
+                end += endTag.length;
+            }
+            this.chunk = content.substring(0, end);
+        };
     }
 }
 
@@ -137,6 +159,11 @@ export const parseEditorContent = function(html) {
     let mlang = 0;
     let inClose = false;
     const parser = new HTMLParser();
+
+    // Function to pass through comment, script and style elements.
+    const passThru = function(comment) {
+        newHtml += comment;
+    };
 
     /**
      * Callback function when an opening tag is found.
@@ -210,9 +237,9 @@ export const parseEditorContent = function(html) {
      * Callback function when a comment is found.
      * @param {string} comment
      */
-    parser.onComment = function(comment) {
-        newHtml += comment;
-    };
+    parser.onComment = passThru;
+    parser.onScript = passThru;
+    parser.onStyle = passThru;
 
     // Parse the HTML content.
     parser.parse(html);
