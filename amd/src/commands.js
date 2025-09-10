@@ -142,6 +142,7 @@ export const getSetup = async() => {
         });
         editor.on('submit', () => {
             onSubmit(editor);
+            editor.save();
         });
         editor.on('keydown', (event) => {
             onDelete(editor, event);
