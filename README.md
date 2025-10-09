@@ -1,10 +1,10 @@
 TinyMCE multilanguage plugin
 ============================
 
-![Release](https://img.shields.io/badge/Release-1.7-blue.svg)
+![Release](https://img.shields.io/badge/Release-1.8-blue.svg)
 [![Moodle Plugin CI](https://github.com/bfh/moodle-tiny_multilang2/actions/workflows/moodle-plugin-ci.yml/badge.svg)](https://github.com/bfh/moodle-tiny_multilang2/actions/workflows/moodle-plugin-ci.yml)
-[![PHP Support](https://img.shields.io/badge/php-7.4--8.4-blue)](https://github.com/bfh/moodle-tiny_multilang2/actions)
-[![Moodle Support](https://img.shields.io/badge/Moodle-4.1--5.0-orange)](https://github.com/bfh/moodle-tiny_multilang2/actions)
+[![PHP Support](https://img.shields.io/badge/php-8.1--8.4-blue)](https://github.com/bfh/moodle-tiny_multilang2/actions)
+[![Moodle Support](https://img.shields.io/badge/Moodle-4.1--5.1-orange)](https://github.com/bfh/moodle-tiny_multilang2/actions)
 [![License GPL-3.0](https://img.shields.io/github/license/bfh/moodle-tiny_multilang2?color=lightgrey)](https://github.com/bfh/moodle-tiny_multilang2/blob/main/LICENSE)
 [![GitHub contributors](https://img.shields.io/github/contributors/bfh/moodle-tiny_multilang2)](https://github.com/bfh/moodle-tiny_multilang2/graphs/contributors)
 
@@ -26,10 +26,6 @@ tags then select a new language from the menu and that will change the
 language of the existing tag. You may also remove it by hitting the backspace
 or delete key. This will remove the tag, and it's counterpart in case the
 formatting of the text is correct.
-
-## Current version
-
-The latest release is v1.5 (build 2025042300) for Moodle 4.1 and newer.
 
 ## Requirements
 
@@ -115,6 +111,10 @@ The languages are ordered alphabetically when using the installed languages or t
 provided iso codes is preserved.
 
 ## Version History
+
+### 1.8
+- Release for Moodle 5.1.
+- Remove outdated PHP versions from CI.
 
 ### 1.7
 - Add a new setting `showfallbackother` to toggle the appearance of the "Fallback (other)"
