@@ -69,9 +69,7 @@ class behat_editor_tiny_multilang2 extends behat_base {
 
         $this->menubar = $container->find('css', '[role="menubar"]');
 
-        $this->menus = array_map(function(string $value): string {
-            return trim($value);
-        }, explode('>', $menuitem));
+        $this->menus = array_map(fn(string $value) => trim($value), explode('>', $menuitem));
 
         if ($CFG->version < 2024100700) {
             $this->before_four_five();

@@ -31,14 +31,30 @@ $ADMIN->add('editortiny', new admin_category('tiny_multilang2', new lang_string(
 $settings = new admin_settingpage('tiny_multilang2_settings', new lang_string('pluginname', 'tiny_multilang2'));
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configcheckbox('tiny_multilang2/requiremultilang2',
-        get_string('requiremultilang2', 'tiny_multilang2'), get_string('requiremultilang2_desc', 'tiny_multilang2'), 1));
-    $settings->add(new admin_setting_configcheckbox('tiny_multilang2/showalllangs',
-        get_string('showalllangs', 'tiny_multilang2'), get_string('showalllangs_desc', 'tiny_multilang2'), 0));
-    $settings->add(new admin_setting_configcheckbox('tiny_multilang2/showfallbackother',
-        get_string('showfallbackother', 'tiny_multilang2'), get_string('showfallbackother_desc', 'tiny_multilang2'), 1));
-    $settings->add(new admin_setting_configcheckbox('tiny_multilang2/highlight',
-        get_string('highlight', 'tiny_multilang2'), get_string('highlight_desc', 'tiny_multilang2'), 1));
+    $settings->add(new admin_setting_configcheckbox(
+        'tiny_multilang2/requiremultilang2',
+        get_string('requiremultilang2', 'tiny_multilang2'),
+        get_string('requiremultilang2_desc', 'tiny_multilang2'),
+        1
+    ));
+    $settings->add(new admin_setting_configcheckbox(
+        'tiny_multilang2/showalllangs',
+        get_string('showalllangs', 'tiny_multilang2'),
+        get_string('showalllangs_desc', 'tiny_multilang2'),
+        0
+    ));
+    $settings->add(new admin_setting_configcheckbox(
+        'tiny_multilang2/showfallbackother',
+        get_string('showfallbackother', 'tiny_multilang2'),
+        get_string('showfallbackother_desc', 'tiny_multilang2'),
+        1
+    ));
+    $settings->add(new admin_setting_configcheckbox(
+        'tiny_multilang2/highlight',
+        get_string('highlight', 'tiny_multilang2'),
+        get_string('highlight_desc', 'tiny_multilang2'),
+        1
+    ));
     $settings->add(new admin_setting_configtextarea(
         'tiny_multilang2/highlight_css',
         get_string('highlightcss', 'tiny_multilang2'),
@@ -46,8 +62,12 @@ if ($ADMIN->fulltree) {
         \tiny_multilang2\plugininfo::get_default_css(),
         PARAM_RAW
     ));
-    $settings->add(new admin_setting_configcheckbox('tiny_multilang2/addlanguage',
-        get_string('addlanguage', 'tiny_multilang2'), get_string('addlanguage_desc', 'tiny_multilang2'), 0));
+    $settings->add(new admin_setting_configcheckbox(
+        'tiny_multilang2/addlanguage',
+        get_string('addlanguage', 'tiny_multilang2'),
+        get_string('addlanguage_desc', 'tiny_multilang2'),
+        0
+    ));
     $settings->add(new admin_setting_configtextarea(
         'tiny_multilang2/languageoptions',
         get_string('languageoptions', 'tiny_multilang2'),
