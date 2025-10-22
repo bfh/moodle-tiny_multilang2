@@ -1,7 +1,7 @@
 TinyMCE multilanguage plugin
 ============================
 
-![Release](https://img.shields.io/badge/Release-1.8-blue.svg)
+![Release](https://img.shields.io/badge/Release-1.8.1-blue.svg)
 [![Moodle Plugin CI](https://github.com/bfh/moodle-tiny_multilang2/actions/workflows/moodle-plugin-ci.yml/badge.svg)](https://github.com/bfh/moodle-tiny_multilang2/actions/workflows/moodle-plugin-ci.yml)
 [![PHP Support](https://img.shields.io/badge/php-8.1--8.4-blue)](https://github.com/bfh/moodle-tiny_multilang2/actions)
 [![Moodle Support](https://img.shields.io/badge/Moodle-4.1--5.1-orange)](https://github.com/bfh/moodle-tiny_multilang2/actions)
@@ -111,6 +111,10 @@ The languages are ordered alphabetically when using the installed languages or t
 provided iso codes is preserved.
 
 ## Version History
+
+### 1.8.1
+- Merge: Multi lang code appears along with its text [#23](https://github.com/bfh/moodle-tiny_multilang2/pull/23).
+Multilang tags inside other tinyMCE tags (such as in cloze questions) were not reverted into the Moodle notation.
 
 ### 1.8
 - Release for Moodle 5.1.
