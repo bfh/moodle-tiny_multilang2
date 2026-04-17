@@ -112,6 +112,9 @@ provided iso codes is preserved.
 
 ## Version History
 
+### 1.9
+- Add support for Moodle 5.2.
+
 ### 1.8.1
 - Merge: Multi lang code appears along with its text [#23](https://github.com/bfh/moodle-tiny_multilang2/pull/23).
 Multilang tags inside other tinyMCE tags (such as in cloze questions) were not reverted into the Moodle notation.
