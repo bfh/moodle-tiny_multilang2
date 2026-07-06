@@ -103,14 +103,14 @@ export const getSetup = async() => {
         // Context menu with languages is shown only when showalllangs is set to false. Otherwise the
         // List would be overwhelming.
         if (!showAllLanguages(editor) || isAddLanguage(editor)) {
+            editor.ui.registry.addButton(component + '_remove', {
+                icon: 'remove',
+                tooltip: removeTag,
+                onAction: () => {
+                    onDelete(editor, event);
+                }
+            });
             for (const lang of languageList) {
-                editor.ui.registry.addButton(component + '_remove', {
-                    icon: 'remove',
-                    tooltip: removeTag,
-                    onAction: () => {
-                        onDelete(editor, event);
-                    }
-                });
                 if (lang.iso !== 'remove') {
                     editor.ui.registry.addButton(component + '_' + lang.iso, {
                         text: lang.iso,
