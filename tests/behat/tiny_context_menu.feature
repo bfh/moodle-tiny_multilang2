@@ -1,5 +1,5 @@
 @editor @editor_tiny @tiny @tiny_multilang2 @javascript
-Feature: Test the tiny editor multilang plugin with the fallback other feature enabled or disabled.
+Feature: Test the tiny editor multilang plugin with the context menu on the mlang tags.
 
   Background: I login as admin and add a text to the description with two paragraphs.
     Given the following config values are set as admin:
