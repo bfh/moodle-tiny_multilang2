@@ -25,8 +25,6 @@ use editor_tiny\plugin_with_menuitems;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once(__DIR__ . '/../../../../../behat/classes/util.php');
-
 /**
  * Plugin for Moodle 'Multilingual content' drop down menu in TinyMCE 6.
  *
@@ -44,7 +42,11 @@ class plugininfo extends plugin implements plugin_with_buttons, plugin_with_conf
      * @return  bool
      */
     public static function is_multilang2_simulated_for_test(): bool {
-        return \behat_util::is_test_site() && get_config('tiny_multilang2', 'simulatemultilang2');
+        return (
+            defined('BEHAT_SITE_RUNNING') &&
+            BEHAT_SITE_RUNNING &&
+            get_config('tiny_multilang2', 'simulatemultilang2')
+        );
     }
 
     /**
