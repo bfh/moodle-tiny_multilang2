@@ -151,4 +151,46 @@ class behat_editor_tiny_multilang2 extends behat_base {
 
         $this->execute_javascript_for_editor($editorid, $js);
     }
+
+    /**
+     * Click on a multilang tag in the tinyMCE editor window.
+     *
+     * phpcs:disable
+     * @When /^I click "(?P<menuitem_string>(?:[^"]|\\")*)" in the context menu for the mlang tag "(?P<position_int>(?:[^"]|\\")*)" of the "(?P<locator_string>(?:[^"]|\\")*)" TinyMCE editor$/
+     * phpcs:enable
+     *
+     * @param string $menuitem The label of the menu item
+     * @param int $position The zero-indexed position
+     * @param string $locator The editor to select within
+     */
+    public function click_ctx_menu_on_mlang_tag(string $menuitem, int $position, string $locator): void {
+        $this->require_tiny_tags();
+
+        $editor = $this->get_textarea_for_locator($locator);
+        $editorid = $editor->getAttribute('id');
+
+        // A native element.click() does not move TinyMCE's internal selection to the node,
+        // nor does it fire a NodeChange event. The context toolbar is only rendered by the
+        // silver theme when its predicate matches on a NodeChange while the editor is focused.
+        // Therefore focus the editor, select the node via the API and dispatch nodeChanged().
+        $js = <<<EOF
+            const element = instance.dom.select("span[class^='multilang-']")[{$position}];
+            instance.focus();
+            instance.selection.select(element);
+            instance.nodeChanged();
+        EOF;
+
+        $this->execute_javascript_for_editor($editorid, $js);
+        $menuitem = strtolower($menuitem);
+
+        // The toolbar renders asynchronously, so wait until the button exists before clicking.
+        $selector = "[data-mce-name='tiny_multilang2_{$menuitem}']";
+        $tries = 5;
+        $btn = null;
+        while (is_null($btn) && $tries-- > 0) {
+            $btn = $this->find('css', $selector);
+            sleep(1);
+        }
+        $this->execute('behat_general::i_click_on', [$btn, 'NodeElement']);
+    }
 }
