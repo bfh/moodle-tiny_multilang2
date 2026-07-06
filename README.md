@@ -4,7 +4,7 @@ TinyMCE multilanguage plugin
 ![Release](https://img.shields.io/badge/Release-1.9-blue.svg)
 [![Moodle Plugin CI](https://github.com/bfh/moodle-tiny_multilang2/actions/workflows/moodle-plugin-ci.yml/badge.svg)](https://github.com/bfh/moodle-tiny_multilang2/actions/workflows/moodle-plugin-ci.yml)
 [![MDL Shield](https://img.shields.io/endpoint?url=https%3A%2F%2Fmdlshield.com%2Fapi%2Fbadge%2Ftiny_multilang2)](https://mdlshield.com/plugins/tiny_multilang2)
-[![Moodle Support](https://img.shields.io/badge/Moodle-4.1--5.2-orange)](https://github.com/bfh/moodle-tiny_multilang2/actions)
+[![Moodle Support](https://img.shields.io/badge/Moodle-4.5--5.2-orange)](https://github.com/bfh/moodle-tiny_multilang2/actions)
 [![License GPL-3.0](https://img.shields.io/github/license/bfh/moodle-tiny_multilang2?color=lightgrey)](https://github.com/bfh/moodle-tiny_multilang2/blob/main/LICENSE)
 [![GitHub contributors](https://img.shields.io/github/contributors/bfh/moodle-tiny_multilang2)](https://github.com/bfh/moodle-tiny_multilang2/graphs/contributors)
 
@@ -113,7 +113,10 @@ provided iso codes is preserved.
 ## Version History
 
 ### Current main branch
-- Fix issues after MDL Shield scanning.
+- Fix minor issues after MDL Shield scanning.
+- Fix remove action in context menu that did not work in Moodle 5.2.
+- Add test for context menu.
+- Lift minimum supported Moodle version to 4.5.
 
 ### 1.9
 - Add support for Moodle 5.2.
