@@ -23,8 +23,6 @@ use editor_tiny\plugin_with_buttons;
 use editor_tiny\plugin_with_configuration;
 use editor_tiny\plugin_with_menuitems;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Plugin for Moodle 'Multilingual content' drop down menu in TinyMCE 6.
  *
