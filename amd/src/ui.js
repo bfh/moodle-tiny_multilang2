@@ -366,7 +366,14 @@ const onDelete = function(ed, event) {
     }
     // In case we clicked, check that we clicked an icon (this must have been the trash icon in the context menu).
     if (!isNull(event.clientX) &&
-        (event.target.nodeType !== Node.ELEMENT_NODE || (event.target.nodeName !== 'path' && event.target.nodeName !== 'svg'))) {
+        (event.target.nodeType !== Node.ELEMENT_NODE ||
+            (
+                event.target.nodeName !== 'path' &&
+                event.target.nodeName !== 'svg' &&
+                event.target.nodeName !== 'BUTTON'
+            )
+        )
+    ) {
         return;
     }
     // Conditions match either key <del> or <backspace> was pressed, or an click on an svg icon was done.
