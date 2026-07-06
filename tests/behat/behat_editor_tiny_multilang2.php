@@ -32,6 +32,7 @@
 require_once(__DIR__ . '/../../../../../../behat/behat_base.php');
 require_once(__DIR__ . '/../../../../tests/behat/editor_tiny_helpers.php');
 
+use Behat\Mink\Exception\ExpectationException;
 
 /**
  * Extends general TinyMCE test to test the tiny_multilang2 plugin.
@@ -183,14 +184,14 @@ class behat_editor_tiny_multilang2 extends behat_base {
         $this->execute_javascript_for_editor($editorid, $js);
         $menuitem = strtolower($menuitem);
 
-        // The toolbar renders asynchronously, so wait until the button exists before clicking.
-        $selector = "[data-mce-name='tiny_multilang2_{$menuitem}']";
-        $tries = 5;
-        $btn = null;
-        while (is_null($btn) && $tries-- > 0) {
-            $btn = $this->find('css', $selector);
-            sleep(1);
-        }
+        // The context menu renders asynchronously, so wait until the button exists before clicking.
+        $exception = new ExpectationException("Did not find button _{$menuitem}_ in context menu", $this->getSession());
+        $btn = $this->spin(
+            fn($context, $args) => $this->find('css', $args['selector']),
+            ['selector' => "[data-mce-name='tiny_multilang2_{$menuitem}']"],
+            behat_base::get_extended_timeout(),
+            $exception
+        );
         $this->execute('behat_general::i_click_on', [$btn, 'NodeElement']);
     }
 }
