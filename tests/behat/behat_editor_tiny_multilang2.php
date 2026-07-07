@@ -170,25 +170,48 @@ class behat_editor_tiny_multilang2 extends behat_base {
         $editor = $this->get_textarea_for_locator($locator);
         $editorid = $editor->getAttribute('id');
 
+        $menuitem = strtolower($menuitem);
+
         // A native element.click() does not move TinyMCE's internal selection to the node,
         // nor does it fire a NodeChange event. The context toolbar is only rendered by the
         // silver theme when its predicate matches on a NodeChange while the editor is focused.
         // Therefore focus the editor, select the node via the API and dispatch nodeChanged().
+        //
+        // This is re-run on every spin iteration on purpose: when this step is chained (one
+        // context-menu action after another), the previous action mutates the editor content
+        // asynchronously (see applyLanguage() / onDelete() which replace the span nodes). If we
+        // selected only once we could grab a node that is about to be replaced, and find() could
+        // return a button that belongs to the outgoing toolbar. Re-selecting each iteration makes
+        // the step wait until the DOM has settled and a fresh toolbar for the target node is up.
         $js = <<<EOF
             const element = instance.dom.select("span[class^='multilang-']")[{$position}];
-            instance.focus();
-            instance.selection.select(element);
-            instance.nodeChanged();
+            if (element) {
+                instance.focus();
+                instance.selection.select(element);
+                instance.nodeChanged();
+            }
         EOF;
 
-        $this->execute_javascript_for_editor($editorid, $js);
-        $menuitem = strtolower($menuitem);
+        $selector = "[data-mce-name='tiny_multilang2_{$menuitem}']";
+        $exception = new ExpectationException(
+            "Did not find a visible button _{$menuitem}_ in the context menu",
+            $this->getSession()
+        );
 
-        // The context menu renders asynchronously, so wait until the button exists before clicking.
-        $exception = new ExpectationException("Did not find button _{$menuitem}_ in context menu", $this->getSession());
         $btn = $this->spin(
-            fn($context, $args) => $this->find('css', $args['selector']),
-            ['selector' => "[data-mce-name='tiny_multilang2_{$menuitem}']"],
+            function () use ($editorid, $js, $selector) {
+                $this->execute_javascript_for_editor($editorid, $js);
+                // Every language button exists in every toolbar instance, so we must only accept
+                // one that is actually visible, i.e. belongs to the toolbar currently shown for the
+                // node we just selected - never a stale button from a toolbar on its way out.
+                foreach ($this->getSession()->getPage()->findAll('css', $selector) as $node) {
+                    if ($node->isVisible()) {
+                        return $node;
+                    }
+                }
+                return false;
+            },
+            [],
             behat_base::get_extended_timeout(),
             $exception
         );
