@@ -177,15 +177,13 @@ class behat_editor_tiny_multilang2 extends behat_base {
         // silver theme when its predicate matches on a NodeChange while the editor is focused.
         // Therefore focus the editor, select the node via the API and dispatch nodeChanged().
         //
-        // This is re-run on every spin iteration on purpose: when this step is chained (one
-        // context-menu action after another), the previous action mutates the editor content
-        // asynchronously (see applyLanguage() / onDelete() which replace the span nodes). If we
-        // selected only once we could grab a node that is about to be replaced, and find() could
-        // return a button that belongs to the outgoing toolbar. Re-selecting each iteration makes
-        // the step wait until the DOM has settled and a fresh toolbar for the target node is up.
+        // This runs on every spin iteration because a previous action may have replaced the span
+        // nodes (see applyLanguage() / onDelete()). It only (re)selects when the target node is not
+        // already the focused selection, so that we do not re-launch the context toolbar (which
+        // focus() and nodeChanged() trigger) more often than needed.
         $js = <<<EOF
             const element = instance.dom.select("span[class^='multilang-']")[{$position}];
-            if (element) {
+            if (element && (!instance.hasFocus() || instance.selection.getNode() !== element)) {
                 instance.focus();
                 instance.selection.select(element);
                 instance.nodeChanged();
@@ -198,15 +196,18 @@ class behat_editor_tiny_multilang2 extends behat_base {
             $this->getSession()
         );
 
-        $btn = $this->spin(
+        $this->spin(
             function () use ($editorid, $js, $selector) {
                 $this->execute_javascript_for_editor($editorid, $js);
                 // Every language button exists in every toolbar instance, so we must only accept
-                // one that is actually visible, i.e. belongs to the toolbar currently shown for the
-                // node we just selected - never a stale button from a toolbar on its way out.
+                // one that is actually visible, i.e. belongs to the toolbar currently shown.
+                // The click happens inside the spin: if the button is replaced between finding it
+                // and clicking it, the stale element exception is caught by spin() and
+                // the next iteration clicks the freshly rendered button.
                 foreach ($this->getSession()->getPage()->findAll('css', $selector) as $node) {
                     if ($node->isVisible()) {
-                        return $node;
+                        $node->click();
+                        return true;
                     }
                 }
                 return false;
@@ -215,6 +216,5 @@ class behat_editor_tiny_multilang2 extends behat_base {
             behat_base::get_extended_timeout(),
             $exception
         );
-        $this->execute('behat_general::i_click_on', [$btn, 'NodeElement']);
     }
 }
